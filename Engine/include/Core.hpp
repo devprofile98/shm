@@ -31,11 +31,14 @@
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
+#include "shader.hpp"
 
 // include common header files
 #include "BaseRenderer.hpp"
 #include "openGLRenderer.hpp"
 #include "context_manager.hpp"
+#include "Camera.hpp"
+
 
 
 

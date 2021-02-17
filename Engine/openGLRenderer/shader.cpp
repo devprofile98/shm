@@ -2,6 +2,15 @@
 #include "shader.hpp"
 
 
+// shader::shader(){
+    
+// }
+
+// shader::~shader(){
+
+// }
+
+
 shader::shader(const char* vertexPath, const char* fragmentPath){
 
     std::ifstream vShaderFile;
@@ -30,11 +39,6 @@ shader::shader(const char* vertexPath, const char* fragmentPath){
         std::cout << "SHADER::FILE::READ_ERROR:: CANT OPEN FILE SUCCESFULLY"<<std::endl;
     }
 }
-
-shader::~shader(){
-
-}
-
 
 bool shader::createProgram()
 {

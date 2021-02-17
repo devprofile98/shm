@@ -1,8 +1,17 @@
 #ifndef SHADER_H
 #define SHADER_H
 
-#include "Core.hpp"
+// #include "Core.hpp"
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
+//gl math
+#include <glm/glm.hpp>
+#include <glm/gtc/type_ptr.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -12,8 +21,9 @@
 class shader{
 
     public:
+        shader(){};
         shader(const char* vertexPath, const char* fragmentPath);
-        ~shader();
+        ~shader(){};
 
 
         bool createProgram();

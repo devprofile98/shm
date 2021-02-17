@@ -1,7 +1,16 @@
 #ifndef ENGINE_MESH_H
 #define ENGINE_MESH_H
 
-#include "Core.hpp"
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
+//gl math
+#include <glm/glm.hpp>
+#include <glm/gtc/type_ptr.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
 
 #include <string>
 #include <stdint.h>
@@ -38,7 +47,7 @@ public:
     std::vector<Texture> textures;
     
     Mesh(std::vector<Vertex> vertices, std::vector<uint32_t> indices, std::vector<Texture> textures);
-    void Draw(shader &shader);
+    void Draw(shader &shadr);
 
 private:
     //  render data

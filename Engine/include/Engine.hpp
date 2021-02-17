@@ -28,6 +28,8 @@ namespace SHM
         ContextManager* context_manager;
         void setRenderer(API_TYPE api_type);
         static std::shared_ptr<BaseRenderer> m_renderer;
+
+        Camera m_camera;
     };
 
 }
