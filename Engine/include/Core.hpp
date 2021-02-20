@@ -3,7 +3,7 @@
 
 
 // rules on export and import 
-
+#define MAKE_SHM_LIB
 #if defined(SHM_STATIC)
     #define SHM_EXPORT 
 #elif (defined(_WIN32) || defined(_WIN64))
@@ -35,9 +35,9 @@
 
 // include common header files
 #include "BaseRenderer.hpp"
-#include "openGLRenderer.hpp"
+// #include "openGLRenderer.hpp"
 #include "context_manager.hpp"
-#include "Camera.hpp"
+// #include "Camera.hpp"
 
 
 

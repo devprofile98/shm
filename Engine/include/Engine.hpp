@@ -4,6 +4,9 @@
 #include <memory>
 #include <iostream>
 #include <stdint.h>
+#include "Camera.hpp"
+#include "Handler.hpp"
+#include "openGLRenderer.hpp"
 
 
 namespace SHM
@@ -21,8 +24,15 @@ namespace SHM
         ~Engine();
 
         static std::shared_ptr<BaseRenderer> getRenderer();
-
         void MainRenderLoop();
+
+
+
+
+        // TODO remove it from here and add it to handler class
+        void mouse(GLFWwindow* window, double xpos, double ypos);
+        float last_x, last_y;
+        bool firstMouse=true;
 
     private:
         ContextManager* context_manager;
@@ -30,6 +40,7 @@ namespace SHM
         static std::shared_ptr<BaseRenderer> m_renderer;
 
         Camera m_camera;
+        Handler* m_handler;
     };
 
 }

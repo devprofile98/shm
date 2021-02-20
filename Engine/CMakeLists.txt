@@ -2,19 +2,22 @@ cmake_minimum_required(VERSION 3.14)
 
 project(SHM VERSION 0.1)
 
+set (CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
+
 set(shm_src 
     source/glad.c
     source/Engine.cpp
     source/context_manager.cpp
+    source/Handler.cpp
+    source/Camera.cpp
 
 )
 
 set(opengl_renderer_src
-    # openGLRenderer/glad.c
     openGLRenderer/openGLRenderer.cpp
     openGLRenderer/Model.cpp
     openGLRenderer/Mesh.cpp
-    openGLRenderer/Camera.cpp
     openGLRenderer/shader.cpp
 
 )
@@ -26,4 +29,3 @@ target_link_libraries(shm-engine ${CMAKE_CURRENT_SOURCE_DIR}/include/assimp/assi
 target_include_directories(shm-engine PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/openGLRenderer/)
 
 target_include_directories(shm-engine PUBLIC include/)
-# add_subdirectory(openGLRenderer)

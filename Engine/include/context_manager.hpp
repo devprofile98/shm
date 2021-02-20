@@ -2,6 +2,7 @@
 #define SHM_CONTEXT_MANAGER
 
 #include "Core.hpp"
+#include "openGLRenderer.hpp"
 
 namespace SHM{
 

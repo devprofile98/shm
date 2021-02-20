@@ -5,29 +5,34 @@
 #include <iostream>
 // #include <vector>
 #include "Model.hpp"
+#include "Camera.hpp"
+
 
 
 namespace SHM{
 
+    class Camera;
     class SHM_EXPORT openGLRenderer : public BaseRenderer{
     public:
-        openGLRenderer();
-        ~openGLRenderer();
+        openGLRenderer(){};
+        openGLRenderer(Camera camera);
+        ~openGLRenderer(){};
         void Draw() override;
 
         void LoadModel(const char* filepath) override;
         void LoadShaders(const char* vs_path, const char* fs_path) override;
 
-        //TODO make this private
-        glm::mat4 m_model;
-        glm::mat4 m_projection;
-        glm::mat4 m_view;
+        void setProjectonMatrix(const glm::mat4& matrix);
+        void setViewMatrix(const glm::mat4& matrix);
+        void setModelMatrix(const glm::mat4& matrix);
+
+        const glm::mat4& getModelMatrix() const;
+        const glm::mat4& getProjectionMatrix() const;
+        const glm::mat4& getViewMatrix() const;
         // shader shader_program;
 
     private:
         std::vector<Model> models;
-
-
 
         // ----------- tools --------- 
         // texture member;
