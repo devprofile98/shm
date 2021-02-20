@@ -53,6 +53,7 @@ namespace SHM{
         m_renderer->setModelMatrix(glm::scale(m_renderer->getModelMatrix(), glm::vec3(1.0f, 1.0f, 1.0f)));
         m_renderer->setModelMatrix(glm::rotate(m_renderer->getModelMatrix(), glm::radians(45.0f), glm::vec3(0.0,1.0,0.0)));
         m_renderer->shader_program.setMat4("model", m_renderer->getModelMatrix());   
+        m_renderer->shader_program.setFloat("iTime", glfwGetTime());
         
         // Handler::keyboard(context_manager->GetWindow(), m_camera);
         m_handler->keyboard(context_manager->GetWindow());

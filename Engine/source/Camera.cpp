@@ -13,7 +13,7 @@ namespace SHM{
         m_pitch = 0.0f;
         m_position = position;
         m_up = up;
-        m_fov = 85.0f;
+        m_fov = 45.0f;
     }
 
 
