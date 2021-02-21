@@ -17,13 +17,9 @@ namespace SHM {
 
         if(glfwGetKey(window,GLFW_KEY_W) == GLFW_PRESS){
             Handler::camera->m_position += cameraSpeed * Handler::camera->m_front;
-            std::cout<<"process WWW"<<std::endl;
         }
         if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS){
             Handler::camera->m_position -= cameraSpeed * Handler::camera->m_front;
-            std::cout<<"Camera pos is "<<Handler::camera->m_position.x << " "<<Handler::camera->m_position.y <<" "<<Handler::camera->m_position.z<<std::endl;
-            std::cout<<"process SSSS"<<std::endl;
-
         }
         if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
             Handler::camera->m_position -= glm::normalize(glm::cross(Handler::camera->m_front, Handler::camera->m_up)) * cameraSpeed;
