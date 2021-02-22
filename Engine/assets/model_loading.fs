@@ -28,7 +28,7 @@ void main()
     }
 
     vec3 light_position = vec3(10.0,10.0,1.0);
-    vec3 color = vec3(vec3(  max(sin(gl_FragCoord.x)+cos(iTime), 0.2) ,  max(sin(gl_FragCoord.y) + sin(iTime), 0.2)  ,  max(cos(iTime), 0.2)));
+    vec3 color = vec3(gl_FragCoord.x + gl_FragCoord.y ,  max(sin(gl_FragCoord.y) + sin(iTime), 0.2)  ,  max(cos(iTime), 0.2));
 
     vec3 ambient = ambientColor * vec3(0.0,0.0,0.0);
 

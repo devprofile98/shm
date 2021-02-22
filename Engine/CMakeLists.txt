@@ -25,8 +25,9 @@ set(opengl_renderer_src
 add_library(shm-engine SHARED ${opengl_renderer_src} ${shm_src} )
 
 if (WIN32)
-	target_link_library(playground ${CMAKE_CURRENT_SOURCE_DIR}/include/GLFW/glfw3.lib)
-    target_link_library(playground ${CMAKE_CURRENT_SOURCE_DIR}/include/assimp/assimp-vc142-mtd.lib)
+    message("****" ${CMAKE_CURRENT_SOURCE_DIR}/include/GLFW/glfw3.lib)
+    target_link_libraries(shm-engine "F:/project/SHM/Engine/include/GLFW/glfw3.lib")
+    target_link_libraries(shm-engine "F:/project/SHM/Engine/include/assimp/assimp-vc142-mtd.lib")
     
 elseif(UNIX)
     target_link_libraries(shm-engine glfw3)

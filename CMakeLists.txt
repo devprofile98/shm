@@ -12,8 +12,8 @@ target_include_directories(playground PUBLIC Engine/include/ Engine/openGLRender
 target_link_libraries(playground shm-engine)
 
 if (WIN32)
-	target_link_library(playground ${CMAKE_CURRENT_SOURCE_DIR}/include/GLFW/glfw3.lib)
-	target_link_library(playground ${CMAKE_CURRENT_SOURCE_DIR}/include/assimp/assimp-vc142-mtd.lib)
+	target_link_libraries(playground "F:/project/SHM/Engine/include/GLFW/glfw3.lib")
+	target_link_libraries(playground "F:/project/SHM/Engine/include/assimp/assimp-vc142-mtd.lib")
 
 elseif(UNIX)
 	target_link_libraries(playground ${CMAKE_DL_LIBS})

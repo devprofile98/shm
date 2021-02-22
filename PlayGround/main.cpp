@@ -13,12 +13,12 @@ int main(){
 
     //load Fragment Shader and Vertex-shader
     engine->getRenderer()->LoadShaders(
-                    "/home/ahmad/Documents/projects/cpp/shm/Engine/assets/model_loading.vs",
-                    "/home/ahmad/Documents/projects/cpp/shm/Engine/assets/model_loading.fs"
+                    "F:/project/SHM/Engine/assets/model_loading.vs",
+                    "F:/project/SHM/Engine/assets/model_loading.fs"
                      );
 
     // load 3d model
-    engine->getRenderer()->LoadModel("/home/ahmad/Downloads/Rubics_cube/cube.obj");
+    engine->getRenderer()->LoadModel("F:/project/SHM/Engine/assets/dice.obj");
 
     // main render loop
     engine->MainRenderLoop();
