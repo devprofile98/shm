@@ -11,7 +11,9 @@ My 3D Engine
 in source directory run below command
 
 > mkdir build && cd build
+
 > cmake ..
+
 > make
 
 an executable file "playground" is generated, run it with 
