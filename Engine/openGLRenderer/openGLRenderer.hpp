@@ -6,6 +6,7 @@
 // #include <vector>
 #include "Model.hpp"
 #include "Camera.hpp"
+#include <memory>
 
 
 
@@ -15,7 +16,7 @@ namespace SHM{
     class SHM_EXPORT openGLRenderer : public BaseRenderer{
     public:
         openGLRenderer(){};
-        openGLRenderer(Camera camera);
+        openGLRenderer(std::shared_ptr<Camera> camera);
         ~openGLRenderer(){};
         void Draw() override;
 

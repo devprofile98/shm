@@ -20,8 +20,8 @@
 // Struct container for single Vertex information
 struct Vertex{
     glm::vec3 Position;
-    glm::vec3 Normal;
     glm::vec2 TexCoords;
+    glm::vec3 Normal;
         // tangent
     glm::vec3 Tangent;
     // bitangent

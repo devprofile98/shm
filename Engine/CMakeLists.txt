@@ -6,6 +6,7 @@ set (CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
 
 set(shm_src 
+    F:/project/SHM/PlayGround/world.cpp
     source/glad.c
     source/Engine.cpp
     source/context_manager.cpp

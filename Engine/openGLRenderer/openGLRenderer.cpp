@@ -6,24 +6,21 @@ namespace SHM{
 
     // openGLRenderer::openGLRenderer(){}
 
-    openGLRenderer::openGLRenderer(Camera camera)
+    openGLRenderer::openGLRenderer(std::shared_ptr<Camera> camera)
     {
         setModelMatrix(glm::mat4(1.0));
-        setProjectonMatrix(glm::perspective(glm::radians(camera.m_fov),1920.0f/ 1080.0f, 0.1f, 100.0f));
-        setViewMatrix(glm::lookAt(camera.m_position, camera.m_position + camera.m_front, camera.m_up));
+        setProjectonMatrix(glm::perspective(glm::radians(camera->m_fov),1920.0f/ 1080.0f, 0.01f, 100.0f));
+        setViewMatrix(glm::lookAt(camera->m_position, camera->m_position + camera->m_front, camera->m_up));
     }
     // openGLRenderer::~openGLRenderer(){
 
     // }
 
     void openGLRenderer::Draw(){
-        // std::cout <<"Rendering through OPENGL API"<<std::endl;
         for(int i=0;i< models.size(); i++){
-            // std::cout<<"IN RENDER LOOP"<<std::endl;
-
             glm::mat4 model = glm::mat4(1.0f);
-            model = glm::translate(model, glm::vec3(-1.0f, -1.0f, -1.0f)); // translate it down so it's at the center of the scene
-            model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));	// it's a bit too big for our scene, so scale it down
+            model = glm::translate(model, glm::vec3(-1.0f, -1.0f, -1.0f));
+            model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
             shader_program.setMat4("model", model);
             models[i].Draw(shader_program);
         }

@@ -45,8 +45,10 @@ bool shader::createProgram()
     int success;
     char* infolog = new char[512];
 
+    // auto vertexCode = std::make_unique<const char *>(vShaderCode.c_str());
+    // auto fragmentCode = std::make_unique<const char *>(fShaderCode.c_str());
     const char* vertexCode = vShaderCode.c_str();
-    const char *fragmentCode=fShaderCode.c_str();
+    const char* fragmentCode=fShaderCode.c_str();
     std::cout<< " VERTEX SHADER CODE \n";
     std::cout<< vertexCode <<std::endl;
     std::cout << " ------------------------------- \n\n\n";
@@ -96,6 +98,8 @@ bool shader::createProgram()
     glDeleteShader(m_fragment);
 
     delete[] infolog;
+//    free((char*)vertexCode);
+//    free((char*)fragmentCode);
     return true;
 }
 
@@ -105,7 +109,7 @@ void shader::use(){
 
 }
 
-void shader::setVec3(const char* uniform_name,glm::vec3 &value) const {
+void shader::setVec3(const char* uniform_name,const glm::vec3 &value) const {
     glUniform3fv( glGetUniformLocation(this->ID, uniform_name),1, &value[0]);
 }
 

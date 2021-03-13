@@ -15,6 +15,7 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include <memory>
 #include <glad/glad.h>
 
 
@@ -30,7 +31,7 @@ class shader{
         void use();
         uint16_t ID;    // shader program id
 
-        void setVec3(const char* uniform_name,glm::vec3 &value) const ;
+        void setVec3(const char* uniform_name,const glm::vec3 &value) const ;
         void setVec3(const char* uniform_name,float x, float y, float z) const ;
 
         void setFloat(const char* uniform_name, float value) const ;

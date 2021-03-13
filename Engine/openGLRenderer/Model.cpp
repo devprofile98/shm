@@ -9,9 +9,6 @@ unsigned int TextureFromFile(const char *path, const std::string &directory, boo
     std::string filename = std::string(path);
     filename = directory + '/' + filename;
 
-    stbi_set_flip_vertically_on_load(true);
-
-
     unsigned int textureID;
     glGenTextures(1, &textureID);
 
@@ -49,13 +46,11 @@ unsigned int TextureFromFile(const char *path, const std::string &directory, boo
 
 Model::Model(const char *path)
 {
-    std::cout<<"LOADING MODEL COMPLETED"<<std::endl;
     loadModel(path);
     std::cout<<"LOADING MODEL COMPLETED"<<std::endl;
 }
 
 void Model::Draw(shader &shader){
-
     for(uint32_t i = 0; i<meshes.size();i++){
         meshes[i].Draw(shader);
     }
@@ -109,7 +104,6 @@ Mesh Model::processMesh(aiMesh *mesh, const aiScene *scene){
             vector.y = mesh->mNormals[i].y;
             vector.z = mesh->mNormals[i].z;
             vertex.Normal = vector;
-
         }
 
         if(mesh->mTextureCoords[0]){

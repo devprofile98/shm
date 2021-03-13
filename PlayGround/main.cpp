@@ -9,21 +9,23 @@
 int main(){
 
     // SHM::Engine *engine = new SHM::Engine{"PlayGround",SHM::OPENGL};
-    std::unique_ptr<SHM::Engine> engine{new SHM::Engine{"PlayGround",SHM::OPENGL}}; // create an instance of Engine
+    {
+        std::unique_ptr<SHM::Engine> engine{new SHM::Engine{"PlayGround", SHM::OPENGL}}; // create an instance of Engine
 
-    //load Fragment Shader and Vertex-shader
-    engine->getRenderer()->LoadShaders(
+        //load Fragment Shader and Vertex-shader
+        engine->getRenderer()->LoadShaders(
                     "F:/project/SHM/Engine/assets/model_loading.vs",
                     "F:/project/SHM/Engine/assets/model_loading.fs"
-                     );
+                    );
+        // load 3d model
+        engine->getRenderer()->LoadModel("F:/project/SHM/Engine/assets/wooden watch tower23.obj");
 
-    // load 3d model
-    engine->getRenderer()->LoadModel("F:/project/SHM/Engine/assets/dice.obj");
-
-    // main render loop
-    engine->MainRenderLoop();
+        // main render loop
+        engine->MainRenderLoop();
+    }
 
     std::cout<<"Goodbye"<<std::endl;
+
 
     return 0;
 }

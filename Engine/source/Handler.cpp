@@ -6,14 +6,14 @@ namespace SHM {
     float Handler::last_y = 1080.0f/2;
     bool Handler::firstMouse = true;
 
-    Handler::Handler(GLFWwindow *window, Camera* camera){
+    Handler::Handler(GLFWwindow *window, std::shared_ptr<Camera> camera){
         Handler::camera = camera;
         Handler::firstMouse = true;
         glfwSetCursorPosCallback(window, &Handler::mouse);
         }
 
     void Handler::keyboard(GLFWwindow *window){
-        float cameraSpeed = 2.5f * 0.001f ;
+        float cameraSpeed = 2.5f * 0.0002f ;
 
         if(glfwGetKey(window,GLFW_KEY_W) == GLFW_PRESS){
             Handler::camera->m_position += cameraSpeed * Handler::camera->m_front;
