@@ -19,6 +19,7 @@ shader::shader(const char* vertexPath, const char* fragmentPath){
     vShaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
     fShaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
 
+    // reading the shader file
     try{
         vShaderFile.open(vertexPath);
         fShaderFile.open(fragmentPath);
@@ -109,8 +110,19 @@ void shader::use(){
 
 }
 
+void shader::useGlobalVariables() const{
+    int ub_index{-1};
+    std::cout<<"******************* in useGlobalVariable function "<< m_ub_pairs[0].first.c_str()<<std::endl;
+    for(auto& pair: m_ub_pairs){
+        ub_index = glGetUniformBlockIndex(this->ID, pair.first.c_str());
+        std::cout<<"\n\n\n\n\n\n\nGL ACTIVE UNIFORM BLCOK INDEX IS :"<<ub_index<< " "<< pair.first<<std::endl;
+        glUniformBlockBinding(this->ID, ub_index, pair.second);
+    }
+}
+
+
 void shader::setVec3(const char* uniform_name,const glm::vec3 &value) const {
-    glUniform3fv( glGetUniformLocation(this->ID, uniform_name),1, &value[0]);
+    glUniform3fv(glGetUniformLocation(this->ID, uniform_name),1, &value[0]);
 }
 
 void shader::setVec3(const char* uniform_name,float x, float y, float z) const 
@@ -130,3 +142,5 @@ void shader::setMat4(const std::string &name, const glm::mat4 &mat) const
 {
     glUniformMatrix4fv(glGetUniformLocation(ID, name.c_str()), 1, GL_FALSE, &mat[0][0]);
 }
+
+std::vector<std::pair<std::string, int>> shader::m_ub_pairs;

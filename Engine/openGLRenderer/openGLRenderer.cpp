@@ -11,6 +11,11 @@ namespace SHM{
         setModelMatrix(glm::mat4(1.0));
         setProjectonMatrix(glm::perspective(glm::radians(camera->m_fov),1920.0f/ 1080.0f, 0.01f, 100.0f));
         setViewMatrix(glm::lookAt(camera->m_position, camera->m_position + camera->m_front, camera->m_up));
+        // add uniform blocks and binding points to shader class
+        setupUBO();
+        shader::m_ub_pairs.push_back(std::make_pair(std::string{"VPMatrices"}, 0));
+        shader::m_ub_pairs.push_back(std::make_pair(std::string{"Lights"}, 1));
+
     }
     // openGLRenderer::~openGLRenderer(){
 
@@ -50,6 +55,22 @@ namespace SHM{
 
     const glm::mat4& openGLRenderer::getViewMatrix() const{
         return m_view;
+    }
+
+    void openGLRenderer::setupUBO()
+    {
+        glGenBuffers(1, &ubo_vp);
+        glBindBuffer(GL_UNIFORM_BUFFER, ubo_vp);
+        glBufferData(GL_UNIFORM_BUFFER, 2*sizeof(glm::mat4), nullptr, GL_STATIC_DRAW);
+        glBindBuffer(GL_UNIFORM_BUFFER, 0);
+        glBindBufferRange(GL_UNIFORM_BUFFER, 0, ubo_vp,0, 2 * sizeof(glm::mat4));
+
+        glGenBuffers(1, &ubo_lights);
+        glBindBuffer(GL_UNIFORM_BUFFER, ubo_lights);
+        glBufferData(GL_UNIFORM_BUFFER, 16*3, nullptr, GL_STATIC_DRAW);
+        glBindBuffer(GL_UNIFORM_BUFFER, 0);
+        glBindBufferRange(GL_UNIFORM_BUFFER, 1, ubo_lights,0, 16*3);
+
     }
 
     void openGLRenderer::setProjectonMatrix(const glm::mat4& matrix){

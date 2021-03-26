@@ -7,10 +7,18 @@
 #include "Model.hpp"
 #include "Camera.hpp"
 #include <memory>
-
+#include <utility>
+#include <vector>
 
 
 namespace SHM{
+
+    struct Light{
+        glm::vec3 position;
+        glm::vec3 ambient;
+        glm::vec3 diffuse;
+    };
+
 
     class Camera;
     class SHM_EXPORT openGLRenderer : public BaseRenderer{
@@ -30,10 +38,11 @@ namespace SHM{
         const glm::mat4& getModelMatrix() const;
         const glm::mat4& getProjectionMatrix() const;
         const glm::mat4& getViewMatrix() const;
-        // shader shader_program;
 
     private:
+        void setupUBO();
         std::vector<Model> models;
+
 
         // ----------- tools --------- 
         // texture member;

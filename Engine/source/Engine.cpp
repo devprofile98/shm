@@ -59,8 +59,8 @@ namespace SHM{
         m_renderer->shader_program.use();
         m_renderer->Draw();
 
-        m_renderer->shader_program.setMat4("projection", m_renderer->getProjectionMatrix());
-        m_renderer->shader_program.setMat4("view", m_renderer->getViewMatrix());
+//        m_renderer->shader_program.setMat4("projection", m_renderer->getProjectionMatrix());
+//        m_renderer->shader_program.setMat4("view", m_renderer->getViewMatrix());
         m_renderer->setViewMatrix(glm::lookAt(m_camera->m_position, m_camera->m_position + m_camera->m_front, m_camera->m_up));
         m_renderer->setModelMatrix(glm::translate(m_renderer->getModelMatrix(), glm::vec3(2.0f, 2.0f, 2.0f)));
         m_renderer->setModelMatrix(glm::scale(m_renderer->getModelMatrix(), glm::vec3(1.0f, 1.0f, 1.0f)));

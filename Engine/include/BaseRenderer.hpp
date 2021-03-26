@@ -24,6 +24,7 @@ namespace SHM{
         virtual const glm::mat4& getViewMatrix() const=0;
 
         shader shader_program;
+        uint32_t ubo_vp, ubo_lights;
     
     protected:
         glm::mat4 m_model;
