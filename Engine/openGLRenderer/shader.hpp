@@ -19,6 +19,7 @@
 #include <glad/glad.h>
 #include <vector>
 #include <utility>
+#include <stdexcept>
 
 
 class shader{

@@ -28,9 +28,10 @@ namespace SHM{
         ~openGLRenderer(){};
         void Draw() override;
 
-        void LoadModel(const char* filepath) override;
+        uint32_t LoadModel(const char* filepath, shader shader) override;
         void LoadShaders(const char* vs_path, const char* fs_path) override;
-
+        void changePosition(uint32_t object_id, const glm::vec3& vec) override;
+        void changeScale(uint32_t object_id, const glm::vec3& vec) override;
         void setProjectonMatrix(const glm::mat4& matrix);
         void setViewMatrix(const glm::mat4& matrix);
         void setModelMatrix(const glm::mat4& matrix);
@@ -38,6 +39,7 @@ namespace SHM{
         const glm::mat4& getModelMatrix() const;
         const glm::mat4& getProjectionMatrix() const;
         const glm::mat4& getViewMatrix() const;
+
 
     private:
         void setupUBO();

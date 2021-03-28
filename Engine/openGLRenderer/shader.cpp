@@ -50,13 +50,13 @@ bool shader::createProgram()
     // auto fragmentCode = std::make_unique<const char *>(fShaderCode.c_str());
     const char* vertexCode = vShaderCode.c_str();
     const char* fragmentCode=fShaderCode.c_str();
-    std::cout<< " VERTEX SHADER CODE \n";
-    std::cout<< vertexCode <<std::endl;
-    std::cout << " ------------------------------- \n\n\n";
+//    std::cout<< " VERTEX SHADER CODE \n";
+//    std::cout<< vertexCode <<std::endl;
+//    std::cout << " ------------------------------- \n\n\n";
     
-    std::cout<< " Fragment SHADER CODE \n";
-    std::cout<< fragmentCode <<std::endl;
-    std::cout << " ------------------------------- \n";
+//    std::cout<< " Fragment SHADER CODE \n";
+//    std::cout<< fragmentCode <<std::endl;
+//    std::cout << " ------------------------------- \n";
     m_vertex = glCreateShader(GL_VERTEX_SHADER);
     glShaderSource(m_vertex, 1, &vertexCode,nullptr);
     glCompileShader(m_vertex);
@@ -105,17 +105,15 @@ bool shader::createProgram()
 }
 
 void shader::use(){
-
     glUseProgram(ID);
-
 }
 
 void shader::useGlobalVariables() const{
     int ub_index{-1};
-    std::cout<<"******************* in useGlobalVariable function "<< m_ub_pairs[0].first.c_str()<<std::endl;
     for(auto& pair: m_ub_pairs){
         ub_index = glGetUniformBlockIndex(this->ID, pair.first.c_str());
-        std::cout<<"\n\n\n\n\n\n\nGL ACTIVE UNIFORM BLCOK INDEX IS :"<<ub_index<< " "<< pair.first<<std::endl;
+        if (ub_index == -1)
+            std::cout<<"SHADER::BINDING_POINT::ERROR:: Try to bind an Empty shader object to a binding point for:"<< pair.first <<std::endl;
         glUniformBlockBinding(this->ID, ub_index, pair.second);
     }
 }

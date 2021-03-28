@@ -8,6 +8,14 @@ namespace SHM{
         m_handler = new Handler{context_manager->GetWindow(), m_camera};
         setRenderer(api_type);
 
+        // uploading camera and view matrices to buffers
+        SHM::BUFFERS::uploadSubDataToUBO(m_renderer->ubo_vp, m_renderer->getProjectionMatrix());
+        SHM::BUFFERS::uploadSubDataToUBO(m_renderer->ubo_vp, m_renderer->getViewMatrix(), sizeof(glm::mat4));
+
+        SHM::BUFFERS::uploadSubDataToUBO(m_renderer->ubo_lights, glm::vec3(0.5,0.0,-2.0), sizeof(glm::vec4));
+        SHM::BUFFERS::uploadSubDataToUBO(m_renderer->ubo_lights, glm::vec3(0.01,0.0,0.4), sizeof(glm::vec4));
+        SHM::BUFFERS::uploadSubDataToUBO(m_renderer->ubo_lights, glm::vec3(-1.0,0.0,-2.0), sizeof(glm::vec4));
+
         // perparing user configurations
         outLoop();
     }

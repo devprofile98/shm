@@ -20,6 +20,7 @@ set(opengl_renderer_src
     openGLRenderer/Model.cpp
     openGLRenderer/Mesh.cpp
     openGLRenderer/shader.cpp
+    openGLRenderer/buffers.cpp
 
 )
 

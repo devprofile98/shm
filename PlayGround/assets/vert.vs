@@ -9,6 +9,8 @@ layout(std140) uniform VPMatrices{
     mat4 view;
 };
 
+
+
 void main(){
 
 

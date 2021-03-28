@@ -1,5 +1,5 @@
 #include "Engine.hpp"
-
+#include "buffers.hpp"
 
 namespace SHM
 {
@@ -12,12 +12,15 @@ GLuint vao ,vbo, indexBuffer;
 glm::mat4 model = glm::mat4(1.0f);
 // Add Vertices
 shader newShader{"F:/project/SHM/PlayGround/assets/vert.vs", "F:/project/SHM/PlayGround/assets/frag.fs"};
+shader newShader2{"F:/project/SHM/PlayGround/assets/second/model_loading.vs", "F:/project/SHM/PlayGround/assets/second/model_loading.fs"};
 
 Light light{
     glm::vec3(0.5,0.0,-2.0),
-            glm::vec3(0.01,0.0,0.4),
-            glm::vec3(-1.0,0.0,-2.0)
+    glm::vec3(0.01,0.0,0.4),
+    glm::vec3(-1.0,0.0,-2.0)
 };
+
+int ub_index;
 
 // TODO add Grid data and drawing completely into shader
 void createGrid(){
@@ -162,47 +165,49 @@ void Engine::outLoop(){
     // write your configuration code to run before Engine::MainRenderLoop
     // createGrid();
 
-    // setup data for ubo-vp
-
-    glBindBuffer(GL_UNIFORM_BUFFER, Engine::getRenderer()->ubo_vp);
-    glBufferSubData(GL_UNIFORM_BUFFER,0, sizeof(glm::mat4), glm::value_ptr(Engine::getRenderer()->getProjectionMatrix()));
-    glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), sizeof(glm::mat4), glm::value_ptr(Engine::getRenderer()->getViewMatrix()));
-    glBindBuffer(GL_UNIFORM_BUFFER, 0);
-
-    glBindBuffer(GL_UNIFORM_BUFFER, Engine::getRenderer()->ubo_lights);
-    glBufferSubData(GL_UNIFORM_BUFFER, 0, 16, glm::value_ptr(light.position));
-    glBufferSubData(GL_UNIFORM_BUFFER, 1* 16, 16, glm::value_ptr(light.ambient));
-    glBufferSubData(GL_UNIFORM_BUFFER, 2* 16, 16, glm::value_ptr(light.diffuse));
-
-    glBindBuffer(GL_UNIFORM_BUFFER, 0);
     newShader.createProgram();
-
+    int b{-1};
+    ub_index=SHM::BUFFERS::createNewUBO("MyMat", sizeof(glm::vec4), &b);
+    if (ub_index == -1){
+        std::cout<< "cannot create new ubo"<<std::endl;
+    }
+    std::cout<<"new binding point index is :"<<b<<std::endl;
+    SHM::BUFFERS::uploadSubDataToUBO(ub_index, glm::vec4(0.0, 0.0,1.0,1.0));
     Engine::getRenderer()->LoadShaders(
                 "F:/project/SHM/Engine/assets/model_loading.vs",
                 "F:/project/SHM/Engine/assets/model_loading.fs"
                 );
-    Engine::getRenderer()->LoadModel("F:/project/SHM/Engine/assets/wooden watch tower23.obj");
-    Engine::getRenderer()->shader_program.useGlobalVariables();
 
+    Engine::getRenderer()->LoadModel("F:/project/SHM/Engine/assets/wooden watch tower23.obj", Engine::getRenderer()->shader_program);
+    Engine::getRenderer()->shader_program.useGlobalVariables();
+    newShader2.use();
+    newShader2.createProgram();
+    glm::mat4 model = glm::scale(glm::mat4{1.0}, glm::vec3(1.0, 1.0, 1.0));
+    newShader2.setMat4("model", model);
+    uint32_t gun_id = Engine::getRenderer()->LoadModel("F:/project/SHM/PlayGround/assets/second/Handgun_obj.obj", newShader2);
 
 
     newShader.useGlobalVariables();
     createCube();
+
+    SHM::BUFFERS::uploadSubDataToUBO(Engine::getRenderer()->ubo_lights, glm::vec3(glm::sin(glfwGetTime()),glm::cos(glfwGetTime()),-2.0), sizeof(glm::vec4));
 
 }
 
 void Engine::inLoop(){
 
     //    DrawGrids();
-    glBindBuffer(GL_UNIFORM_BUFFER, Engine::getRenderer()->ubo_vp);
-    glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), sizeof(glm::mat4), glm::value_ptr(Engine::getRenderer()->getViewMatrix()));
-    glBindBuffer(GL_UNIFORM_BUFFER, 0);
+    Engine::getRenderer()->changeScale(0, glm::vec3(0.1, 0.1, 0.1));
+
+    SHM::BUFFERS::uploadSubDataToUBO(Engine::getRenderer()->ubo_vp, Engine::getRenderer()->getViewMatrix(), sizeof(glm::mat4));
+    SHM::BUFFERS::uploadSubDataToUBO(ub_index, glm::vec4(glm::sin(glfwGetTime()), glm::cos(glfwGetTime()),1.0,1.0));
 
     drawCube();
-    glBindBuffer(GL_UNIFORM_BUFFER, Engine::getRenderer()->ubo_lights);
-    light.ambient = glm::vec3(glm::sin(glfwGetTime()),glm::cos(glfwGetTime()),-2.0);
-    glBufferSubData(GL_UNIFORM_BUFFER, 0, 16, glm::value_ptr(light.ambient));
-    glBindBuffer(GL_UNIFORM_BUFFER, 0);
+
+//    SHM::BUFFERS::uploadSubDataToUBO(
+//                Engine::getRenderer()->ubo_lights,
+//                glm::vec3(glm::sin(glfwGetTime()),glm::cos(glfwGetTime()),-2.0)
+//                );
 }
 
 }

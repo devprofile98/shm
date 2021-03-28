@@ -4,6 +4,7 @@
 
 // #include "shader.hpp"
 #include "Core.hpp"
+#include "buffers.hpp"
 
 namespace SHM{
 
@@ -12,9 +13,10 @@ namespace SHM{
         BaseRenderer(){};
         virtual ~BaseRenderer(){};
         virtual void Draw()=0;
-        virtual void LoadModel(const char* filepath)=0;
+        virtual uint32_t LoadModel(const char* filepath, shader shader)=0;
         virtual void LoadShaders(const char* vs_path, const char* fs_path)=0;
-
+        virtual void changePosition(uint32_t object_id,const glm::vec3& vec)=0;
+        virtual void changeScale(uint32_t object_id, const glm::vec3& vec)=0;
         virtual void setModelMatrix(const glm::mat4& matrix)=0;
         virtual void setProjectonMatrix(const glm::mat4& matrix)=0;
         virtual void setViewMatrix(const glm::mat4& matrix)=0;
@@ -25,7 +27,7 @@ namespace SHM{
 
         shader shader_program;
         uint32_t ubo_vp, ubo_lights;
-    
+
     protected:
         glm::mat4 m_model;
         glm::mat4 m_projection;

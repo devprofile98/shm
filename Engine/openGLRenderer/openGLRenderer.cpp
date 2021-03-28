@@ -12,10 +12,9 @@ namespace SHM{
         setProjectonMatrix(glm::perspective(glm::radians(camera->m_fov),1920.0f/ 1080.0f, 0.01f, 100.0f));
         setViewMatrix(glm::lookAt(camera->m_position, camera->m_position + camera->m_front, camera->m_up));
         // add uniform blocks and binding points to shader class
-        setupUBO();
         shader::m_ub_pairs.push_back(std::make_pair(std::string{"VPMatrices"}, 0));
         shader::m_ub_pairs.push_back(std::make_pair(std::string{"Lights"}, 1));
-
+        setupUBO();
     }
     // openGLRenderer::~openGLRenderer(){
 
@@ -23,18 +22,16 @@ namespace SHM{
 
     void openGLRenderer::Draw(){
         for(int i=0;i< models.size(); i++){
-            glm::mat4 model = glm::mat4(1.0f);
-            model = glm::translate(model, glm::vec3(-1.0f, -1.0f, -1.0f));
-            model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
-            shader_program.setMat4("model", model);
-            models[i].Draw(shader_program);
+            models[i].Draw();
         }
     }
 
-    void openGLRenderer::LoadModel(const char* filepath){
-        Model model{filepath};
+    uint32_t openGLRenderer::LoadModel(const char* filepath, shader shader){
+        std::cout<<"\n\n\n\n\nShader Id is "<<filepath << " " <<shader.ID<<std::endl;
+        uint32_t temp = models.size();
+        Model model{filepath, shader};
         models.push_back(model);
-
+        return temp;
     }
 
     void openGLRenderer::LoadShaders(const char* vs_path, const char* fs_path)
@@ -43,6 +40,22 @@ namespace SHM{
         shader.createProgram();
         shader_program = shader;
         // return shader;
+    }
+
+    void openGLRenderer::changePosition(uint32_t object_id, const glm::vec3& vec)
+    {
+        shader *sh = models[object_id].getShader();
+        sh->use();
+        glm::mat4 model = glm::translate(glm::mat4{1.0}, vec);
+        sh->setMat4("model", model);
+    }
+
+    void openGLRenderer::changeScale(uint32_t object_id, const glm::vec3& vec)
+    {
+        shader *sh = models[object_id].getShader();
+        sh->use();
+        glm::mat4 model = glm::scale(glm::mat4{1.0}, vec);
+        sh->setMat4("model", model);
     }
 
     const glm::mat4& openGLRenderer::getModelMatrix() const{
@@ -59,18 +72,9 @@ namespace SHM{
 
     void openGLRenderer::setupUBO()
     {
-        glGenBuffers(1, &ubo_vp);
-        glBindBuffer(GL_UNIFORM_BUFFER, ubo_vp);
-        glBufferData(GL_UNIFORM_BUFFER, 2*sizeof(glm::mat4), nullptr, GL_STATIC_DRAW);
-        glBindBuffer(GL_UNIFORM_BUFFER, 0);
-        glBindBufferRange(GL_UNIFORM_BUFFER, 0, ubo_vp,0, 2 * sizeof(glm::mat4));
-
-        glGenBuffers(1, &ubo_lights);
-        glBindBuffer(GL_UNIFORM_BUFFER, ubo_lights);
-        glBufferData(GL_UNIFORM_BUFFER, 16*3, nullptr, GL_STATIC_DRAW);
-        glBindBuffer(GL_UNIFORM_BUFFER, 0);
-        glBindBufferRange(GL_UNIFORM_BUFFER, 1, ubo_lights,0, 16*3);
-
+        int b{-2};
+        ubo_vp = SHM::BUFFERS::createNewUBO(shader::m_ub_pairs[0].first, 2*sizeof(glm::mat4),&b);
+        ubo_lights = SHM::BUFFERS::createNewUBO(shader::m_ub_pairs[1].first, 16*3,&b);
     }
 
     void openGLRenderer::setProjectonMatrix(const glm::mat4& matrix){

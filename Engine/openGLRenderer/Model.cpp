@@ -44,16 +44,22 @@ unsigned int TextureFromFile(const char *path, const std::string &directory, boo
     return textureID;   
 }
 
-Model::Model(const char *path)
+Model::Model(const char *path, class shader shader): shader_program(shader)
 {
     loadModel(path);
     std::cout<<"LOADING MODEL COMPLETED"<<std::endl;
 }
 
-void Model::Draw(shader &shader){
+void Model::Draw(){
     for(uint32_t i = 0; i<meshes.size();i++){
-        meshes[i].Draw(shader);
+        // TODO pass shader program by refrence
+        meshes[i].Draw(shader_program);
     }
+}
+
+shader* Model::getShader()
+{
+    return &shader_program;
 }
 
 void Model::loadModel(std::string path){
