@@ -12,25 +12,26 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 
-#include "shader.hpp"
 #include <vector>
 #include <string>
 
+#include <shader.hpp>
 #include "Mesh.hpp"
 
 unsigned int TextureFromFile(const char *path, const std::string &directory, bool gamma = false);
 
 class Model{
 public:
-    Model(const char* path, shader shader_program);
+    Model(const char* path, std::shared_ptr<shader> shader_program);
     void Draw();
     std::vector<Texture> textures_loaded; 
     std::vector<Mesh> meshes;
-    shader *getShader() ;
+    std::shared_ptr<shader> getShader() ;
+
 
 private:
     std::string directory;
-    shader shader_program;
+    std::shared_ptr<shader> shader_program;
     void loadModel(std::string path);
     void processNode(aiNode *node, const aiScene *scene);
     Mesh processMesh(aiMesh *mesh, const aiScene *scene);

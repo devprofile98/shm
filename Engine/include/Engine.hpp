@@ -26,6 +26,8 @@ namespace SHM
         static std::shared_ptr<Camera> getCamera();
         void MainRenderLoop();
 
+        static std::shared_ptr<shader> CreateShader(const char *vertex_code, const char *fragment_code);
+
         // TODO remove it from here and add it to handler class
         void mouse(GLFWwindow* window, double xpos, double ypos);
         float last_x, last_y;

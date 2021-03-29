@@ -12,7 +12,8 @@ GLuint vao ,vbo, indexBuffer;
 glm::mat4 model = glm::mat4(1.0f);
 // Add Vertices
 shader newShader{"F:/project/SHM/PlayGround/assets/vert.vs", "F:/project/SHM/PlayGround/assets/frag.fs"};
-shader newShader2{"F:/project/SHM/PlayGround/assets/second/model_loading.vs", "F:/project/SHM/PlayGround/assets/second/model_loading.fs"};
+std::shared_ptr<shader> newShader2 = Engine::CreateShader("F:/project/SHM/PlayGround/assets/second/model_loading.vs", "F:/project/SHM/PlayGround/assets/second/model_loading.fs");
+std::shared_ptr<shader> newShader3 = Engine::CreateShader("F:/project/SHM/PlayGround/assets/second/model_loading.vs", "F:/project/SHM/PlayGround/assets/second/model_loading.fs");
 
 Light light{
     glm::vec3(0.5,0.0,-2.0),
@@ -25,7 +26,7 @@ int ub_index;
 // TODO add Grid data and drawing completely into shader
 void createGrid(){
     // create vertex data for Grid
-    model = glm::translate(model, glm::vec3(-1.0,-1.0,-4.0));
+//    model = glm::translate(model, glm::vec3(-1.0,-1.0,-4.0));
     for(int i=0;i<40;i+=2){
         vertices.push_back(glm::vec3(-1.0f,-0.0,0.f + i/40.0f));
         vertices.push_back(glm::vec3(+1.0f,-0.0,0.f + i/40.0f));
@@ -64,7 +65,7 @@ void DrawGrids(){
     // draw grid in to the scene  with it's separate texture
     newShader.use();
     glBindVertexArray(vao);
-
+    glm::mat4 model{1.0};
     newShader.setMat4("projection", Engine::getRenderer()->getProjectionMatrix());
     newShader.setMat4("view", Engine::getRenderer()->getViewMatrix());
     newShader.setMat4("model", model);
@@ -164,7 +165,6 @@ void Engine::outLoop(){
 
     // write your configuration code to run before Engine::MainRenderLoop
     // createGrid();
-
     newShader.createProgram();
     int b{-1};
     ub_index=SHM::BUFFERS::createNewUBO("MyMat", sizeof(glm::vec4), &b);
@@ -173,25 +173,22 @@ void Engine::outLoop(){
     }
     std::cout<<"new binding point index is :"<<b<<std::endl;
     SHM::BUFFERS::uploadSubDataToUBO(ub_index, glm::vec4(0.0, 0.0,1.0,1.0));
-    Engine::getRenderer()->LoadShaders(
-                "F:/project/SHM/Engine/assets/model_loading.vs",
-                "F:/project/SHM/Engine/assets/model_loading.fs"
-                );
-
-    Engine::getRenderer()->LoadModel("F:/project/SHM/Engine/assets/wooden watch tower23.obj", Engine::getRenderer()->shader_program);
-    Engine::getRenderer()->shader_program.useGlobalVariables();
-    newShader2.use();
-    newShader2.createProgram();
-    glm::mat4 model = glm::scale(glm::mat4{1.0}, glm::vec3(1.0, 1.0, 1.0));
-    newShader2.setMat4("model", model);
-    uint32_t gun_id = Engine::getRenderer()->LoadModel("F:/project/SHM/PlayGround/assets/second/Handgun_obj.obj", newShader2);
-
-
+    newShader2->createProgram();
+    glm::mat4 model = glm::translate(glm::mat4{1.0}, glm::vec3(-3.0, -1.0, -1.0));
+    model = glm::translate(model, glm::vec3(10.0, 10.0, 10.0));
+//    newShader2->setMat4("model", model);
+    newShader3->createProgram();
+    uint32_t tower_id = Engine::getRenderer()->LoadModel("F:/project/SHM/Engine/assets/wooden watch tower23.obj", newShader2);
+    uint32_t gun_id = Engine::getRenderer()->LoadModel("F:/project/SHM/PlayGround/assets/second/Handgun_obj.obj", newShader3);
+    newShader2->use();
+    newShader2->setMat4("model", model);
+    newShader2->useGlobalVariables();
     newShader.useGlobalVariables();
+    newShader3->useGlobalVariables();
+
     createCube();
 
     SHM::BUFFERS::uploadSubDataToUBO(Engine::getRenderer()->ubo_lights, glm::vec3(glm::sin(glfwGetTime()),glm::cos(glfwGetTime()),-2.0), sizeof(glm::vec4));
-
 }
 
 void Engine::inLoop(){
@@ -201,13 +198,19 @@ void Engine::inLoop(){
 
     SHM::BUFFERS::uploadSubDataToUBO(Engine::getRenderer()->ubo_vp, Engine::getRenderer()->getViewMatrix(), sizeof(glm::mat4));
     SHM::BUFFERS::uploadSubDataToUBO(ub_index, glm::vec4(glm::sin(glfwGetTime()), glm::cos(glfwGetTime()),1.0,1.0));
+    glm::mat4 model{1.0};
+    model = glm::translate(model, glm::vec3(-3.0, -1.0, -1.0));
+    model = glm::scale(model, glm::vec3(0.1, 0.1, 0.1));
+    newShader2->use();
+    newShader2->setMat4("model", model);
+    glm::mat4 model2{1.0};
+    glm::translate(model2, glm::vec3(0.0, -1.0,0.0));
+    newShader3->use();
+    newShader3->setMat4("model", model2);
+
 
     drawCube();
 
-//    SHM::BUFFERS::uploadSubDataToUBO(
-//                Engine::getRenderer()->ubo_lights,
-//                glm::vec3(glm::sin(glfwGetTime()),glm::cos(glfwGetTime()),-2.0)
-//                );
 }
 
 }

@@ -26,8 +26,8 @@ namespace SHM{
         }
     }
 
-    uint32_t openGLRenderer::LoadModel(const char* filepath, shader shader){
-        std::cout<<"\n\n\n\n\nShader Id is "<<filepath << " " <<shader.ID<<std::endl;
+    uint32_t openGLRenderer::LoadModel(const char* filepath, std::shared_ptr<shader> shader){
+        std::cout<<"\n\n\n\n\nShader Id is "<<filepath << " " <<shader->ID<<std::endl;
         uint32_t temp = models.size();
         Model model{filepath, shader};
         models.push_back(model);
@@ -44,7 +44,7 @@ namespace SHM{
 
     void openGLRenderer::changePosition(uint32_t object_id, const glm::vec3& vec)
     {
-        shader *sh = models[object_id].getShader();
+        std::shared_ptr<shader> sh = models[object_id].getShader();
         sh->use();
         glm::mat4 model = glm::translate(glm::mat4{1.0}, vec);
         sh->setMat4("model", model);
@@ -52,7 +52,7 @@ namespace SHM{
 
     void openGLRenderer::changeScale(uint32_t object_id, const glm::vec3& vec)
     {
-        shader *sh = models[object_id].getShader();
+        std::shared_ptr<shader> sh = models[object_id].getShader();
         sh->use();
         glm::mat4 model = glm::scale(glm::mat4{1.0}, vec);
         sh->setMat4("model", model);

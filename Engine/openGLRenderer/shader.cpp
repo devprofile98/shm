@@ -2,14 +2,6 @@
 #include "shader.hpp"
 
 
-// shader::shader(){
-    
-// }
-
-// shader::~shader(){
-
-// }
-
 
 shader::shader(const char* vertexPath, const char* fragmentPath){
 
@@ -34,7 +26,6 @@ shader::shader(const char* vertexPath, const char* fragmentPath){
 
         vShaderCode = vertexStream.str();
         fShaderCode = fragmentStream.str();
-
     }
     catch(std::ifstream::failure e){
         std::cout << "SHADER::FILE::READ_ERROR:: CANT OPEN FILE SUCCESFULLY"<<std::endl;
@@ -46,17 +37,9 @@ bool shader::createProgram()
     int success;
     char* infolog = new char[512];
 
-    // auto vertexCode = std::make_unique<const char *>(vShaderCode.c_str());
-    // auto fragmentCode = std::make_unique<const char *>(fShaderCode.c_str());
     const char* vertexCode = vShaderCode.c_str();
     const char* fragmentCode=fShaderCode.c_str();
-//    std::cout<< " VERTEX SHADER CODE \n";
-//    std::cout<< vertexCode <<std::endl;
-//    std::cout << " ------------------------------- \n\n\n";
-    
-//    std::cout<< " Fragment SHADER CODE \n";
-//    std::cout<< fragmentCode <<std::endl;
-//    std::cout << " ------------------------------- \n";
+
     m_vertex = glCreateShader(GL_VERTEX_SHADER);
     glShaderSource(m_vertex, 1, &vertexCode,nullptr);
     glCompileShader(m_vertex);
