@@ -3,11 +3,9 @@
 
 namespace SHM{
 
-
-    // openGLRenderer::openGLRenderer(){}
-
     openGLRenderer::openGLRenderer(std::shared_ptr<Camera> camera)
     {
+//        m_utils = std::shared_ptr<openGLUtility>{new openGLUtility{}};
         setModelMatrix(glm::mat4(1.0));
         setProjectonMatrix(glm::perspective(glm::radians(camera->m_fov),1920.0f/ 1080.0f, 0.01f, 100.0f));
         setViewMatrix(glm::lookAt(camera->m_position, camera->m_position + camera->m_front, camera->m_up));
@@ -27,7 +25,6 @@ namespace SHM{
     }
 
     uint32_t openGLRenderer::LoadModel(const char* filepath, std::shared_ptr<shader> shader){
-        std::cout<<"\n\n\n\n\nShader Id is "<<filepath << " " <<shader->ID<<std::endl;
         uint32_t temp = models.size();
         Model model{filepath, shader};
         models.push_back(model);
@@ -74,7 +71,7 @@ namespace SHM{
     {
         int b{-2};
         ubo_vp = SHM::BUFFERS::createNewUBO(shader::m_ub_pairs[0].first, 2*sizeof(glm::mat4),&b);
-        ubo_lights = SHM::BUFFERS::createNewUBO(shader::m_ub_pairs[1].first, 16*3,&b);
+        ubo_lights = SHM::BUFFERS::createNewUBO(shader::m_ub_pairs[1].first, 16*4 + 16*3 + 16*5 + 4*4 + 5*4,&b);
     }
 
     void openGLRenderer::setProjectonMatrix(const glm::mat4& matrix){
@@ -88,5 +85,9 @@ namespace SHM{
     void openGLRenderer::setModelMatrix(const glm::mat4& matrix){
         m_model = matrix;
     }
+
+//    std::shared_ptr<BaseUtility> openGLRenderer::GetUtility() const{
+//        return m_utils;
+//    }
 
 }

@@ -6,10 +6,7 @@ Mesh::Mesh(std::vector<Vertex> vertices1, std::vector<uint32_t> indices1, std::v
     indices(indices1),
     textures(textures1)
 {
-
     setupMesh();
-    std::cout<<" Vertices size is : " <<vertices.size()<< " Texture size is : "<<textures.size() << " Indices size is : "<<indices.size()<<std::endl;
-
 }
 
 

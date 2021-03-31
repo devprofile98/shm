@@ -45,8 +45,10 @@ bool shader::createProgram()
     glCompileShader(m_vertex);
 
     glGetShaderiv(m_vertex, GL_COMPILE_STATUS, &success);
-    if(!success){
-        glGetShaderInfoLog(m_vertex, 512, nullptr, infolog);
+    if(success == GL_FALSE){
+        GLint maxLength = 0;
+        glGetShaderiv(m_vertex, GL_INFO_LOG_LENGTH, &maxLength);
+        glGetShaderInfoLog(m_vertex, 512, &maxLength, infolog);
         std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << infolog << std::endl;
         return false;
     }
@@ -56,9 +58,10 @@ bool shader::createProgram()
     glCompileShader(m_fragment);
 
     glGetShaderiv(m_fragment, GL_COMPILE_STATUS, &success);
-    if(!success){
-
-        glGetShaderInfoLog(m_vertex, 512, nullptr, infolog);
+    if(success == GL_FALSE){
+        GLint maxLength = 0;
+        glGetShaderiv(m_vertex, GL_INFO_LOG_LENGTH, &maxLength);
+        glGetShaderInfoLog(m_vertex, 512, &maxLength, infolog);
         std::cout << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n" << infolog << std::endl;
         return false;
 

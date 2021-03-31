@@ -4,6 +4,7 @@ namespace SHM{
 
     Engine::Engine(const char* project_name, API_TYPE api_type){
         std::cout<<"START THE ENGINE"<<std::endl;
+//        m_renderer->GetUtility()->InitWorld();
         context_manager = new ContextManager{project_name};
         m_handler = new Handler{context_manager->GetWindow(), m_camera};
         setRenderer(api_type);
@@ -12,9 +13,10 @@ namespace SHM{
         SHM::BUFFERS::uploadSubDataToUBO(m_renderer->ubo_vp, m_renderer->getProjectionMatrix());
         SHM::BUFFERS::uploadSubDataToUBO(m_renderer->ubo_vp, m_renderer->getViewMatrix(), sizeof(glm::mat4));
 
-        SHM::BUFFERS::uploadSubDataToUBO(m_renderer->ubo_lights, glm::vec3(0.5,0.0,-2.0), sizeof(glm::vec4));
+        SHM::BUFFERS::uploadSubDataToUBO(m_renderer->ubo_lights, glm::vec3(0.5,0.0,-2.0));
         SHM::BUFFERS::uploadSubDataToUBO(m_renderer->ubo_lights, glm::vec3(0.01,0.0,0.4), sizeof(glm::vec4));
-        SHM::BUFFERS::uploadSubDataToUBO(m_renderer->ubo_lights, glm::vec3(-1.0,0.0,-2.0), sizeof(glm::vec4));
+        SHM::BUFFERS::uploadSubDataToUBO(m_renderer->ubo_lights, glm::vec3(-1.0,0.0,-2.0), 3*sizeof(glm::vec4));
+
 
         // perparing user configurations
         outLoop();
@@ -71,8 +73,7 @@ namespace SHM{
         m_renderer->setModelMatrix(glm::translate(m_renderer->getModelMatrix(), glm::vec3(2.0f, 2.0f, 2.0f)));
         m_renderer->setModelMatrix(glm::scale(m_renderer->getModelMatrix(), glm::vec3(1.0f, 1.0f, 1.0f)));
         m_renderer->setModelMatrix(glm::rotate(m_renderer->getModelMatrix(), glm::radians(45.0f), glm::vec3(1.0,0.0,0.0)));
-        m_renderer->shader_program.setMat4("model", m_renderer->getModelMatrix());
-        m_renderer->shader_program.setFloat("iTime", glfwGetTime());
+        SHM::BUFFERS::uploadSubDataToUBO(m_renderer->ubo_lights, m_camera->m_position, 3*sizeof(glm::vec4));
 
         // drawing user defined objects
         inLoop();

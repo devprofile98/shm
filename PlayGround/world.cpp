@@ -122,11 +122,8 @@ void createCube(){
         -0.5f,  0.5f, -0.5f,  0.0f, 1.0f
     };
     cubePosition.insert(cubePosition.begin(),{
-                            glm::vec3(-1.0,-0.5,-0.3),
-                            glm::vec3(-0.7,-0.2,-1.0),
-                            glm::vec3(-1.2,-0.7,-0.2),
-                            glm::vec3(-0.5,-0.8,-0.5),
-                            glm::vec3(-1.1,-1.0,-0.5),
+                            glm::vec3(-1.0, -1.0,3),
+
                         });
     // activate shader
     model = glm::translate(model, glm::vec3(-5.0,0.0,-2.0));
@@ -155,7 +152,7 @@ void drawCube(){
         glm::mat4 model{1.0f};
 
         model = glm::translate(model, pos);
-        model = glm::scale(model, glm::vec3(0.1, 0.1, 0.1));
+        model = glm::scale(model, glm::vec3(0.08, 0.08, 0.08));
         newShader.setMat4("model", model);
         glDrawArrays(GL_TRIANGLES, 0, 36);
     }
@@ -188,7 +185,47 @@ void Engine::outLoop(){
 
     createCube();
 
-    SHM::BUFFERS::uploadSubDataToUBO(Engine::getRenderer()->ubo_lights, glm::vec3(glm::sin(glfwGetTime()),glm::cos(glfwGetTime()),-2.0), sizeof(glm::vec4));
+    SHM::BUFFERS::uploadSubDataToUBO(Engine::getRenderer()->ubo_lights,
+                                     glm::vec3(0.0, 2.0,0.0), sizeof(glm::vec4));
+
+    // Point Light data to Lighting UBO
+    SHM::BUFFERS::uploadSubDataToUBO(Engine::getRenderer()->ubo_lights,
+                                     glm::vec4(-1.0, -1.0,3, 0.0), 4*sizeof(glm::vec4));
+    SHM::BUFFERS::uploadSubDataToUBO(Engine::getRenderer()->ubo_lights,
+                                     glm::vec4(0.3,0.72 ,0.72, 0.0), 5*sizeof(glm::vec4));
+    SHM::BUFFERS::uploadSubDataToUBO(Engine::getRenderer()->ubo_lights,
+                                     glm::vec4(0.3,0.72 ,0.72, 0.0), 6*sizeof(glm::vec4));
+
+    SHM::BUFFERS::uploadSubDataToUBO(Engine::getRenderer()->ubo_lights,
+                                     1.0f, 7*sizeof(glm::vec4));
+    SHM::BUFFERS::uploadSubDataToUBO(Engine::getRenderer()->ubo_lights,
+                                     0.35f, 7*sizeof(glm::vec4) + 4);
+    SHM::BUFFERS::uploadSubDataToUBO(Engine::getRenderer()->ubo_lights,
+                                     0.44f, 7*sizeof(glm::vec4) + 8);
+    // Spot Light data to lighting UBO
+    SHM::BUFFERS::uploadSubDataToUBO(Engine::getRenderer()->ubo_lights,
+                                     glm::vec4(Engine::getCamera()->m_position, 0.0), 8*sizeof(glm::vec4));
+    SHM::BUFFERS::uploadSubDataToUBO(Engine::getRenderer()->ubo_lights,
+                                     glm::vec4(Engine::getCamera()->m_front, 0.0), 9*sizeof(glm::vec4));
+    SHM::BUFFERS::uploadSubDataToUBO(Engine::getRenderer()->ubo_lights,
+                                     glm::vec4(0.3,0.72 ,0.72, 0.0), 10*sizeof(glm::vec4));
+    SHM::BUFFERS::uploadSubDataToUBO(Engine::getRenderer()->ubo_lights,
+                                     glm::vec4(0.92, 0.55, 0.1, 0.0), 11*sizeof(glm::vec4));
+    SHM::BUFFERS::uploadSubDataToUBO(Engine::getRenderer()->ubo_lights,
+                                     glm::vec4(0.92, 0.55, 0.1, 0.0), 12*sizeof(glm::vec4));
+
+    SHM::BUFFERS::uploadSubDataToUBO(Engine::getRenderer()->ubo_lights,
+                                     1.0f, 13*sizeof(glm::vec4));
+    SHM::BUFFERS::uploadSubDataToUBO(Engine::getRenderer()->ubo_lights,
+                                     0.35f, 13*sizeof(glm::vec4) + 4);
+    SHM::BUFFERS::uploadSubDataToUBO(Engine::getRenderer()->ubo_lights,
+                                     0.44f, 13*sizeof(glm::vec4) + 8);
+    SHM::BUFFERS::uploadSubDataToUBO(Engine::getRenderer()->ubo_lights,
+                                     glm::cos(glm::radians(12.5f)), 13*sizeof(glm::vec4) + 12);
+    SHM::BUFFERS::uploadSubDataToUBO(Engine::getRenderer()->ubo_lights,
+                                     glm::cos(glm::radians(17.5f)), 14*sizeof(glm::vec4));
+
+
 }
 
 void Engine::inLoop(){
@@ -197,17 +234,31 @@ void Engine::inLoop(){
     Engine::getRenderer()->changeScale(0, glm::vec3(0.1, 0.1, 0.1));
 
     SHM::BUFFERS::uploadSubDataToUBO(Engine::getRenderer()->ubo_vp, Engine::getRenderer()->getViewMatrix(), sizeof(glm::mat4));
-    SHM::BUFFERS::uploadSubDataToUBO(ub_index, glm::vec4(glm::sin(glfwGetTime()), glm::cos(glfwGetTime()),1.0,1.0));
+    SHM::BUFFERS::uploadSubDataToUBO(ub_index, glm::vec4(glm::sin(glfwGetTime()), 0.0, 1-glm::sin(glfwGetTime()),1.0));
     glm::mat4 model{1.0};
-    model = glm::translate(model, glm::vec3(-3.0, -1.0, -1.0));
+    model = glm::translate(model, glm::vec3(-1.0, -1.0, -1.0));
     model = glm::scale(model, glm::vec3(0.1, 0.1, 0.1));
     newShader2->use();
     newShader2->setMat4("model", model);
     glm::mat4 model2{1.0};
-    glm::translate(model2, glm::vec3(0.0, -1.0,0.0));
+    model2 = glm::translate(model2, glm::vec3(-1.0, -1.0,2.6));
+    model2 = glm::scale(model2, glm::vec3(0.3, 0.3, 0.3));
     newShader3->use();
     newShader3->setMat4("model", model2);
 
+    SHM::BUFFERS::uploadSubDataToUBO(
+                Engine::getRenderer()->ubo_lights,
+                glm::vec3(glm::sin(glfwGetTime()), glm::cos(glfwGetTime()),-2.0));
+
+    SHM::BUFFERS::uploadSubDataToUBO(Engine::getRenderer()->ubo_lights,
+                                     glm::vec4(glm::sin(glfwGetTime()), 0.0, 1-glm::sin(glfwGetTime()),1.0), 5*sizeof(glm::vec4));
+
+    SHM::BUFFERS::uploadSubDataToUBO(Engine::getRenderer()->ubo_lights,
+                                     glm::vec4(Engine::getCamera()->m_position, 0.0), 8*sizeof(glm::vec4));
+
+    SHM::BUFFERS::uploadSubDataToUBO(Engine::getRenderer()->ubo_lights,
+                                     glm::vec4(Engine::getCamera()->m_front, 0.0), 9*sizeof(glm::vec4));
+   //m_renderer->shader_program.setFloat("iTime", glfwGetTime());
 
     drawCube();
 

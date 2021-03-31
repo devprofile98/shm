@@ -62,7 +62,6 @@ std::shared_ptr<shader> Model::getShader()
 }
 
 void Model::loadModel(std::string path){
-    std::cout<<"Model::loadModel1"<<std::endl;
     Assimp::Importer import;
     const aiScene *scene = import.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs);
     if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode){
@@ -71,12 +70,9 @@ void Model::loadModel(std::string path){
     }
     directory = path.substr(0,path.find_last_of('/'));
     processNode(scene->mRootNode, scene);
-    std::cout<<"Model::loadModel 2"<<std::endl;
-
 }
 
 void Model::processNode(aiNode *node, const aiScene *scene){
-    std::cout<<"Model::processNode 1"<<std::endl;
     for(uint32_t i=0; i<node->mNumMeshes;i++){
         aiMesh *mesh = scene->mMeshes[node->mMeshes[i]];
         meshes.push_back(processMesh(mesh,  scene));
@@ -84,11 +80,9 @@ void Model::processNode(aiNode *node, const aiScene *scene){
     for(uint32_t i=0; i<node->mNumChildren;i++){
         processNode(node->mChildren[i], scene);
     }
-    std::cout<<"Model::processNode 2"<<std::endl;
 }
 
 Mesh Model::processMesh(aiMesh *mesh, const aiScene *scene){
-    std::cout<<"Model::processMesh"<<std::endl;
     std::vector<Vertex> vertices;
     std::vector<Texture> textures;
     std::vector<uint32_t> indices;

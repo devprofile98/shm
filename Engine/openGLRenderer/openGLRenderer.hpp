@@ -10,6 +10,8 @@
 #include <utility>
 #include <vector>
 
+#include "openglutility.hpp"
+
 
 namespace SHM{
 
@@ -41,6 +43,7 @@ namespace SHM{
         const glm::mat4& getProjectionMatrix() const;
         const glm::mat4& getViewMatrix() const;
 
+//        std::shared_ptr<BaseUtility> GetUtility() const override;
 
     private:
         void setupUBO();

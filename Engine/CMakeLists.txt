@@ -21,13 +21,15 @@ set(opengl_renderer_src
     openGLRenderer/Mesh.cpp
     openGLRenderer/shader.cpp
     openGLRenderer/buffers.cpp
+    openGLRenderer/openglutility.cpp
+    include/BaseUtility.hpp
+#    openGLRenderer/openGLUtility.cpp
 
 )
 
 add_library(shm-engine SHARED ${opengl_renderer_src} ${shm_src} )
 
 if (WIN32)
-    message("****" ${CMAKE_CURRENT_SOURCE_DIR}/include/GLFW/glfw3.lib)
     target_link_libraries(shm-engine "F:/project/SHM/Engine/include/GLFW/glfw3.lib")
     target_link_libraries(shm-engine "F:/project/SHM/Engine/include/assimp/assimp-vc142-mtd.lib")
     

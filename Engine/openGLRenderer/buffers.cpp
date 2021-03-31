@@ -48,5 +48,12 @@ namespace SHM{
             glBindBuffer(GL_UNIFORM_BUFFER, 0);
         }
 
+        void uploadSubDataToUBO(uint32_t buffer_index, float data, uint32_t offset)
+        {
+            glBindBuffer(GL_UNIFORM_BUFFER, buffer_index);
+            glBufferSubData(GL_UNIFORM_BUFFER, offset, 4, &data);
+            glBindBuffer(GL_UNIFORM_BUFFER, 0);
+        }
+
     }
 }

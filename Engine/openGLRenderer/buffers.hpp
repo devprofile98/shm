@@ -18,6 +18,8 @@ namespace SHM{
     void uploadSubDataToUBO(uint32_t buffer_index, const glm::vec4 &data, uint32_t offset=0, uint32_t size=0);
     void uploadSubDataToUBO(uint32_t buffer_index, const glm::mat4 &data, uint32_t offset=0);
     void uploadSubDataToUBO(uint32_t buffer_index, const glm::vec3 &data, uint32_t offset=0);
+    void uploadSubDataToUBO(uint32_t buffer_index, float data, uint32_t offset=0);
+
 
 
     }

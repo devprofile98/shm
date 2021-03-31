@@ -6,6 +6,8 @@
 #include "Core.hpp"
 #include "buffers.hpp"
 
+#include "BaseUtility.hpp"
+
 namespace SHM{
 
     class SHM_EXPORT BaseRenderer{
@@ -25,6 +27,8 @@ namespace SHM{
         virtual const glm::mat4& getProjectionMatrix() const=0;
         virtual const glm::mat4& getViewMatrix() const=0;
 
+//        virtual std::shared_ptr<BaseUtility> GetUtility() const=0;
+
         shader shader_program;
         uint32_t ubo_vp, ubo_lights;
 
@@ -32,6 +36,7 @@ namespace SHM{
         glm::mat4 m_model;
         glm::mat4 m_projection;
         glm::mat4 m_view;
+//        std::shared_ptr<BaseUtility> m_utils;
     private:
 
     };
