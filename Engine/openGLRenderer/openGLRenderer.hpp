@@ -2,27 +2,26 @@
 #define SHM_OPENGL_RENDERER_H
 
 #include "Core.hpp"
-#include <iostream>
-// #include <vector>
+#include "openglutility.hpp"
 #include "Model.hpp"
 #include "Camera.hpp"
+
+#include <iostream>
 #include <memory>
 #include <utility>
 #include <vector>
 
-#include "openglutility.hpp"
-
 
 namespace SHM{
 
-    struct Light{
-        glm::vec3 position;
-        glm::vec3 ambient;
-        glm::vec3 diffuse;
-    };
-
+//    struct Light{
+//        glm::vec3 position;
+//        glm::vec3 ambient;
+//        glm::vec3 diffuse;
+//    };
 
     class Camera;
+
     class SHM_EXPORT openGLRenderer : public BaseRenderer{
     public:
         openGLRenderer(){};
@@ -43,12 +42,13 @@ namespace SHM{
         const glm::mat4& getProjectionMatrix() const;
         const glm::mat4& getViewMatrix() const;
 
-//        std::shared_ptr<BaseUtility> GetUtility() const override;
+        std::shared_ptr<Utility> GetUtility() const override;
+        int getUboIndex(std::string ub_name) const override;
+
 
     private:
         void setupUBO();
         std::vector<Model> models;
-
 
         // ----------- tools --------- 
         // texture member;

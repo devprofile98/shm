@@ -12,16 +12,18 @@ namespace SHM{
             glBindBuffer(GL_UNIFORM_BUFFER, temp_buffer_id);
             glBufferData(GL_UNIFORM_BUFFER, buffer_size, nullptr, GL_STATIC_DRAW);
             glBindBuffer(GL_UNIFORM_BUFFER,0);
-            glBindBufferRange(GL_UNIFORM_BUFFER, shader::m_ub_pairs.size(), temp_buffer_id, 0, buffer_size);
+            shader::m_uniform_blocks[uniform_block_name] = temp_buffer_id;
+//            std::cout <<"XXX Value of temp buffer id"<< temp_buffer_id <<" with name "<< uniform_block_name<< " " << shader::m_ub_pairs.size() <<std::endl;
+            glBindBufferRange(GL_UNIFORM_BUFFER, shader::m_uniform_blocks[uniform_block_name] -1 , temp_buffer_id, 0, buffer_size);
             if (glGetError() == GL_INVALID_VALUE){
-                std::cout<<"binding point is out of specified target binding point range"<<std::endl;
+                std::cout<<"OPENGL::BUFFERS::NEWUBO::ERROR:: binding point is out of specified target binding point range"<<std::endl;
                 return -1;
             }
-            *binding_point_index = shader::m_ub_pairs.size();
+//            *binding_point_index = shader::m_ub_pairs.size();
 
             // add uniform block and corresponding binding point index to static Shader member variable
-            shader::m_ub_pairs.push_back(std::make_pair(uniform_block_name, (int)shader::m_ub_pairs.size()));
-            return temp_buffer_id;
+//            shader::m_ub_pairs.push_back(std::make_pair(uniform_block_name, (int)shader::m_ub_pairs.size()));
+            return shader::m_uniform_blocks[uniform_block_name];
         }
 
         // upload partial data to specified ubo

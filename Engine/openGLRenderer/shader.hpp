@@ -20,7 +20,7 @@
 #include <vector>
 #include <utility>
 #include <stdexcept>
-
+#include <unordered_map>
 
 class shader{
 
@@ -41,8 +41,7 @@ class shader{
         void setFloat(const char* uniform_name, float value) const ;
         void setInt(const char* uniform_name, int value) const;
         void setMat4(const std::string &name, const glm::mat4 &mat) const;
-        static std::vector<std::pair<std::string, int>> m_ub_pairs; // vector of pair<ub_name, binding_point> items
-
+        static std::unordered_map<std::string, int> m_uniform_blocks; // key value pair
 
 
     private:

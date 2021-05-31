@@ -1,5 +1,6 @@
 #include "Engine.hpp"
 #include "buffers.hpp"
+#include "Light.hpp"
 
 namespace SHM
 {
@@ -15,18 +16,12 @@ shader newShader{"F:/project/SHM/PlayGround/assets/vert.vs", "F:/project/SHM/Pla
 std::shared_ptr<shader> newShader2 = Engine::CreateShader("F:/project/SHM/PlayGround/assets/second/model_loading.vs", "F:/project/SHM/PlayGround/assets/second/model_loading.fs");
 std::shared_ptr<shader> newShader3 = Engine::CreateShader("F:/project/SHM/PlayGround/assets/second/model_loading.vs", "F:/project/SHM/PlayGround/assets/second/model_loading.fs");
 
-Light light{
-    glm::vec3(0.5,0.0,-2.0),
-    glm::vec3(0.01,0.0,0.4),
-    glm::vec3(-1.0,0.0,-2.0)
-};
-
 int ub_index;
 
 // TODO add Grid data and drawing completely into shader
 void createGrid(){
     // create vertex data for Grid
-//    model = glm::translate(model, glm::vec3(-1.0,-1.0,-4.0));
+    //    model = glm::translate(model, glm::vec3(-1.0,-1.0,-4.0));
     for(int i=0;i<40;i+=2){
         vertices.push_back(glm::vec3(-1.0f,-0.0,0.f + i/40.0f));
         vertices.push_back(glm::vec3(+1.0f,-0.0,0.f + i/40.0f));
@@ -165,18 +160,15 @@ void Engine::outLoop(){
     newShader.createProgram();
     int b{-1};
     ub_index=SHM::BUFFERS::createNewUBO("MyMat", sizeof(glm::vec4), &b);
-    if (ub_index == -1){
-        std::cout<< "cannot create new ubo"<<std::endl;
-    }
     std::cout<<"new binding point index is :"<<b<<std::endl;
     SHM::BUFFERS::uploadSubDataToUBO(ub_index, glm::vec4(0.0, 0.0,1.0,1.0));
     newShader2->createProgram();
     glm::mat4 model = glm::translate(glm::mat4{1.0}, glm::vec3(-3.0, -1.0, -1.0));
     model = glm::translate(model, glm::vec3(10.0, 10.0, 10.0));
-//    newShader2->setMat4("model", model);
+    //    newShader2->setMat4("model", model);
     newShader3->createProgram();
     uint32_t tower_id = Engine::getRenderer()->LoadModel("F:/project/SHM/Engine/assets/wooden watch tower23.obj", newShader2);
-    uint32_t gun_id = Engine::getRenderer()->LoadModel("F:/project/SHM/PlayGround/assets/second/Handgun_obj.obj", newShader3);
+    uint32_t gun_id = Engine::getRenderer()->LoadModel("F:/project/SHM/PlayGround/assets/second/untitled.obj", newShader3);
     newShader2->use();
     newShader2->setMat4("model", model);
     newShader2->useGlobalVariables();
@@ -202,28 +194,16 @@ void Engine::outLoop(){
                                      0.35f, 7*sizeof(glm::vec4) + 4);
     SHM::BUFFERS::uploadSubDataToUBO(Engine::getRenderer()->ubo_lights,
                                      0.44f, 7*sizeof(glm::vec4) + 8);
-    // Spot Light data to lighting UBO
-    SHM::BUFFERS::uploadSubDataToUBO(Engine::getRenderer()->ubo_lights,
-                                     glm::vec4(Engine::getCamera()->m_position, 0.0), 8*sizeof(glm::vec4));
-    SHM::BUFFERS::uploadSubDataToUBO(Engine::getRenderer()->ubo_lights,
-                                     glm::vec4(Engine::getCamera()->m_front, 0.0), 9*sizeof(glm::vec4));
-    SHM::BUFFERS::uploadSubDataToUBO(Engine::getRenderer()->ubo_lights,
-                                     glm::vec4(0.3,0.72 ,0.72, 0.0), 10*sizeof(glm::vec4));
-    SHM::BUFFERS::uploadSubDataToUBO(Engine::getRenderer()->ubo_lights,
-                                     glm::vec4(0.92, 0.55, 0.1, 0.0), 11*sizeof(glm::vec4));
-    SHM::BUFFERS::uploadSubDataToUBO(Engine::getRenderer()->ubo_lights,
-                                     glm::vec4(0.92, 0.55, 0.1, 0.0), 12*sizeof(glm::vec4));
 
-    SHM::BUFFERS::uploadSubDataToUBO(Engine::getRenderer()->ubo_lights,
-                                     1.0f, 13*sizeof(glm::vec4));
-    SHM::BUFFERS::uploadSubDataToUBO(Engine::getRenderer()->ubo_lights,
-                                     0.35f, 13*sizeof(glm::vec4) + 4);
-    SHM::BUFFERS::uploadSubDataToUBO(Engine::getRenderer()->ubo_lights,
-                                     0.44f, 13*sizeof(glm::vec4) + 8);
-    SHM::BUFFERS::uploadSubDataToUBO(Engine::getRenderer()->ubo_lights,
-                                     glm::cos(glm::radians(12.5f)), 13*sizeof(glm::vec4) + 12);
-    SHM::BUFFERS::uploadSubDataToUBO(Engine::getRenderer()->ubo_lights,
-                                     glm::cos(glm::radians(17.5f)), 14*sizeof(glm::vec4));
+
+
+    SpotLight sl{{0, -1, 0}, {0,0,0}};
+    SpotLight sl2{{0, -1, 0}, {-1,0,-1}};
+    SpotLight sl3{{0, -1, 0}, {-2,0,-1}};
+
+//    sl3.setDiffuse1({0.0f, 0.8f, 0.9f});
+
+
 
 
 }
@@ -253,12 +233,17 @@ void Engine::inLoop(){
     SHM::BUFFERS::uploadSubDataToUBO(Engine::getRenderer()->ubo_lights,
                                      glm::vec4(glm::sin(glfwGetTime()), 0.0, 1-glm::sin(glfwGetTime()),1.0), 5*sizeof(glm::vec4));
 
-    SHM::BUFFERS::uploadSubDataToUBO(Engine::getRenderer()->ubo_lights,
-                                     glm::vec4(Engine::getCamera()->m_position, 0.0), 8*sizeof(glm::vec4));
+//    SHM::BUFFERS::uploadSubDataToUBO(Engine::getRenderer()->ubo_lights,
+//                                     glm::vec4(Engine::getCamera()->m_position, 0.0), 8*sizeof(glm::vec4));
 
-    SHM::BUFFERS::uploadSubDataToUBO(Engine::getRenderer()->ubo_lights,
-                                     glm::vec4(Engine::getCamera()->m_front, 0.0), 9*sizeof(glm::vec4));
-   //m_renderer->shader_program.setFloat("iTime", glfwGetTime());
+//    SHM::BUFFERS::uploadSubDataToUBO(Engine::getRenderer()->ubo_lights,
+//                                     glm::vec4(Engine::getCamera()->m_front, 0.0), 9*sizeof(glm::vec4));
+
+//    Engine::getRenderer()->GetUtility()->uploadVec4(Engine::getRenderer()->ubo_lights,
+//                                                    glm::vec4(0.0, 1.0, 0.0, 0.0), 11*sizeof(glm::vec4), 0);
+
+    //m_renderer->shader_program.setFloat("iTime", glfwGetTime());
+//    std::cout<<Engine::getCamera()->m_front.x<<" "<< Engine::getCamera()->m_front.y <<" "<<Engine::getCamera()->m_front.z<<std::endl;
 
     drawCube();
 

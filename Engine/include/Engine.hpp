@@ -1,3 +1,6 @@
+#ifndef SHM_ENGINE_H
+#define SHM_ENGINE_H
+
 #define MAKE_SHM_LIB
 
 #include "Core.hpp"
@@ -31,8 +34,9 @@ namespace SHM
         // TODO remove it from here and add it to handler class
         void mouse(GLFWwindow* window, double xpos, double ypos);
         float last_x, last_y;
-        bool firstMouse=true;\
+        bool firstMouse=true;
 
+        bool InitWorld() const;
         void outLoop();
         void inLoop();
 
@@ -48,3 +52,4 @@ namespace SHM
     };
 
 }
+#endif //SHM_ENGINE_H

@@ -4,11 +4,11 @@ namespace SHM{
 
     Engine::Engine(const char* project_name, API_TYPE api_type){
         std::cout<<"START THE ENGINE"<<std::endl;
-//        m_renderer->GetUtility()->InitWorld();
         context_manager = new ContextManager{project_name};
         m_handler = new Handler{context_manager->GetWindow(), m_camera};
         setRenderer(api_type);
-
+        m_renderer->GetUtility()->InitWorld();
+        InitWorld();
         // uploading camera and view matrices to buffers
         SHM::BUFFERS::uploadSubDataToUBO(m_renderer->ubo_vp, m_renderer->getProjectionMatrix());
         SHM::BUFFERS::uploadSubDataToUBO(m_renderer->ubo_vp, m_renderer->getViewMatrix(), sizeof(glm::mat4));
@@ -117,6 +117,15 @@ namespace SHM{
         front.y = sin(glm::radians(m_camera->m_pitch));
         front.z = sin(glm::radians(m_camera->m_yaw)) * cos(glm::radians(m_camera->m_pitch));
         m_camera->m_front = glm::normalize(front);
+    }
+
+    bool Engine::InitWorld() const
+    {
+        int b{-2};
+        getRenderer()->ubo_vp = getRenderer()->GetUtility()->createNewGlobalBlock("VPMatrices", 2*sizeof(glm::mat4),&b);
+        getRenderer()->ubo_lights = getRenderer()->GetUtility()->createNewGlobalBlock("Lights", 16*4 + 16*3 + 16*5 + 4*4 + 5*4,&b);
+        getRenderer()->ubo_spots = getRenderer()->GetUtility()->createNewGlobalBlock("Spots", 12*(112),&b); //6*(sizeof(glm::vec4)) + sizeof(float)
+        return -23;
     }
     std::shared_ptr<BaseRenderer> Engine::m_renderer = nullptr;
     std::shared_ptr<Camera> Engine::m_camera{ new Camera{}};

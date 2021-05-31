@@ -96,11 +96,10 @@ void shader::use(){
 
 void shader::useGlobalVariables() const{
     int ub_index{-1};
-    for(auto& pair: m_ub_pairs){
+    for(auto& pair: m_uniform_blocks){
         ub_index = glGetUniformBlockIndex(this->ID, pair.first.c_str());
-        if (ub_index == -1)
-            std::cout<<"SHADER::BINDING_POINT::ERROR:: Try to bind an Empty shader object to a binding point for:"<< pair.first <<std::endl;
-        glUniformBlockBinding(this->ID, ub_index, pair.second);
+        std::cout<<"|--> SHADER::BINDING_POINT::ERROR:: Try to bind an Empty shader object to a binding point for:"<< pair.first <<" "<<pair.second <<std::endl;
+        glUniformBlockBinding(this->ID, ub_index, pair.second -1 );
     }
 }
 
@@ -127,4 +126,4 @@ void shader::setMat4(const std::string &name, const glm::mat4 &mat) const
     glUniformMatrix4fv(glGetUniformLocation(ID, name.c_str()), 1, GL_FALSE, &mat[0][0]);
 }
 
-std::vector<std::pair<std::string, int>> shader::m_ub_pairs;
+std::unordered_map<std::string, int> shader::m_uniform_blocks;

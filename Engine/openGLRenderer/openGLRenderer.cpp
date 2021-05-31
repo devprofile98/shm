@@ -5,13 +5,14 @@ namespace SHM{
 
     openGLRenderer::openGLRenderer(std::shared_ptr<Camera> camera)
     {
-//        m_utils = std::shared_ptr<openGLUtility>{new openGLUtility{}};
+        m_utils = std::shared_ptr<openGLUtility>{new openGLUtility{}};
         setModelMatrix(glm::mat4(1.0));
         setProjectonMatrix(glm::perspective(glm::radians(camera->m_fov),1920.0f/ 1080.0f, 0.01f, 100.0f));
         setViewMatrix(glm::lookAt(camera->m_position, camera->m_position + camera->m_front, camera->m_up));
         // add uniform blocks and binding points to shader class
-        shader::m_ub_pairs.push_back(std::make_pair(std::string{"VPMatrices"}, 0));
-        shader::m_ub_pairs.push_back(std::make_pair(std::string{"Lights"}, 1));
+//        shader::m_ub_pairs.push_back(std::make_pair(std::string{"VPMatrices"}, 0));
+
+//        shader::m_ub_pairs.push_back(std::make_pair(std::string{"Lights"}, 1));
         setupUBO();
     }
     // openGLRenderer::~openGLRenderer(){
@@ -70,8 +71,11 @@ namespace SHM{
     void openGLRenderer::setupUBO()
     {
         int b{-2};
-        ubo_vp = SHM::BUFFERS::createNewUBO(shader::m_ub_pairs[0].first, 2*sizeof(glm::mat4),&b);
-        ubo_lights = SHM::BUFFERS::createNewUBO(shader::m_ub_pairs[1].first, 16*4 + 16*3 + 16*5 + 4*4 + 5*4,&b);
+//        ubo_vp = SHM::BUFFERS::createNewUBO("VPMatrices", 2*sizeof(glm::mat4),&b);
+//        std::cout <<"From Renderer VPMatrices "<< ubo_vp << getUboIndex("VPMatrices")<<std::endl;
+//        ubo_lights = SHM::BUFFERS::createNewUBO("Lights", 16*4 + 16*3 + 16*5 + 4*4 + 5*4,&b);
+//        std::cout <<"From Renderer Lights "<< ubo_lights << getUboIndex("Lights")<<std::endl;
+
     }
 
     void openGLRenderer::setProjectonMatrix(const glm::mat4& matrix){
@@ -86,8 +90,13 @@ namespace SHM{
         m_model = matrix;
     }
 
-//    std::shared_ptr<BaseUtility> openGLRenderer::GetUtility() const{
-//        return m_utils;
-//    }
+    std::shared_ptr<Utility> openGLRenderer::GetUtility() const{
+        return m_utils;
+    }
+
+    int openGLRenderer::getUboIndex(std::string ub_name) const
+    {
+        return  shader::m_uniform_blocks[ub_name] -1;
+    }
 
 }

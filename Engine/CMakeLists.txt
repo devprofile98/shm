@@ -12,6 +12,7 @@ set(shm_src
     source/context_manager.cpp
     source/Handler.cpp
     source/Camera.cpp
+    source/Light.cpp
 
 )
 
@@ -22,8 +23,6 @@ set(opengl_renderer_src
     openGLRenderer/shader.cpp
     openGLRenderer/buffers.cpp
     openGLRenderer/openglutility.cpp
-    include/BaseUtility.hpp
-#    openGLRenderer/openGLUtility.cpp
 
 )
 
