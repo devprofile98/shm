@@ -17,11 +17,17 @@ namespace SHM {
             void setSpecular(const Color& color);
             void setDiffuse(const Color& color);
 
+            virtual void ambientChanged()=0;
+            virtual void specularChanged()=0;
+            virtual void diffuseChanged()=0;
+
         protected:
             Color m_ambient;
             Color m_specular;
             Color m_diffuse;
             uint32_t light_index;
+
+            uint32_t memory_offset = 0;
         };
 
     // represent a Directional light
@@ -31,6 +37,10 @@ namespace SHM {
         DirectionalLight(const Vector3& direction);
         ~DirectionalLight();
         Vector3 direction;
+
+        void ambientChanged() override;
+        void diffuseChanged() override;
+        void specularChanged() override;
     };
 
     // represent a Point Light
@@ -40,16 +50,31 @@ namespace SHM {
         PointLight(const Vector3& position);
         ~PointLight();
         Vector3 position;
+
+        void ambientChanged() override;
+        void diffuseChanged() override;
+        void specularChanged() override;
     };
 
     // represent a Spot Light
 
     class SpotLight: public Light{
     public:
-        SpotLight(const Vector3& direction, const Vector3& position);
+//        SpotLight(const Vector3& direction, const Vector3& position);
+        SpotLight(
+                const Vector3& direction,
+                const Vector3& position,
+                const Color& diffuse = {1.0f, 0.0f,0.0f},
+                const Color& specular = {0.92, 0.55, 0.1},
+                const Color& ambient = {0.72f,0.72f ,0.72f}
+                );
         ~SpotLight();
         Vector3 direction, position;
         void setDiffuse1(const Color& color);
+
+        void ambientChanged() override;
+        void diffuseChanged() override;
+        void specularChanged() override;
 
          enum class member_offset{
             position = 0,

@@ -198,13 +198,9 @@ void Engine::outLoop(){
 
 
     SpotLight sl{{0, -1, 0}, {0,0,0}};
-    SpotLight sl2{{0, -1, 0}, {-1,0,-1}};
-    SpotLight sl3{{0, -1, 0}, {-2,0,-1}};
-
-//    sl3.setDiffuse1({0.0f, 0.8f, 0.9f});
-
-
-
+    sl.setDiffuse({0.0f, 0.0f, 1.0f});
+    SpotLight sl2{{0, -1, 0}, {-1,1,-1},{0.0f, 1.0f, 0.0f}};
+    SpotLight sl3{{0, -1, 0}, {-2,-0.5,-1}};
 
 }
 

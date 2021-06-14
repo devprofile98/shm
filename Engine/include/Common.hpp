@@ -13,11 +13,11 @@ namespace SHM {
         Color(float red, float green, float blue):r(red), g(green), b(blue)
         {
             normalize();
-//            std::cout << "normalized colors are"
+            std::cout << "normalized colors are" << r<<" "<< g<<" " <<b<<std::endl;
         }
         float r, g, b;
 
-        // call this function if values are in range 0-255
+        // call normalize function if values are in range 0-255
         void normalize(){
             if (r >1 || g>1 || b>1){
                 r = r/255.0f;
