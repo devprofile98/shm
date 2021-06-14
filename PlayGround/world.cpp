@@ -181,20 +181,8 @@ void Engine::outLoop(){
                                      glm::vec3(0.0, 2.0,0.0), sizeof(glm::vec4));
 
     // Point Light data to Lighting UBO
-    SHM::BUFFERS::uploadSubDataToUBO(Engine::getRenderer()->ubo_lights,
-                                     glm::vec4(-1.0, -1.0,3, 0.0), 4*sizeof(glm::vec4));
-    SHM::BUFFERS::uploadSubDataToUBO(Engine::getRenderer()->ubo_lights,
-                                     glm::vec4(0.3,0.72 ,0.72, 0.0), 5*sizeof(glm::vec4));
-    SHM::BUFFERS::uploadSubDataToUBO(Engine::getRenderer()->ubo_lights,
-                                     glm::vec4(0.3,0.72 ,0.72, 0.0), 6*sizeof(glm::vec4));
-
-    SHM::BUFFERS::uploadSubDataToUBO(Engine::getRenderer()->ubo_lights,
-                                     1.0f, 7*sizeof(glm::vec4));
-    SHM::BUFFERS::uploadSubDataToUBO(Engine::getRenderer()->ubo_lights,
-                                     0.35f, 7*sizeof(glm::vec4) + 4);
-    SHM::BUFFERS::uploadSubDataToUBO(Engine::getRenderer()->ubo_lights,
-                                     0.44f, 7*sizeof(glm::vec4) + 8);
-
+    PointLight pl{{-2,-0.7,3}, {1.0, 1.0, 0.0}};
+    PointLight pl2{{1,-0.7,5}, {1.0f, 0.0f, 1.0f}};
 
 
     SpotLight sl{{0, -1, 0}, {0,0,0}};
@@ -225,21 +213,6 @@ void Engine::inLoop(){
     SHM::BUFFERS::uploadSubDataToUBO(
                 Engine::getRenderer()->ubo_lights,
                 glm::vec3(glm::sin(glfwGetTime()), glm::cos(glfwGetTime()),-2.0));
-
-    SHM::BUFFERS::uploadSubDataToUBO(Engine::getRenderer()->ubo_lights,
-                                     glm::vec4(glm::sin(glfwGetTime()), 0.0, 1-glm::sin(glfwGetTime()),1.0), 5*sizeof(glm::vec4));
-
-//    SHM::BUFFERS::uploadSubDataToUBO(Engine::getRenderer()->ubo_lights,
-//                                     glm::vec4(Engine::getCamera()->m_position, 0.0), 8*sizeof(glm::vec4));
-
-//    SHM::BUFFERS::uploadSubDataToUBO(Engine::getRenderer()->ubo_lights,
-//                                     glm::vec4(Engine::getCamera()->m_front, 0.0), 9*sizeof(glm::vec4));
-
-//    Engine::getRenderer()->GetUtility()->uploadVec4(Engine::getRenderer()->ubo_lights,
-//                                                    glm::vec4(0.0, 1.0, 0.0, 0.0), 11*sizeof(glm::vec4), 0);
-
-    //m_renderer->shader_program.setFloat("iTime", glfwGetTime());
-//    std::cout<<Engine::getCamera()->m_front.x<<" "<< Engine::getCamera()->m_front.y <<" "<<Engine::getCamera()->m_front.z<<std::endl;
 
     drawCube();
 

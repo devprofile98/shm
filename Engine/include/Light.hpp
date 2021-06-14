@@ -7,7 +7,9 @@
 
 namespace SHM {
 
+
     // base class for all type of Ligth
+    // -----------------------------------------------------------
     class Light{
         public:
             Light();
@@ -30,7 +32,10 @@ namespace SHM {
             uint32_t memory_offset = 0;
         };
 
+
+    //
     // represent a Directional light
+    // -----------------------------------------------------------
     class DirectionalLight: public Light{
         public:
         DirectionalLight(float x=0, float y=0, float z=0);
@@ -43,24 +48,43 @@ namespace SHM {
         void specularChanged() override;
     };
 
+
     // represent a Point Light
+    // -----------------------------------------------------------
     class PointLight: public Light{
     public:
         PointLight(float x=0, float y=0, float z=0);
-        PointLight(const Vector3& position);
+        PointLight(
+                const Vector3& position,
+                const Color& diffuse = {1.0f, 0.0f,0.0f},
+                const Color& specular = {0.92, 0.55, 0.1},
+                const Color& ambient = {0.72f,0.72f ,0.72f}
+                );
         ~PointLight();
         Vector3 position;
 
         void ambientChanged() override;
         void diffuseChanged() override;
         void specularChanged() override;
+    private:
+         static std::vector<PointLight> pointlight_lists;
+
+         enum class member_offset{
+             position = 0,
+
+             ambient = 16,
+             diffuse = 32,
+             specular = 48,
+
+             properties = 64
+         };
     };
 
-    // represent a Spot Light
 
+    // represent a Spot Light
+    // -----------------------------------------------------------
     class SpotLight: public Light{
     public:
-//        SpotLight(const Vector3& direction, const Vector3& position);
         SpotLight(
                 const Vector3& direction,
                 const Vector3& position,

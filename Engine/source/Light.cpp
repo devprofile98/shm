@@ -64,9 +64,54 @@ namespace SHM {
 
     }
 
-    PointLight::PointLight(const Vector3 &position):
+    PointLight::PointLight(const Vector3 &position, const Color& diffuse,const Color& specular, const Color& ambient):
         position(position)
     {
+        if (pointlight_lists.size() > 12){
+            std::cout << "Lights are full"<<std::endl;
+            return;
+        }
+        memory_offset = pointlight_lists.size() * (5*sizeof (glm::vec4)) + (4*sizeof (glm::vec4));
+        setAmbient(ambient); //Color(0.72f,0.72f ,0.72f)
+        setDiffuse(diffuse); //Color(0.92, 0.0, 0.0)
+        setSpecular(specular);
+        std::cout<<"in point light class -------"<<std::endl;
+
+        Engine::getRenderer()->GetUtility()->uploadVec4(
+                    Engine::getRenderer()->ubo_lights,
+                    glm::vec4(position.x, position.y, position.z, 0.0f),
+                    memory_offset + int(member_offset::position),
+                    sizeof(glm::vec4)
+                    );
+
+        Engine::getRenderer()->GetUtility()->uploadVec4(
+                    Engine::getRenderer()->ubo_lights,
+                    glm::vec4(m_ambient.r, m_ambient.g, m_ambient.b, 0.0f),
+                    memory_offset + int(member_offset::ambient),
+                    sizeof(glm::vec4)
+                    );
+
+        Engine::getRenderer()->GetUtility()->uploadVec4(
+                    Engine::getRenderer()->ubo_lights,
+                    glm::vec4(m_diffuse.r, m_diffuse.g, m_diffuse.b, 0.0f),
+                    memory_offset + int(member_offset::diffuse),
+                    sizeof(glm::vec4)
+                    );
+
+        Engine::getRenderer()->GetUtility()->uploadVec4(
+                    Engine::getRenderer()->ubo_lights,
+                    glm::vec4(m_specular.r, m_specular.g, m_specular.b, 0.0f),
+                    memory_offset + int(member_offset::specular),
+                    sizeof(glm::vec4)
+                    );
+
+        Engine::getRenderer()->GetUtility()->uploadVec4(
+                    Engine::getRenderer()->ubo_lights,
+                    glm::vec4(1.0f, 0.35f, 0.44f, 0.0f),
+                    memory_offset + int(member_offset::properties),
+                    sizeof(glm::vec4)
+                    );
+        pointlight_lists.push_back(*this);
 
     }
 
@@ -89,6 +134,7 @@ namespace SHM {
     {
 
     }
+    std::vector<PointLight> PointLight::pointlight_lists;
 
     SpotLight::SpotLight(const Vector3 &direction, const Vector3 &position, const Color& diffuse, const Color& specular, const Color& ambient ):
         direction(direction), position(position)
