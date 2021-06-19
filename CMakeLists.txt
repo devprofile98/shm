@@ -10,9 +10,10 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
 add_subdirectory(Engine)
+add_subdirectory(shm-physics)
 add_executable(playground PlayGround/main.cpp)
-target_include_directories(playground PUBLIC Engine/include/ Engine/openGLRenderer/)
-target_link_libraries(playground shm-engine)
+target_include_directories(playground PUBLIC Engine/include/ Engine/openGLRenderer/ shm-physics/include/cyclon/)
+
 
 if (WIN32)
 	target_link_libraries(playground "F:/project/SHM/Engine/include/GLFW/glfw3.lib")
@@ -23,3 +24,4 @@ elseif(UNIX)
 	target_link_libraries(playground glfw3)
 	target_link_libraries(playground assimp)
 endif()
+target_link_libraries(playground shm-engine)

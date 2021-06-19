@@ -15,6 +15,7 @@ glm::mat4 model = glm::mat4(1.0f);
 shader newShader{"F:/project/SHM/PlayGround/assets/vert.vs", "F:/project/SHM/PlayGround/assets/frag.fs"};
 std::shared_ptr<shader> newShader2 = Engine::CreateShader("F:/project/SHM/PlayGround/assets/second/model_loading.vs", "F:/project/SHM/PlayGround/assets/second/model_loading.fs");
 std::shared_ptr<shader> newShader3 = Engine::CreateShader("F:/project/SHM/PlayGround/assets/second/model_loading.vs", "F:/project/SHM/PlayGround/assets/second/model_loading.fs");
+std::shared_ptr<shader> newShader4 = Engine::CreateShader("F:/project/SHM/PlayGround/assets/second/model_loading.vs", "F:/project/SHM/PlayGround/assets/second/model_loading.fs");
 
 int ub_index;
 
@@ -163,15 +164,29 @@ void Engine::outLoop(){
     std::cout<<"new binding point index is :"<<b<<std::endl;
     SHM::BUFFERS::uploadSubDataToUBO(ub_index, glm::vec4(0.0, 0.0,1.0,1.0));
     newShader2->createProgram();
+
     glm::mat4 model = glm::translate(glm::mat4{1.0}, glm::vec3(-3.0, -1.0, -1.0));
     model = glm::translate(model, glm::vec3(10.0, 10.0, 10.0));
     //    newShader2->setMat4("model", model);
+    newShader4->createProgram();
+    newShader4->use();
+    newShader4->setMat4("model", model);
+    newShader4->useGlobalVariables();
+    uint32_t ball = Engine::getRenderer()->LoadModel("F:/project/SHM/PlayGround/assets/second/ball.obj", newShader4);
+
+    Engine::getRenderer()->changePosition(ball, glm::vec3{-3, -0.4, -1});
+    Engine::getRenderer()->changeScale(ball, glm::vec3{0.02, 0.02, 0.02});
+
     newShader3->createProgram();
-    uint32_t tower_id = Engine::getRenderer()->LoadModel("F:/project/SHM/Engine/assets/wooden watch tower23.obj", newShader2);
-    uint32_t gun_id = Engine::getRenderer()->LoadModel("F:/project/SHM/PlayGround/assets/second/untitled.obj", newShader3);
+    Engine::getRenderer()->LoadModel("F:/project/SHM/Engine/assets/wooden watch tower23.obj", newShader2);
+    Engine::getRenderer()->LoadModel("F:/project/SHM/PlayGround/assets/second/untitled.obj", newShader3);
+
     newShader2->use();
     newShader2->setMat4("model", model);
     newShader2->useGlobalVariables();
+
+
+
     newShader.useGlobalVariables();
     newShader3->useGlobalVariables();
 
@@ -189,6 +204,10 @@ void Engine::outLoop(){
     sl.setDiffuse({0.0f, 0.0f, 1.0f});
     SpotLight sl2{{0, -1, 0}, {-1,1,-1},{0.0f, 1.0f, 0.0f}};
     SpotLight sl3{{0, -1, 0}, {-2,-0.5,-1}};
+
+    Engine::getRenderer()->changePosition(ball, glm::vec3{-3, -0.4, -1});
+    std::cout<< "SSSSSSSSSSSSSSSSSSSSSSSSS " << ball<<std::endl;
+
 
 }
 
@@ -209,6 +228,14 @@ void Engine::inLoop(){
     model2 = glm::scale(model2, glm::vec3(0.3, 0.3, 0.3));
     newShader3->use();
     newShader3->setMat4("model", model2);
+
+    glm::mat4 model4{1.0};
+    model4 = glm::translate(model4, glm::vec3(0, 0,-0.4));
+    model4 = glm::scale(model4, glm::vec3(0.03, 0.03, 0.03));
+    newShader4->use();
+    newShader4->setMat4("model", model4);
+
+
 
     SHM::BUFFERS::uploadSubDataToUBO(
                 Engine::getRenderer()->ubo_lights,

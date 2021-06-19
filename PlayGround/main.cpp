@@ -5,13 +5,15 @@
 #include <memory>
 #include <glad/glad.h>
 
+#include "particle.hpp"
+
 
 int main(){
 
     // SHM::Engine *engine = new SHM::Engine{"PlayGround",SHM::OPENGL};
     {
         std::unique_ptr<SHM::Engine> engine{new SHM::Engine{"PlayGround", SHM::OPENGL}}; // create an instance of Engine
-
+        cyclon::Vector3 a {1,2,4};
         //load Fragment Shader and Vertex-shader
 //        engine->getRenderer()->LoadShaders(
 //                    "F:/project/SHM/Engine/assets/model_loading.vs",
