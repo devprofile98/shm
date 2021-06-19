@@ -1,0 +1,3 @@
+[submodule "shm-physics"]
+	path = shm-physics
+	url = https://github.com/devprofile98/shm-physics.git
