@@ -26,7 +26,12 @@ set(opengl_renderer_src
 
 )
 
-add_library(shm-engine SHARED ${opengl_renderer_src} ${shm_src} )
+set(cyclon_src
+    ../shm-physics/src/particle.cpp
+
+)
+
+add_library(shm-engine SHARED ${opengl_renderer_src} ${shm_src} ${cyclon_src} )
 
 if (WIN32)
     target_link_libraries(shm-engine "F:/project/SHM/Engine/include/GLFW/glfw3.lib")
@@ -38,4 +43,4 @@ elseif(UNIX)
 endif()
 
 target_include_directories(shm-engine PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/openGLRenderer/)
-target_include_directories(shm-engine PUBLIC include/)
+target_include_directories(shm-engine PUBLIC include/ ../shm-physics/include/cyclon/)
