@@ -46,19 +46,62 @@ unsigned int TextureFromFile(const char *path, const std::string &directory, boo
 
 Model::Model(const char *path, std::shared_ptr<shader> sh ): shader_program(sh)
 {
+    if (shader_program == nullptr) return;
     loadModel(path);
     std::cout<<"LOADING MODEL COMPLETED"<<std::endl;
+    m_position = glm::vec3{0,0,0};
+    m_scale = glm::vec3{1.0f};
+    m_rotation = glm::vec3{0.0f, 1.0f, 0.0f};
 }
 
 void Model::Draw(){
+
     for(uint32_t i = 0; i<meshes.size();i++){
         meshes[i].Draw(shader_program);
     }
+    glm::mat4 model{1.0f};
+    model = glm::translate(model, m_position);
+    model = glm::scale(model, m_scale);
+    model = glm::rotate(model, glm::radians(45.0f), m_rotation);
+
+    shader_program->use();
+    shader_program->setMat4("model", model);
 }
 
 std::shared_ptr<shader> Model::getShader()
 {
     return shader_program;
+}
+
+void Model::setPosition(const glm::vec3 &pos)
+{
+    this->m_position = pos;
+}
+
+void Model::setScale(const glm::vec3 &scale)
+{
+    this->m_scale = scale;
+    std::cout << m_scale.x << m_scale.y <<m_scale.z<<std::endl;
+}
+
+void Model::setRotation(const glm::vec3 &rot)
+{
+    this->m_rotation = rot;
+}
+
+const glm::vec3 *Model::getPosition() const
+{
+    return &m_position;
+}
+
+const glm::vec3 *Model::getScale() const
+{
+    return &m_scale;
+}
+
+const glm::vec3 *Model::getRotation() const
+{
+    return &m_rotation;
 }
 
 void Model::loadModel(std::string path){

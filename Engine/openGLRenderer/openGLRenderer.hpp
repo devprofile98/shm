@@ -29,7 +29,8 @@ namespace SHM{
         ~openGLRenderer(){};
         void Draw() override;
 
-        uint32_t LoadModel(const char* filepath, std::shared_ptr<shader> shader) override;
+        Model LoadModel(const char* filepath, std::shared_ptr<shader> shader) override;
+
         // Deprecated function
         void LoadShaders(const char* vs_path, const char* fs_path) override;
         void changePosition(uint32_t object_id, const glm::vec3& vec) override;

@@ -3,7 +3,7 @@
 #include "Engine.hpp"
 #include "buffers.hpp"
 #include "Light.hpp"
-#include "particle.hpp"
+#include "physics.hpp"
 
 
 
@@ -170,9 +170,9 @@ void Engine::outLoop(){
     // createGrid();
     newShader.createProgram();
     int b{-1};
-    ub_index=SHM::BUFFERS::createNewUBO("MyMat", sizeof(glm::vec4), &b);
-    std::cout<<"new binding point index is :"<<b<<std::endl;
-    SHM::BUFFERS::uploadSubDataToUBO(ub_index, glm::vec4(0.0, 0.0,1.0,1.0));
+//    ub_index=SHM::BUFFERS::createNewUBO("MyMat", sizeof(glm::vec4), &b);
+//    std::cout<<"new binding point index is :"<<b<<std::endl;
+//    SHM::BUFFERS::uploadSubDataToUBO(ub_index, glm::vec4(0.0, 0.0,1.0,1.0));
     newShader2->createProgram();
 
     glm::mat4 model = glm::translate(glm::mat4{1.0}, glm::vec3(-3.0, -1.0, -1.0));
@@ -202,8 +202,8 @@ void Engine::outLoop(){
 
     createCube();
 
-    SHM::BUFFERS::uploadSubDataToUBO(Engine::getRenderer()->ubo_lights,
-                                     glm::vec3(0.0, 2.0,0.0), sizeof(glm::vec4));
+//    SHM::BUFFERS::uploadSubDataToUBO(Engine::getRenderer()->ubo_lights,
+//                                     glm::vec3(0.0, 2.0,0.0), sizeof(glm::vec4));
 
     // Point Light data to Lighting UBO
     PointLight pl{{-2,-0.7,3}, {1.0, 1.0, 0.0}};
@@ -232,8 +232,8 @@ void Engine::inLoop(){
     //    DrawGrids();
     Engine::getRenderer()->changeScale(0, glm::vec3(0.1, 0.1, 0.1));
 
-    SHM::BUFFERS::uploadSubDataToUBO(Engine::getRenderer()->ubo_vp, Engine::getRenderer()->getViewMatrix(), sizeof(glm::mat4));
-    SHM::BUFFERS::uploadSubDataToUBO(ub_index, glm::vec4(glm::sin(glfwGetTime()), 0.0, 1-glm::sin(glfwGetTime()),1.0));
+//    SHM::BUFFERS::uploadSubDataToUBO(Engine::getRenderer()->ubo_vp, Engine::getRenderer()->getViewMatrix(), sizeof(glm::mat4));
+//    SHM::BUFFERS::uploadSubDataToUBO(ub_index, glm::vec4(glm::sin(glfwGetTime()), 0.0, 1-glm::sin(glfwGetTime()),1.0));
     glm::mat4 model{1.0};
     model = glm::translate(model, glm::vec3(-1.0, -1.0, -1.0));
     model = glm::scale(model, glm::vec3(0.1, 0.1, 0.1));
