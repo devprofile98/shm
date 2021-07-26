@@ -14,7 +14,7 @@ in source directory run below command
 
 > cmake ..
 
-> make
+> make or (on windows) use cmake --build . or your make tool
 
 an executable file "playground" is generated, run it with 
 > ./playground
