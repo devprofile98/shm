@@ -26,7 +26,7 @@ public:
     void Draw();
     std::vector<Texture> textures_loaded; 
     std::vector<Mesh> meshes;
-    std::shared_ptr<shader> getShader() ;
+    std::shared_ptr<shader> getShader();
 
     void setPosition(const glm::vec3& pos);
     void setScale(const glm::vec3& scale);

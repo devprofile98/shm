@@ -46,7 +46,7 @@ unsigned int TextureFromFile(const char *path, const std::string &directory, boo
 
 Model::Model(const char *path, std::shared_ptr<shader> sh ): shader_program(sh)
 {
-    if (shader_program == nullptr) return;
+    if (shader_program.get() == nullptr) return;
     loadModel(path);
     std::cout<<"LOADING MODEL COMPLETED"<<std::endl;
     m_position = glm::vec3{0,0,0};

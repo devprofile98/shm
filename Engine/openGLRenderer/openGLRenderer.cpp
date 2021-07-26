@@ -25,11 +25,11 @@ namespace SHM{
         }
     }
 
-    Model openGLRenderer::LoadModel(const char* filepath, std::shared_ptr<shader> shader){
+    Model* openGLRenderer::LoadModel(const char* filepath, std::shared_ptr<shader> shader){
         uint32_t temp = models.size();
         Model model{filepath, shader};
         models.push_back(model);
-        return model;
+        return &models.at(temp);
     }
 
     void openGLRenderer::LoadShaders(const char* vs_path, const char* fs_path)
