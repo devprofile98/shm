@@ -7,7 +7,7 @@ My 3D Engine
 * install glfw3
 > sudo apt install libglfw3 libglfw3-dev
 
-## Build source
+## Build from source
 in source directory run below command
 
 > mkdir build && cd build
