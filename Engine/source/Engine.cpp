@@ -59,24 +59,22 @@ namespace SHM{
 
 
         // TODO fix memory leak here
-        if (glfwGetKey(context_manager->GetWindow(), GLFW_KEY_P) == GLFW_PRESS){
-            m_renderer->LoadShaders(
-                    "F:/project/SHM/Engine/assets/model_loading.vs",
-                    "F:/project/SHM/Engine/assets/model_loading.fs"
-                     );
-        }
+//        if (glfwGetKey(context_manager->GetWindow(), GLFW_KEY_P) == GLFW_PRESS){
+//            m_renderer->LoadShaders(
+//                    "F:/project/SHM/Engine/assets/model_loading.vs",
+//                    "F:/project/SHM/Engine/assets/model_loading.fs"
+//                     );
+//        }
         context_manager->processInput();
 //        m_renderer->shader_program.use();
-        m_renderer->Draw();
+        SHM::BUFFERS::uploadSubDataToUBO(Engine::getRenderer()->ubo_vp, Engine::getRenderer()->getViewMatrix(), sizeof(glm::mat4));
 
         m_renderer->setViewMatrix(glm::lookAt(m_camera->m_position, m_camera->m_position + m_camera->m_front, m_camera->m_up));
-        m_renderer->setModelMatrix(glm::translate(m_renderer->getModelMatrix(), glm::vec3(2.0f, 2.0f, 2.0f)));
-        m_renderer->setModelMatrix(glm::scale(m_renderer->getModelMatrix(), glm::vec3(1.0f, 1.0f, 1.0f)));
-        m_renderer->setModelMatrix(glm::rotate(m_renderer->getModelMatrix(), glm::radians(45.0f), glm::vec3(1.0,0.0,0.0)));
         SHM::BUFFERS::uploadSubDataToUBO(m_renderer->ubo_lights, m_camera->m_position, 3*sizeof(glm::vec4));
 
         // drawing user defined objects
         inLoop();
+        m_renderer->Draw();
 
         m_handler->keyboard(context_manager->GetWindow());
         glfwSwapBuffers(context_manager->GetWindow());

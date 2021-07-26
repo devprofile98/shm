@@ -26,13 +26,21 @@ public:
     void Draw();
     std::vector<Texture> textures_loaded; 
     std::vector<Mesh> meshes;
-    std::shared_ptr<shader> getShader() ;
+    std::shared_ptr<shader> getShader();
 
+    void setPosition(const glm::vec3& pos);
+    void setScale(const glm::vec3& scale);
+    void setRotation(const glm::vec3& rot);
+
+    const glm::vec3 *getPosition() const;
+    const glm::vec3 *getScale() const;
+    const glm::vec3 *getRotation() const;
 
 private:
     std::string directory;
     std::shared_ptr<shader> shader_program;
     void loadModel(std::string path);
+    glm::vec3 m_position, m_rotation, m_scale;
     void processNode(aiNode *node, const aiScene *scene);
     Mesh processMesh(aiMesh *mesh, const aiScene *scene);
     std::vector<Texture> loadMaterialTexture(aiMaterial *mat, aiTextureType type, std::string typeName);

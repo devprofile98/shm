@@ -1,6 +1,11 @@
+#include <chrono>
+
 #include "Engine.hpp"
 #include "buffers.hpp"
 #include "Light.hpp"
+#include "physics.hpp"
+
+
 
 namespace SHM
 {
@@ -18,6 +23,11 @@ std::shared_ptr<shader> newShader3 = Engine::CreateShader("F:/project/SHM/PlayGr
 std::shared_ptr<shader> newShader4 = Engine::CreateShader("F:/project/SHM/PlayGround/assets/second/model_loading.vs", "F:/project/SHM/PlayGround/assets/second/model_loading.fs");
 
 int ub_index;
+
+cyclon::Particle p1{};
+auto now = std::chrono::high_resolution_clock::now();
+
+
 
 // TODO add Grid data and drawing completely into shader
 void createGrid(){
@@ -160,9 +170,9 @@ void Engine::outLoop(){
     // createGrid();
     newShader.createProgram();
     int b{-1};
-    ub_index=SHM::BUFFERS::createNewUBO("MyMat", sizeof(glm::vec4), &b);
-    std::cout<<"new binding point index is :"<<b<<std::endl;
-    SHM::BUFFERS::uploadSubDataToUBO(ub_index, glm::vec4(0.0, 0.0,1.0,1.0));
+//    ub_index=SHM::BUFFERS::createNewUBO("MyMat", sizeof(glm::vec4), &b);
+//    std::cout<<"new binding point index is :"<<b<<std::endl;
+//    SHM::BUFFERS::uploadSubDataToUBO(ub_index, glm::vec4(0.0, 0.0,1.0,1.0));
     newShader2->createProgram();
 
     glm::mat4 model = glm::translate(glm::mat4{1.0}, glm::vec3(-3.0, -1.0, -1.0));
@@ -192,8 +202,8 @@ void Engine::outLoop(){
 
     createCube();
 
-    SHM::BUFFERS::uploadSubDataToUBO(Engine::getRenderer()->ubo_lights,
-                                     glm::vec3(0.0, 2.0,0.0), sizeof(glm::vec4));
+//    SHM::BUFFERS::uploadSubDataToUBO(Engine::getRenderer()->ubo_lights,
+//                                     glm::vec3(0.0, 2.0,0.0), sizeof(glm::vec4));
 
     // Point Light data to Lighting UBO
     PointLight pl{{-2,-0.7,3}, {1.0, 1.0, 0.0}};
@@ -208,6 +218,12 @@ void Engine::outLoop(){
     Engine::getRenderer()->changePosition(ball, glm::vec3{-3, -0.4, -1});
     std::cout<< "SSSSSSSSSSSSSSSSSSSSSSSSS " << ball<<std::endl;
 
+    p1.inverseMass = ((cyclon::real)1.0)/2.0f;
+    p1.velocity = cyclon::Vector3{0.0f, 3.0f, 0.3f};
+    p1.acceleration = cyclon::Vector3{0.0f, -1.0f, 0.0f};
+    p1.damping = 0.99f;
+    p1.position = cyclon::Vector3{0, 0,-0.4};
+
 
 }
 
@@ -216,8 +232,8 @@ void Engine::inLoop(){
     //    DrawGrids();
     Engine::getRenderer()->changeScale(0, glm::vec3(0.1, 0.1, 0.1));
 
-    SHM::BUFFERS::uploadSubDataToUBO(Engine::getRenderer()->ubo_vp, Engine::getRenderer()->getViewMatrix(), sizeof(glm::mat4));
-    SHM::BUFFERS::uploadSubDataToUBO(ub_index, glm::vec4(glm::sin(glfwGetTime()), 0.0, 1-glm::sin(glfwGetTime()),1.0));
+//    SHM::BUFFERS::uploadSubDataToUBO(Engine::getRenderer()->ubo_vp, Engine::getRenderer()->getViewMatrix(), sizeof(glm::mat4));
+//    SHM::BUFFERS::uploadSubDataToUBO(ub_index, glm::vec4(glm::sin(glfwGetTime()), 0.0, 1-glm::sin(glfwGetTime()),1.0));
     glm::mat4 model{1.0};
     model = glm::translate(model, glm::vec3(-1.0, -1.0, -1.0));
     model = glm::scale(model, glm::vec3(0.1, 0.1, 0.1));
@@ -229,12 +245,27 @@ void Engine::inLoop(){
     newShader3->use();
     newShader3->setMat4("model", model2);
 
+
     glm::mat4 model4{1.0};
-    model4 = glm::translate(model4, glm::vec3(0, 0,-0.4));
+//    model4 = glm::translate(model4, glm::vec3(0, 0,-0.4));
+    model4 = glm::translate(model4, glm::vec3(
+                                p1.position.x,
+                                p1.position.y,
+                                p1.position.z
+                                ));
     model4 = glm::scale(model4, glm::vec3(0.03, 0.03, 0.03));
     newShader4->use();
     newShader4->setMat4("model", model4);
+    cyclon::real duration = std::chrono::duration_cast<std::chrono::milliseconds>(
+                std::chrono::high_resolution_clock::now() - now)
+                .count();
+//    std::cout << p1.position.x << " "<< p1.position.y << " "<<duration<<std::endl;
+    if (std::chrono::duration_cast<std::chrono::seconds>(
+                std::chrono::high_resolution_clock::now() - now)
+                .count() > 20)
+        p1.integrate(0.0016f);
 
+//    std::cout << p1.position.x << " "<< p1.position.y << " "<<p1.position.z<<std::endl;
 
 
     SHM::BUFFERS::uploadSubDataToUBO(

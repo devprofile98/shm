@@ -7,6 +7,7 @@
 #include "Utility.hpp"
 #include "Core.hpp"
 #include "buffers.hpp"
+#include "Model.hpp"
 
 
 namespace SHM{
@@ -16,7 +17,7 @@ namespace SHM{
         BaseRenderer(){};
         virtual ~BaseRenderer(){};
         virtual void Draw()=0;
-        virtual uint32_t LoadModel(const char* filepath, std::shared_ptr<shader> shader)=0;
+        virtual Model* LoadModel(const char* filepath, std::shared_ptr<shader> shader)=0;
         virtual void LoadShaders(const char* vs_path, const char* fs_path)=0;
         virtual void changePosition(uint32_t object_id,const glm::vec3& vec)=0;
         virtual void changeScale(uint32_t object_id, const glm::vec3& vec)=0;

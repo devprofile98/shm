@@ -6,7 +6,8 @@ set (CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
 
 set(shm_src 
-    F:/project/SHM/PlayGround/world.cpp
+#    F:/project/SHM/PlayGround/world.cpp
+    F:/project/SHM/PlayGround/gpc.cpp
     source/glad.c
     source/Engine.cpp
     source/context_manager.cpp
@@ -26,8 +27,13 @@ set(opengl_renderer_src
 
 )
 
-add_library(shm-engine SHARED ${opengl_renderer_src} ${shm_src} )
+set(cyclon_src
+    ../shm-physics/src/particle.cpp
 
+)
+add_subdirectory(include/shys)
+add_library(shm-engine SHARED ${opengl_renderer_src} ${shm_src} ${cyclon_src} )
+target_link_libraries(shm-engine shys)
 if (WIN32)
     target_link_libraries(shm-engine "F:/project/SHM/Engine/include/GLFW/glfw3.lib")
     target_link_libraries(shm-engine "F:/project/SHM/Engine/include/assimp/assimp-vc142-mtd.lib")
@@ -38,4 +44,5 @@ elseif(UNIX)
 endif()
 
 target_include_directories(shm-engine PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/openGLRenderer/)
-target_include_directories(shm-engine PUBLIC include/)
+target_include_directories(shm-engine PUBLIC include/ ../shm-physics/include/cyclon/)
+

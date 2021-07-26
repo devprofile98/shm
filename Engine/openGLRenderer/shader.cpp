@@ -35,7 +35,8 @@ shader::shader(const char* vertexPath, const char* fragmentPath){
 bool shader::createProgram()
 {
     int success;
-    char* infolog = new char[512];
+//    char* infolog = new char[512];
+    std::shared_ptr<char> infolog{new char[512]};
 
     const char* vertexCode = vShaderCode.c_str();
     const char* fragmentCode=fShaderCode.c_str();
@@ -48,7 +49,7 @@ bool shader::createProgram()
     if(success == GL_FALSE){
         GLint maxLength = 0;
         glGetShaderiv(m_vertex, GL_INFO_LOG_LENGTH, &maxLength);
-        glGetShaderInfoLog(m_vertex, 512, &maxLength, infolog);
+        glGetShaderInfoLog(m_vertex, 512, &maxLength, infolog.get());
         std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << infolog << std::endl;
         return false;
     }
@@ -61,7 +62,7 @@ bool shader::createProgram()
     if(success == GL_FALSE){
         GLint maxLength = 0;
         glGetShaderiv(m_vertex, GL_INFO_LOG_LENGTH, &maxLength);
-        glGetShaderInfoLog(m_vertex, 512, &maxLength, infolog);
+        glGetShaderInfoLog(m_vertex, 512, &maxLength, infolog.get());
         std::cout << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n" << infolog << std::endl;
         return false;
 
@@ -75,7 +76,7 @@ bool shader::createProgram()
     glGetProgramiv(ID, GL_LINK_STATUS, &success);
     if(!success)
     {
-        glGetProgramInfoLog(ID, 512, NULL, infolog);
+        glGetProgramInfoLog(ID, 512, NULL, infolog.get());
         std::cout << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n" << infolog << std::endl;
         return  false;
     }
@@ -84,7 +85,7 @@ bool shader::createProgram()
     glDeleteShader(m_vertex);
     glDeleteShader(m_fragment);
 
-    delete[] infolog;
+//    delete[] infolog;
 //    free((char*)vertexCode);
 //    free((char*)fragmentCode);
     return true;
