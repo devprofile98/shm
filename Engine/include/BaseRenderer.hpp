@@ -17,7 +17,7 @@ namespace SHM{
         BaseRenderer(){};
         virtual ~BaseRenderer(){};
         virtual void Draw()=0;
-        virtual Model* LoadModel(const char* filepath, std::shared_ptr<shader> shader)=0;
+        virtual int LoadModel(const char* filepath, std::shared_ptr<shader> shader)=0;
         virtual void LoadShaders(const char* vs_path, const char* fs_path)=0;
         virtual void changePosition(uint32_t object_id,const glm::vec3& vec)=0;
         virtual void changeScale(uint32_t object_id, const glm::vec3& vec)=0;
@@ -31,6 +31,7 @@ namespace SHM{
 
         virtual std::shared_ptr<Utility> GetUtility() const=0;
         virtual int getUboIndex(std::string ub_name) const =0;
+        virtual Model* getModelByIndex(uint32_t index)=0;
 
         shader shader_program;
         uint32_t ubo_vp, ubo_lights, ubo_spots;

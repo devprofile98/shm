@@ -9,27 +9,21 @@ namespace SHM{
         setModelMatrix(glm::mat4(1.0));
         setProjectonMatrix(glm::perspective(glm::radians(camera->m_fov),1920.0f/ 1080.0f, 0.01f, 100.0f));
         setViewMatrix(glm::lookAt(camera->m_position, camera->m_position + camera->m_front, camera->m_up));
-        // add uniform blocks and binding points to shader class
-//        shader::m_ub_pairs.push_back(std::make_pair(std::string{"VPMatrices"}, 0));
-
-//        shader::m_ub_pairs.push_back(std::make_pair(std::string{"Lights"}, 1));
         setupUBO();
     }
-    // openGLRenderer::~openGLRenderer(){
-
-    // }
 
     void openGLRenderer::Draw(){
-        for(int i=0;i< models.size(); i++){
+        for(unsigned long long i=0;i< models.size(); i++){
             models[i].Draw();
         }
     }
 
-    Model* openGLRenderer::LoadModel(const char* filepath, std::shared_ptr<shader> shader){
+    int openGLRenderer::LoadModel(const char* filepath, std::shared_ptr<shader> shader){
         uint32_t temp = models.size();
         Model model{filepath, shader};
         models.push_back(model);
-        return &models.at(temp);
+        std::cout << "value is : " << models.size() << &models.at(temp) <<std::endl;
+        return temp;
     }
 
     void openGLRenderer::LoadShaders(const char* vs_path, const char* fs_path)
@@ -97,6 +91,11 @@ namespace SHM{
     int openGLRenderer::getUboIndex(std::string ub_name) const
     {
         return  shader::m_uniform_blocks[ub_name] -1;
+    }
+
+    Model *openGLRenderer::getModelByIndex(uint32_t index)
+    {
+        return &models[index];
     }
 
 }

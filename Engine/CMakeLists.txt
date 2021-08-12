@@ -29,6 +29,7 @@ set(opengl_renderer_src
 
 set(cyclon_src
     ../shm-physics/src/particle.cpp
+    ../shm-physics/src/pfgen.cpp
 
 )
 add_subdirectory(include/shys)

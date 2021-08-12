@@ -56,16 +56,17 @@ Model::Model(const char *path, std::shared_ptr<shader> sh ): shader_program(sh)
 
 void Model::Draw(){
 
-    for(uint32_t i = 0; i<meshes.size();i++){
-        meshes[i].Draw(shader_program);
-    }
     glm::mat4 model{1.0f};
     model = glm::translate(model, m_position);
     model = glm::scale(model, m_scale);
-    model = glm::rotate(model, glm::radians(45.0f), m_rotation);
+//    model = glm::rotate(model, glm::radians(90.0f), m_rotation);
 
     shader_program->use();
     shader_program->setMat4("model", model);
+
+    for(uint32_t i = 0; i<meshes.size();i++){
+        meshes[i].Draw(shader_program);
+    }
 }
 
 std::shared_ptr<shader> Model::getShader()
