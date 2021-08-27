@@ -1,6 +1,6 @@
 #include <Model.hpp>
 
-#define STB_IMAGE_IMPLEMENTATION
+//#define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
 
@@ -41,7 +41,7 @@ unsigned int TextureFromFile(const char *path, const std::string &directory, boo
         stbi_image_free(data);
     }
 
-    return textureID;   
+    return textureID;
 }
 
 Model::Model(const char *path, std::shared_ptr<shader> sh ): shader_program(sh)
@@ -54,18 +54,31 @@ Model::Model(const char *path, std::shared_ptr<shader> sh ): shader_program(sh)
     m_rotation = glm::vec3{0.0f, 1.0f, 0.0f};
 }
 
-void Model::Draw(){
+void Model::Draw(std::shared_ptr<shader> sh){
 
-    for(uint32_t i = 0; i<meshes.size();i++){
-        meshes[i].Draw(shader_program);
-    }
     glm::mat4 model{1.0f};
     model = glm::translate(model, m_position);
     model = glm::scale(model, m_scale);
-    model = glm::rotate(model, glm::radians(45.0f), m_rotation);
+    //    model = glm::rotate(model, glm::radians(90.0f), m_rotation);
 
-    shader_program->use();
-    shader_program->setMat4("model", model);
+    if (sh){
+        // calculate for shadow map
+        sh->use();
+        sh->setMat4("model", model);
+    }
+    else{
+        shader_program->use();
+        shader_program->setMat4("model", model);
+    }
+
+    for(uint32_t i = 0; i<meshes.size();i++){
+        if (sh){
+            meshes[i].Draw(sh);
+        }
+        else{
+            meshes[i].Draw(shader_program);
+        }
+    }
 }
 
 std::shared_ptr<shader> Model::getShader()
@@ -127,7 +140,7 @@ void Model::processNode(aiNode *node, const aiScene *scene){
 
 Mesh Model::processMesh(aiMesh *mesh, const aiScene *scene){
     std::vector<Vertex> vertices;
-    std::vector<Texture> textures;
+    std::vector<Texture_INT> textures;
     std::vector<uint32_t> indices;
 
     for(uint32_t i=0;i < mesh->mNumVertices; i++){
@@ -175,32 +188,32 @@ Mesh Model::processMesh(aiMesh *mesh, const aiScene *scene){
     for(uint32_t i = 0;i<mesh->mNumFaces;i++){
         aiFace face = mesh->mFaces[i];
         for(uint32_t j=0; j<face.mNumIndices;j++){
-            indices.push_back(face.mIndices[j]);        
+            indices.push_back(face.mIndices[j]);
         }
     }
 
-    aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];    
+    aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
 
-    std::vector<Texture> diffuseMap = loadMaterialTexture(material, aiTextureType_DIFFUSE, "texture_diffuse");
+    std::vector<Texture_INT> diffuseMap = loadMaterialTexture(material, aiTextureType_DIFFUSE, "texture_diffuse");
     textures.insert(textures.end(), diffuseMap.begin(), diffuseMap.end());
 
-    std::vector<Texture> specularMap = loadMaterialTexture(material, aiTextureType_SPECULAR, "texture_specular");
+    std::vector<Texture_INT> specularMap = loadMaterialTexture(material, aiTextureType_SPECULAR, "texture_specular");
     textures.insert(textures.end(), specularMap.begin(), specularMap.end());
 
     // 3. normal maps
-    std::vector<Texture> normalMaps = loadMaterialTexture(material, aiTextureType_HEIGHT, "texture_normal");
+    std::vector<Texture_INT> normalMaps = loadMaterialTexture(material, aiTextureType_HEIGHT, "texture_normal");
     textures.insert(textures.end(), normalMaps.begin(), normalMaps.end());
 
     // 4. height maps
-    std::vector<Texture> heightMaps = loadMaterialTexture(material, aiTextureType_AMBIENT, "texture_height");
+    std::vector<Texture_INT> heightMaps = loadMaterialTexture(material, aiTextureType_AMBIENT, "texture_height");
     textures.insert(textures.end(), heightMaps.begin(), heightMaps.end());
     
     // return a mesh object created from the extracted mesh data
     return Mesh(vertices, indices, textures);
 }
 
-std::vector<Texture> Model::loadMaterialTexture(aiMaterial *material, aiTextureType type, std::string typeName){
-    std::vector<Texture> textures;
+std::vector<Texture_INT> Model::loadMaterialTexture(aiMaterial *material, aiTextureType type, std::string typeName){
+    std::vector<Texture_INT> textures;
     for(uint32_t i=0; i<material->GetTextureCount(type); i++){
         aiString str;
         material->GetTexture(type, i, &str);
@@ -208,15 +221,15 @@ std::vector<Texture> Model::loadMaterialTexture(aiMaterial *material, aiTextureT
         for(uint32_t j=0; j< textures_loaded.size();j++ ){
 
             if(std::strcmp(textures_loaded[j].path.data(), str.C_Str()) == 0)
-                {
-                    textures.push_back(textures_loaded[j]);
-                    skip = true; // a texture with the same filepath has already been loaded, continue to next one. (optimization)
-                    break;
-                }
+            {
+                textures.push_back(textures_loaded[j]);
+                skip = true; // a texture with the same filepath has already been loaded, continue to next one. (optimization)
+                break;
+            }
         }
-    if(!skip)
+        if(!skip)
         {   // if texture hasn't been loaded already, load it
-            Texture texture;
+            Texture_INT texture;
             texture.id = TextureFromFile(str.C_Str(), this->directory);
             texture.type = typeName;
             texture.path = str.C_Str();

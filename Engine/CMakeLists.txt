@@ -24,11 +24,15 @@ set(opengl_renderer_src
     openGLRenderer/shader.cpp
     openGLRenderer/buffers.cpp
     openGLRenderer/openglutility.cpp
+    openGLRenderer/texture.cpp
 
 )
 
 set(cyclon_src
     ../shm-physics/src/particle.cpp
+    ../shm-physics/src/pfgen.cpp
+    ../shm-physics/src/plinks.cpp
+    ../shm-physics/src/pcontacts.cpp
 
 )
 add_subdirectory(include/shys)

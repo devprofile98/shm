@@ -32,7 +32,7 @@ struct Vertex{
 // Struct container for Texture information 
 // id : unique texture unit id
 // type : type of Texture -> diffuse or specular map texture 
-struct Texture{
+struct Texture_INT{
     uint32_t id;
     std::string type;
     std::string path;
@@ -44,9 +44,9 @@ public:
     // mesh data
     std::vector<Vertex> vertices;
     std::vector<uint32_t> indices;
-    std::vector<Texture> textures;
+    std::vector<Texture_INT> textures;
     
-    Mesh(std::vector<Vertex> vertices, std::vector<uint32_t> indices, std::vector<Texture> textures);
+    Mesh(std::vector<Vertex> vertices, std::vector<uint32_t> indices, std::vector<Texture_INT> textures);
     void Draw(std::shared_ptr<shader> shadr);
 
 private:
