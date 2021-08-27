@@ -16,7 +16,7 @@ namespace SHM{
     public:
         BaseRenderer(){};
         virtual ~BaseRenderer(){};
-        virtual void Draw()=0;
+        virtual void Draw(std::shared_ptr<shader> sh=nullptr)=0;
         virtual int LoadModel(const char* filepath, std::shared_ptr<shader> shader)=0;
         virtual void LoadShaders(const char* vs_path, const char* fs_path)=0;
         virtual void changePosition(uint32_t object_id,const glm::vec3& vec)=0;
@@ -24,6 +24,7 @@ namespace SHM{
         virtual void setModelMatrix(const glm::mat4& matrix)=0;
         virtual void setProjectonMatrix(const glm::mat4& matrix)=0;
         virtual void setViewMatrix(const glm::mat4& matrix)=0;
+        virtual void enableShadows()=0;
 
         virtual const glm::mat4& getModelMatrix() const=0;
         virtual const glm::mat4& getProjectionMatrix() const=0;
@@ -34,7 +35,9 @@ namespace SHM{
         virtual Model* getModelByIndex(uint32_t index)=0;
 
         shader shader_program;
-        uint32_t ubo_vp, ubo_lights, ubo_spots;
+        uint32_t ubo_vp, ubo_lights, ubo_spots, depth_map_fbo;
+        std::shared_ptr<shader> m_shadow_map_shader;
+        unsigned int shadow_map_texture;
 
     protected:
         glm::mat4 m_model;

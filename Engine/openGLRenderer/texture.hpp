@@ -3,7 +3,7 @@
 
 #include "Core.hpp"
 
-#include<iostream>
+#include <iostream>
 #include <stdint.h>
 
 
@@ -14,6 +14,12 @@ public:
     ~Texture();
 
     uint32_t getID() const;
+
+    // create 2D texture from format and data in width and height
+    static unsigned int createTexture2D(GLint format = GL_RGBA,
+                                        uint16_t width = 1024,
+                                        uint16_t height = 1024,
+                                        const GLvoid* data=nullptr);
 
 private:
     uint32_t m_ID;

@@ -5,6 +5,7 @@
 #include "openglutility.hpp"
 #include "Model.hpp"
 #include "Camera.hpp"
+#include "texture.hpp"
 
 #include <iostream>
 #include <memory>
@@ -27,7 +28,7 @@ namespace SHM{
         openGLRenderer(){};
         openGLRenderer(std::shared_ptr<Camera> camera);
         ~openGLRenderer(){};
-        void Draw() override;
+        void Draw(std::shared_ptr<shader> sh=nullptr) override;
 
         int LoadModel(const char* filepath, std::shared_ptr<shader> shader) override;
 
@@ -38,6 +39,7 @@ namespace SHM{
         void setProjectonMatrix(const glm::mat4& matrix);
         void setViewMatrix(const glm::mat4& matrix);
         void setModelMatrix(const glm::mat4& matrix);
+        void enableShadows() override;
 
         const glm::mat4& getModelMatrix() const;
         const glm::mat4& getProjectionMatrix() const;

@@ -23,6 +23,7 @@ namespace SHM{
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+        glfwWindowHint(GLFW_SAMPLES, 4);
 
         window = glfwCreateWindow(width, height, "SHM", NULL, NULL);
         if (window == nullptr){
@@ -45,6 +46,8 @@ namespace SHM{
         // configure global opengl state
         // -----------------------------
         glEnable(GL_DEPTH_TEST);
+        glEnable(GL_MULTISAMPLE);
+
 
 
         // glfwSetInputMode(this->window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);

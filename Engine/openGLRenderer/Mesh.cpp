@@ -1,7 +1,7 @@
 #include "Mesh.hpp"
 
 
-Mesh::Mesh(std::vector<Vertex> vertices1, std::vector<uint32_t> indices1, std::vector<Texture> textures1):
+Mesh::Mesh(std::vector<Vertex> vertices1, std::vector<uint32_t> indices1, std::vector<Texture_INT> textures1):
     vertices(vertices1),
     indices(indices1),
     textures(textures1)

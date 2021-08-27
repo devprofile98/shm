@@ -15,6 +15,13 @@ std::shared_ptr<shader> newShader4 = Engine::CreateShader("F:/project/SHM/PlayGr
 
 cyclon::Particle parts[4];
 cyclon::ParticleGravity g{cyclon::Vector3{0.0f, -1.0f, 0.0f}};
+cyclon::Vector3 anchor_pos{0.22f, 5.5f, 0.25f};
+cyclon::ParticleAnchorSpring pas{&anchor_pos, 0.99f, 0.5f};
+cyclon::ParticleContact contact[1];
+cyclon::ParticleRod *rods[4];
+cyclon::ParticleContactResolver pc_resolver{4};
+
+
 auto now = std::chrono::high_resolution_clock::now();
 
 
@@ -45,7 +52,7 @@ void Engine::outLoop(){
                 );
     newShader2->use();
     newShader2->useGlobalVariables();
-
+    GET_MODEL(ground)->setPosition(glm::vec3{0.0f, -1.0f, 0.0f});
 
     newShader3->createProgram();
     int ball = Engine::getRenderer()
@@ -55,8 +62,8 @@ void Engine::outLoop(){
                 );
     newShader3->use();
     newShader3->useGlobalVariables();
-    GET_MODEL(ball)->setPosition(glm::vec3{0.0f, 2.0f, 0.0f});
-    GET_MODEL(ball)->setScale(glm::vec3{0.05, 0.05, 0.05});
+    GET_MODEL(ball)->setPosition(glm::vec3{-2.0f, 10.0f, 3.0f});
+    GET_MODEL(ball)->setScale(glm::vec3{0.5, 0.5, 0.5});
 
     newShader4->createProgram();
     int ball1 = Engine::getRenderer()
@@ -66,8 +73,8 @@ void Engine::outLoop(){
                 );
     newShader4->use();
     newShader4->useGlobalVariables();
-    GET_MODEL(ball1)->setPosition(glm::vec3{0.9f, 2.0f, 0.0f});
-    GET_MODEL(ball1)->setScale(glm::vec3{0.05, 0.05, 0.05});
+    GET_MODEL(ball1)->setPosition(glm::vec3{-4.0f, 1.0f, -3.0f});
+    GET_MODEL(ball1)->setScale(glm::vec3{0.5, 0.5, 0.5});
 
     int ball2 = Engine::getRenderer()
             ->LoadModel(
@@ -87,7 +94,7 @@ void Engine::outLoop(){
                 );
     newShader3->use();
     //    newShader3->useGlobalVariables();
-    GET_MODEL(ball3)->setPosition(glm::vec3{0.22f, 2.5f, 0.25f});
+    GET_MODEL(ball3)->setPosition(glm::vec3{0.22f, 4.5f, 0.25f});
     GET_MODEL(ball3)->setScale(glm::vec3{0.05, 0.05, 0.05});
 
 
@@ -102,16 +109,29 @@ void Engine::outLoop(){
 
 
     parts[1].inverseMass = ((cyclon::real)1.0)/2.0f;
-    parts[1].velocity = cyclon::Vector3{0.3f, 3.0f, 0.3f};
+    parts[1].velocity = cyclon::Vector3{0.0f, 0.0f, 0.0f};
     parts[1].damping = 0.99f;
     parts[1].setPosition(cyclon::Vector3{
                              GET_MODEL(ball3)->getPosition()->x,
                              GET_MODEL(ball3)->getPosition()->y,
                              GET_MODEL(ball3)->getPosition()->z
                          });
+    parts[2].inverseMass = ((cyclon::real)1.0)/2.0f;
+    parts[2].velocity = cyclon::Vector3{0.0f, 0.0f, 0.0f};
+    parts[2].damping = 0.99f;
+    parts[2].setPosition(cyclon::Vector3{
+                             GET_MODEL(ball2)->getPosition()->x,
+                             GET_MODEL(ball2)->getPosition()->y,
+                             GET_MODEL(ball2)->getPosition()->z
+                         });
 
-    PointLight pl{{-2,-0.7,3}, {1.0, 1.0, 0.0}};
-    PointLight pl2{{1,-0.7,5}, {1.0f, 0.0f, 1.0f}};
+    rods[0] = new cyclon::ParticleRod{2.592337};
+    rods[0]->particle[0] = &parts[1];
+    rods[0]->particle[1] = &parts[2];
+    rods[0]->fillContact(&contact[0], 1);
+
+    PointLight pl{{-2,1,3}, {1.0, 1.0, 0.0}};
+    PointLight pl2{{1,1,5}, {1.0f, 0.0f, 1.0f}};
 
 
     SpotLight sl{{0, -1, 0}, {0,0,0}};
@@ -127,27 +147,40 @@ void Engine::inLoop(){
                 std::chrono::high_resolution_clock::now() - now)
             .count() > 10)
     {
-//        std::cout << parts[1].position.x << " "<< parts[1].position.y << " " <<parts[1].position.z<<std::endl;
 
-        g.updateForce(&parts[0], 0.0016f);
-        parts[0].integrate(0.0016f);
+//        g.updateForce(&parts[0], 0.0016f);
+//        parts[0].integrate(0.0016f);
 
-        Engine::getRenderer()->getModelByIndex(1)->setPosition(
+//        GET_MODEL(1)->setPosition(
+//                    glm::vec3(
+//                        parts[0].position.x,
+//                    parts[0].position.y,
+//                parts[0].position.z
+//                ));
+
+//        g.updateForce(&parts[2], 0.0016f);
+        parts[2].integrate(0.0016f);
+        GET_MODEL(3)->setPosition(
                     glm::vec3(
-                        parts[0].position.x,
-                    parts[0].position.y,
-                parts[0].position.z
+                        parts[2].position.x,
+                    parts[2].position.y,
+                parts[2].position.z
                 ));
 
+//        contact.resolve(0.0016f);
 
-        g.updateForce(&parts[1], 0.0016f);
+//        g.updateForce(&parts[1], 0.0016f);
+        pas.updateForce(&parts[1], 0.0016);
         parts[1].integrate(0.0016f);
-        Engine::getRenderer()->getModelByIndex(4)->setPosition(
+        GET_MODEL(4)->setPosition(
                     glm::vec3(
                         parts[1].position.x,
                     parts[1].position.y,
                 parts[1].position.z
                 ));
+
+        pc_resolver.resolveContacts(contact, 1, 0.0016);
+
     }
 }
 }

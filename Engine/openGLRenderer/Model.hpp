@@ -23,8 +23,8 @@ unsigned int TextureFromFile(const char *path, const std::string &directory, boo
 class Model{
 public:
     Model(const char* path, std::shared_ptr<shader> shader_program);
-    void Draw();
-    std::vector<Texture> textures_loaded; 
+    void Draw(std::shared_ptr<shader> sh=nullptr);
+    std::vector<Texture_INT> textures_loaded;
     std::vector<Mesh> meshes;
     std::shared_ptr<shader> getShader();
 
@@ -43,7 +43,7 @@ private:
     glm::vec3 m_position, m_rotation, m_scale;
     void processNode(aiNode *node, const aiScene *scene);
     Mesh processMesh(aiMesh *mesh, const aiScene *scene);
-    std::vector<Texture> loadMaterialTexture(aiMaterial *mat, aiTextureType type, std::string typeName);
+    std::vector<Texture_INT> loadMaterialTexture(aiMaterial *mat, aiTextureType type, std::string typeName);
 };
 
 #endif //ENGINE_MODEL_H
