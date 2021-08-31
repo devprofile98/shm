@@ -62,7 +62,7 @@ void Engine::outLoop(){
                 );
     newShader3->use();
     newShader3->useGlobalVariables();
-    GET_MODEL(ball)->setPosition(glm::vec3{-2.0f, 10.0f, 3.0f});
+    GET_MODEL(ball)->setPosition(glm::vec3{0.0f, 1.0f, 0.0f});/*-1.0f, 1.0f, 3.0f*/
     GET_MODEL(ball)->setScale(glm::vec3{0.5, 0.5, 0.5});
 
     newShader4->createProgram();
@@ -148,17 +148,6 @@ void Engine::inLoop(){
             .count() > 10)
     {
 
-//        g.updateForce(&parts[0], 0.0016f);
-//        parts[0].integrate(0.0016f);
-
-//        GET_MODEL(1)->setPosition(
-//                    glm::vec3(
-//                        parts[0].position.x,
-//                    parts[0].position.y,
-//                parts[0].position.z
-//                ));
-
-//        g.updateForce(&parts[2], 0.0016f);
         parts[2].integrate(0.0016f);
         GET_MODEL(3)->setPosition(
                     glm::vec3(
@@ -167,9 +156,6 @@ void Engine::inLoop(){
                 parts[2].position.z
                 ));
 
-//        contact.resolve(0.0016f);
-
-//        g.updateForce(&parts[1], 0.0016f);
         pas.updateForce(&parts[1], 0.0016);
         parts[1].integrate(0.0016f);
         GET_MODEL(4)->setPosition(

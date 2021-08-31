@@ -24,6 +24,7 @@ unsigned int TextureFromFile(const char *path, const std::string &directory, boo
         else if (nrComponents == 4)
             format = GL_RGBA;
 
+        glActiveTexture(GL_TEXTURE0 + Model::texture_layout_counter);
         glBindTexture(GL_TEXTURE_2D, textureID);
         glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
         glGenerateMipmap(GL_TEXTURE_2D);
@@ -32,7 +33,13 @@ unsigned int TextureFromFile(const char *path, const std::string &directory, boo
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        std::cout<<
+                    "Engine::TEXTURE::DEBUG::-> loaded succesfully in slot number "<<
+                    Model::texture_layout_counter <<
+                    std::endl;
 
+        Model::texture_layout_counter++;
+//        glActiveTexture(GL_TEXTURE0);
         stbi_image_free(data);
     }
     else
@@ -233,9 +240,12 @@ std::vector<Texture_INT> Model::loadMaterialTexture(aiMaterial *material, aiText
             texture.id = TextureFromFile(str.C_Str(), this->directory);
             texture.type = typeName;
             texture.path = str.C_Str();
+            texture.bounded_slot = Model::texture_layout_counter -1;
             textures.push_back(texture);
             textures_loaded.push_back(texture);  // store it as texture loaded for entire model, to ensure we won't unnecesery load duplicate textures.
         }
     }
     return textures;
 } 
+
+uint32_t Model::texture_layout_counter =0;

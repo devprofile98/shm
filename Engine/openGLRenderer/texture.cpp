@@ -4,13 +4,12 @@
 #include "stb_image.h"
 
 Texture::Texture(const char* texture_path, uint32_t layout_location){
-
     int width, height,channel;
     unsigned char* data = stbi_load(texture_path, &width,&height,&channel,0);
     glGenTextures(1, &m_ID);
     glActiveTexture(GL_TEXTURE0 + layout_location);
-    glBindTexture(GL_TEXTURE_2D, m_ID); 
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	
+    glBindTexture(GL_TEXTURE_2D, m_ID);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -22,8 +21,6 @@ Texture::Texture(const char* texture_path, uint32_t layout_location){
         glTexImage2D(GL_TEXTURE_2D, 0,GL_RGB, width, height, 0,GL_RGB, GL_UNSIGNED_BYTE, data);
         glGenerateMipmap(GL_TEXTURE_2D);
         std::cout<<" Texture loaded successfuly"<<std::endl;
-
-    
     }
     else{
         std::cout<<" Failed to load texture from source "<<std::endl;
@@ -34,7 +31,8 @@ Texture::Texture(const char* texture_path, uint32_t layout_location){
 }
 
 Texture::~Texture(){
-        std::cout<<" TEXTURE WITH ID: "<<m_ID <<" DESTROYED!"<<std::endl;
+    glDeleteTextures(GL_TEXTURE_2D, &m_ID);
+    std::cout<<" TEXTURE WITH ID: "<<m_ID <<" DESTROYED!"<<std::endl;
 }
 
 uint32_t Texture::getID() const {
@@ -44,6 +42,7 @@ uint32_t Texture::getID() const {
 unsigned int Texture::createTexture2D(GLint format, uint16_t width, uint16_t height, const GLvoid *data)
 {
     unsigned int texture_id;
+    glActiveTexture(GL_TEXTURE0 + Model::texture_layout_counter);
     glGenTextures(1, &texture_id);
     glBindTexture(GL_TEXTURE_2D, texture_id);
     glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0,format, GL_FLOAT, data);
@@ -51,6 +50,11 @@ unsigned int Texture::createTexture2D(GLint format, uint16_t width, uint16_t hei
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-//    glBindTexture(GL_TEXTURE_2D, 0);
+    std::cout<<
+                "Engine::TEXTURE::DEBUG::-> Depth texture succesfully in slot number "<<
+                Model::texture_layout_counter << " with id: "<< texture_id <<
+                std::endl;
+    Model::texture_layout_counter++;
+    //    glBindTexture(GL_TEXTURE_2D, 0);
     return texture_id;
 }

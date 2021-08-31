@@ -1,5 +1,9 @@
 #include "Engine.hpp"
 
+#define STBI_MSC_SECURE_CRT
+#define STB_IMAGE_WRITE_IMPLEMENTATION
+#include "stbi_image_write.h"
+
 namespace SHM{
 
 Engine::Engine(const char* project_name, API_TYPE api_type){
@@ -68,7 +72,7 @@ void Engine::MainRenderLoop(){
         glm::mat4 lightSpaceMatrix;
         float near_plane = 1.0f, far_plane = 7.5f;
         lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, near_plane, far_plane);
-        lightView = glm::lookAt(glm::vec3(-2.0f, 5.0f, 3.0f), glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(0.0, 1.0, 0.0));
+        lightView = glm::lookAt(glm::vec3(-4.0f, 6.0f, -3.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0, 1.0, 0.0));
         lightSpaceMatrix = lightProjection * lightView;
 
         m_renderer->m_shadow_map_shader->use();
@@ -155,11 +159,28 @@ bool Engine::InitWorld() const
     // configure shadow
     getRenderer()->enableShadows();
 
-
-
-
     return -23;
 }
+
+void Engine::saveImage(char *file_path){
+
+        int width=1024, height;
+        glBindBuffer(GL_TEXTURE_2D, getRenderer()->shadow_map_texture);
+        glfwGetFramebufferSize(context_manager->GetWindow(), &width, &height);
+        GLsizei nrchannel = 3;
+        GLsizei stride = width * nrchannel;
+        stride += (stride % 4) ? (4 - stride % 4) : 0;
+
+        GLsizei bufferSize = stride * height;
+        std::vector<char> buffer(bufferSize);
+
+        glPixelStorei(GL_PACK_ALIGNMENT, 4);
+        glReadBuffer(GL_FRONT);
+        glReadPixels(0, 0, width, height, GL_RGB, GL_UNSIGNED_BYTE, buffer.data());
+        stbi_flip_vertically_on_write(true);
+        stbi_write_png(file_path, width, height, nrchannel, buffer.data(), stride);
+}
+
 std::shared_ptr<BaseRenderer> Engine::m_renderer = nullptr;
 std::shared_ptr<Camera> Engine::m_camera{ new Camera{}};
 }

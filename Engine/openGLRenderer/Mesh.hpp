@@ -36,6 +36,7 @@ struct Texture_INT{
     uint32_t id;
     std::string type;
     std::string path;
+    uint8_t bounded_slot;
 };
 
 
