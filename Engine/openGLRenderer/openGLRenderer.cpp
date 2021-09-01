@@ -95,7 +95,7 @@ void openGLRenderer::setModelMatrix(const glm::mat4& matrix){
 void openGLRenderer::enableShadows()
 {
     glGenFramebuffers(1, &depth_map_fbo);
-    shadow_map_texture = Texture::createTexture2D(GL_DEPTH_COMPONENT);
+    shadow_map_texture = Texture::createTexture2D(GL_DEPTH_COMPONENT, 2048, 2048);
     glBindFramebuffer(GL_FRAMEBUFFER, depth_map_fbo);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, shadow_map_texture, 0);
     glDrawBuffer(GL_NONE);

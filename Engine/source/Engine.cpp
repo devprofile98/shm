@@ -70,15 +70,15 @@ void Engine::MainRenderLoop(){
         // calculate Shadows
         glm::mat4 lightProjection, lightView;
         glm::mat4 lightSpaceMatrix;
-        float near_plane = 1.0f, far_plane = 7.5f;
+        float near_plane = 1.0f, far_plane = 40.5f;
         lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, near_plane, far_plane);
-        lightView = glm::lookAt(glm::vec3(-4.0f, 6.0f, -3.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0, 1.0, 0.0));
+        lightView = glm::lookAt(glm::vec3(-2.0f, 6.0f, -5.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0, 1.0, 0.0));
         lightSpaceMatrix = lightProjection * lightView;
 
         m_renderer->m_shadow_map_shader->use();
         m_renderer->m_shadow_map_shader->setMat4("lightSpaceMatrix", lightSpaceMatrix);
 
-        glViewport(0, 0, 1024, 1024);
+        glViewport(0, 0, 2048, 2048);
         glBindFramebuffer(GL_FRAMEBUFFER, m_renderer->depth_map_fbo);
             glClear(GL_DEPTH_BUFFER_BIT);
             glActiveTexture(GL_TEXTURE0);
@@ -102,7 +102,7 @@ void Engine::MainRenderLoop(){
         //        SHM::BUFFERS::uploadSubDataToUBO(m_renderer->ubo_lights, m_camera->m_position, 3*sizeof(glm::vec4));
 
         // drawing user defined objects
-        glViewport(0, 0, 960, 540);
+        glViewport(0, 0, 1920, 1080);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glBindTexture(GL_TEXTURE_2D, m_renderer->shadow_map_texture);
         m_renderer->Draw();
