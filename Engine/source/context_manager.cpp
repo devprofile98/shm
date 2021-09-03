@@ -32,7 +32,7 @@ namespace SHM{
         }
 
         glfwMakeContextCurrent(window);
-        glfwSwapInterval( 0 );  // remove glfw 60fps limit
+        glfwSwapInterval( 1 );  // remove glfw 60fps limit
         glfwSetFramebufferSizeCallback(window, &ContextManager::FrameBufferCallback);
         // glfwSetCursorPosCallback(window, mouse_callback);
 

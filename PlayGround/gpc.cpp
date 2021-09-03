@@ -57,12 +57,12 @@ void Engine::outLoop(){
     newShader3->createProgram();
     int ball = Engine::getRenderer()
             ->LoadModel(
-                "F:/project/SHM/Engine/assets/wooden watch tower23.obj",
+                "F:/project/SHM/PlayGround/assets/second/cone.obj",
                 newShader3
                 );
     newShader3->use();
     newShader3->useGlobalVariables();
-    GET_MODEL(ball)->setPosition(glm::vec3{0.0f, -1.0f, 2.0f});/*-1.0f, 1.0f, 3.0f*/
+    GET_MODEL(ball)->setPosition(glm::vec3{0.0f, 1.0f, 2.0f});/*-1.0f, 1.0f, 3.0f*/
     GET_MODEL(ball)->setScale(glm::vec3{0.5, 0.5, 0.5});
 
     newShader4->createProgram();

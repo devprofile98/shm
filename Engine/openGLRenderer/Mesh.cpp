@@ -1,10 +1,11 @@
 #include "Mesh.hpp"
 
 
-Mesh::Mesh(std::vector<Vertex> vertices1, std::vector<uint32_t> indices1, std::vector<Texture_INT> textures1):
+Mesh::Mesh(std::vector<Vertex> vertices1, std::vector<uint32_t> indices1, std::vector<Texture_INT> textures1, Material_INT mat):
     vertices(vertices1),
     indices(indices1),
-    textures(textures1)
+    textures(textures1),
+    mat(mat)
 {
     setupMesh();
 }
@@ -66,6 +67,9 @@ void Mesh::setupMesh()
             glBindTexture(GL_TEXTURE_2D, textures[i].id);
 
         }
+
+        shader->setVec4("kd", mat.kd);
+        if (mat.should_draw) shader->setInt("has_material", 1);
         
         // draw mesh
         glBindVertexArray(VAO);
@@ -74,4 +78,5 @@ void Mesh::setupMesh()
 
         // always good practice to set everything back to defaults once configured.
         glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, 0);
     }

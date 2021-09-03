@@ -201,6 +201,20 @@ Mesh Model::processMesh(aiMesh *mesh, const aiScene *scene){
 
     aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
 
+    aiColor3D color;
+    Material_INT mat;
+    // Read mtl file vertex data
+    material->Get(AI_MATKEY_COLOR_AMBIENT, color);
+    mat.ka = glm::vec4(color.r, color.g, color.b, 1.0);
+    std::cout <<color.r << color.g << color.b<<std::endl;
+    material->Get(AI_MATKEY_COLOR_DIFFUSE, color);
+    mat.kd = glm::vec4(color.r, color.g, color.b, 1.0);
+    material->Get(AI_MATKEY_COLOR_SPECULAR, color);
+    mat.ks = glm::vec4(color.r, color.g, color.b, 1.0);
+
+
+    std::cout << "\n\n\n\n material colors is " << mat << std::endl;
+
     std::vector<Texture_INT> diffuseMap = loadMaterialTexture(material, aiTextureType_DIFFUSE, "texture_diffuse");
     textures.insert(textures.end(), diffuseMap.begin(), diffuseMap.end());
 
@@ -214,9 +228,11 @@ Mesh Model::processMesh(aiMesh *mesh, const aiScene *scene){
     // 4. height maps
     std::vector<Texture_INT> heightMaps = loadMaterialTexture(material, aiTextureType_AMBIENT, "texture_height");
     textures.insert(textures.end(), heightMaps.begin(), heightMaps.end());
+
+    if(textures.size() <= 0) mat.should_draw = true;
     
     // return a mesh object created from the extracted mesh data
-    return Mesh(vertices, indices, textures);
+    return Mesh(vertices, indices, textures, mat);
 }
 
 std::vector<Texture_INT> Model::loadMaterialTexture(aiMaterial *material, aiTextureType type, std::string typeName){

@@ -78,7 +78,7 @@ void Engine::MainRenderLoop(){
         m_renderer->m_shadow_map_shader->use();
         m_renderer->m_shadow_map_shader->setMat4("lightSpaceMatrix", lightSpaceMatrix);
 
-        glViewport(0, 0, 2048, 2048);
+        glViewport(0, 0, 1024, 1024);
         glBindFramebuffer(GL_FRAMEBUFFER, m_renderer->depth_map_fbo);
             glClear(GL_DEPTH_BUFFER_BIT);
             glActiveTexture(GL_TEXTURE0);
