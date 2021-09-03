@@ -18,6 +18,7 @@ namespace SHM{
             static float last_y;
             static bool firstMouse;
             static inline std::shared_ptr<Camera> camera;
+            float last_frame_time;
 
 
     };

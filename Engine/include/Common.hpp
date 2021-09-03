@@ -13,7 +13,6 @@ namespace SHM {
         Color(float red, float green, float blue):r(red), g(green), b(blue)
         {
             normalize();
-            std::cout << "normalized colors are" << r<<" "<< g<<" " <<b<<std::endl;
         }
         float r, g, b;
 
@@ -34,7 +33,6 @@ namespace SHM {
         }
         Vector3(const glm::vec3& vec):x(vec.x), y(vec.y), z(vec.z)
         {
-            std::cout<< "VEctor3 is "<< vec.x <<" "<< vec.y << " "<< vec.z <<std::endl;
         }
         void set(float x, float y, float z){
             this->x = x;

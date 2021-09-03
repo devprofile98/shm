@@ -35,7 +35,7 @@ public:
     const glm::vec3 *getPosition() const;
     const glm::vec3 *getScale() const;
     const glm::vec3 *getRotation() const;
-
+    static uint32_t texture_layout_counter;
 private:
     std::string directory;
     std::shared_ptr<shader> shader_program;

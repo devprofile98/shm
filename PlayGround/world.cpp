@@ -6,7 +6,6 @@
 #include "physics.hpp"
 
 
-
 namespace SHM
 {
 
@@ -17,17 +16,16 @@ std::vector<GLuint> indices;
 GLuint vao ,vbo, indexBuffer;
 glm::mat4 model = glm::mat4(1.0f);
 // Add Vertices
-shader newShader{"F:/project/SHM/PlayGround/assets/vert.vs", "F:/project/SHM/PlayGround/assets/frag.fs"};
+std::shared_ptr<shader> newShader = Engine::CreateShader("F:/project/SHM/PlayGround/assets/second/model_loading.vs", "F:/project/SHM/PlayGround/assets/second/model_loading.fs");
 std::shared_ptr<shader> newShader2 = Engine::CreateShader("F:/project/SHM/PlayGround/assets/second/model_loading.vs", "F:/project/SHM/PlayGround/assets/second/model_loading.fs");
 std::shared_ptr<shader> newShader3 = Engine::CreateShader("F:/project/SHM/PlayGround/assets/second/model_loading.vs", "F:/project/SHM/PlayGround/assets/second/model_loading.fs");
 std::shared_ptr<shader> newShader4 = Engine::CreateShader("F:/project/SHM/PlayGround/assets/second/model_loading.vs", "F:/project/SHM/PlayGround/assets/second/model_loading.fs");
 
 int ub_index;
+bool first_time = true;
 
 cyclon::Particle p1{};
 auto now = std::chrono::high_resolution_clock::now();
-
-
 
 // TODO add Grid data and drawing completely into shader
 void createGrid(){
@@ -46,8 +44,8 @@ void createGrid(){
         indices.push_back(i);
         indices.push_back(i+1);
     }
-    newShader.createProgram();
-    newShader.use();
+    newShader->createProgram();
+    newShader->use();
     std::cout << "use count of camera is :"<<Engine::getCamera().use_count()<<std::endl;
     glBindVertexArray(0);
     glGenVertexArrays(1, &vao);
@@ -69,12 +67,12 @@ void createGrid(){
 
 void DrawGrids(){
     // draw grid in to the scene  with it's separate texture
-    newShader.use();
+    newShader->use();
     glBindVertexArray(vao);
     glm::mat4 model{1.0};
-    newShader.setMat4("projection", Engine::getRenderer()->getProjectionMatrix());
-    newShader.setMat4("view", Engine::getRenderer()->getViewMatrix());
-    newShader.setMat4("model", model);
+    newShader->setMat4("projection", Engine::getRenderer()->getProjectionMatrix());
+    newShader->setMat4("view", Engine::getRenderer()->getViewMatrix());
+    newShader->setMat4("model", model);
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBuffer);
     glDrawElements(GL_LINES, indices.size(), GL_UNSIGNED_INT, 0);
@@ -129,12 +127,11 @@ void createCube(){
     };
     cubePosition.insert(cubePosition.begin(),{
                             glm::vec3(-1.0, -1.0,3),
-
                         });
     // activate shader
     model = glm::translate(model, glm::vec3(-5.0,0.0,-2.0));
     //    model = glm::scale(model, glm::vec3(0.1, 0.1, 0.1));
-    newShader.use();
+    newShader->use();
     // add data to vbo
     glBindVertexArray(0);
     glGenVertexArrays(1, &vao);
@@ -150,7 +147,7 @@ void createCube(){
 
 void drawCube(){
     // use the shader program
-    newShader.use();
+    newShader->use();
     // activate vao
     glBindVertexArray(vao);
     // draw
@@ -158,8 +155,8 @@ void drawCube(){
         glm::mat4 model{1.0f};
 
         model = glm::translate(model, pos);
-        model = glm::scale(model, glm::vec3(0.08, 0.08, 0.08));
-        newShader.setMat4("model", model);
+        model = glm::scale(model, glm::vec3(8, 8, 8));
+        newShader->setMat4("model", model);
         glDrawArrays(GL_TRIANGLES, 0, 36);
     }
 }
@@ -167,25 +164,19 @@ void drawCube(){
 void Engine::outLoop(){
 
     // write your configuration code to run before Engine::MainRenderLoop
-    // createGrid();
-    newShader.createProgram();
+
+
+    newShader->createProgram();
+
+//    createGrid();
+    createCube();
+
     int b{-1};
-//    ub_index=SHM::BUFFERS::createNewUBO("MyMat", sizeof(glm::vec4), &b);
-//    std::cout<<"new binding point index is :"<<b<<std::endl;
-//    SHM::BUFFERS::uploadSubDataToUBO(ub_index, glm::vec4(0.0, 0.0,1.0,1.0));
     newShader2->createProgram();
+    newShader->useGlobalVariables();
 
     glm::mat4 model = glm::translate(glm::mat4{1.0}, glm::vec3(-3.0, -1.0, -1.0));
-    model = glm::translate(model, glm::vec3(10.0, 10.0, 10.0));
-    //    newShader2->setMat4("model", model);
-    newShader4->createProgram();
-    newShader4->use();
-    newShader4->setMat4("model", model);
-    newShader4->useGlobalVariables();
-    uint32_t ball = Engine::getRenderer()->LoadModel("F:/project/SHM/PlayGround/assets/second/ball.obj", newShader4);
-
-    Engine::getRenderer()->changePosition(ball, glm::vec3{-3, -0.4, -1});
-    Engine::getRenderer()->changeScale(ball, glm::vec3{0.02, 0.02, 0.02});
+//    model = glm::translate(model, glm::vec3(10.0, 10.0, 10.0));
 
     newShader3->createProgram();
     Engine::getRenderer()->LoadModel("F:/project/SHM/Engine/assets/wooden watch tower23.obj", newShader2);
@@ -195,15 +186,7 @@ void Engine::outLoop(){
     newShader2->setMat4("model", model);
     newShader2->useGlobalVariables();
 
-
-
-    newShader.useGlobalVariables();
     newShader3->useGlobalVariables();
-
-    createCube();
-
-//    SHM::BUFFERS::uploadSubDataToUBO(Engine::getRenderer()->ubo_lights,
-//                                     glm::vec3(0.0, 2.0,0.0), sizeof(glm::vec4));
 
     // Point Light data to Lighting UBO
     PointLight pl{{-2,-0.7,3}, {1.0, 1.0, 0.0}};
@@ -214,9 +197,6 @@ void Engine::outLoop(){
     sl.setDiffuse({0.0f, 0.0f, 1.0f});
     SpotLight sl2{{0, -1, 0}, {-1,1,-1},{0.0f, 1.0f, 0.0f}};
     SpotLight sl3{{0, -1, 0}, {-2,-0.5,-1}};
-
-    Engine::getRenderer()->changePosition(ball, glm::vec3{-3, -0.4, -1});
-    std::cout<< "SSSSSSSSSSSSSSSSSSSSSSSSS " << ball<<std::endl;
 
     p1.inverseMass = ((cyclon::real)1.0)/2.0f;
     p1.velocity = cyclon::Vector3{0.0f, 3.0f, 0.3f};
@@ -229,11 +209,11 @@ void Engine::outLoop(){
 
 void Engine::inLoop(){
 
-    //    DrawGrids();
+//    DrawGrids();
+    drawCube();
+
     Engine::getRenderer()->changeScale(0, glm::vec3(0.1, 0.1, 0.1));
 
-//    SHM::BUFFERS::uploadSubDataToUBO(Engine::getRenderer()->ubo_vp, Engine::getRenderer()->getViewMatrix(), sizeof(glm::mat4));
-//    SHM::BUFFERS::uploadSubDataToUBO(ub_index, glm::vec4(glm::sin(glfwGetTime()), 0.0, 1-glm::sin(glfwGetTime()),1.0));
     glm::mat4 model{1.0};
     model = glm::translate(model, glm::vec3(-1.0, -1.0, -1.0));
     model = glm::scale(model, glm::vec3(0.1, 0.1, 0.1));
@@ -247,7 +227,7 @@ void Engine::inLoop(){
 
 
     glm::mat4 model4{1.0};
-//    model4 = glm::translate(model4, glm::vec3(0, 0,-0.4));
+    //    model4 = glm::translate(model4, glm::vec3(0, 0,-0.4));
     model4 = glm::translate(model4, glm::vec3(
                                 p1.position.x,
                                 p1.position.y,
@@ -258,22 +238,25 @@ void Engine::inLoop(){
     newShader4->setMat4("model", model4);
     cyclon::real duration = std::chrono::duration_cast<std::chrono::milliseconds>(
                 std::chrono::high_resolution_clock::now() - now)
-                .count();
-//    std::cout << p1.position.x << " "<< p1.position.y << " "<<duration<<std::endl;
+            .count();
+    //    std::cout << p1.position.x << " "<< p1.position.y << " "<<duration<<std::endl;
     if (std::chrono::duration_cast<std::chrono::seconds>(
                 std::chrono::high_resolution_clock::now() - now)
-                .count() > 20)
+            .count() > 10){
         p1.integrate(0.0016f);
+//        if (first_time){
+//            Engine::saveImage("picture.png");
+//            first_time = !first_time;
+//        }
+    }
 
-//    std::cout << p1.position.x << " "<< p1.position.y << " "<<p1.position.z<<std::endl;
-
+    //    std::cout << p1.position.x << " "<< p1.position.y << " "<<p1.position.z<<std::endl;
 
     SHM::BUFFERS::uploadSubDataToUBO(
                 Engine::getRenderer()->ubo_lights,
                 glm::vec3(glm::sin(glfwGetTime()), glm::cos(glfwGetTime()),-2.0));
 
-    drawCube();
+
 
 }
-
 }

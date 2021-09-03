@@ -39,6 +39,7 @@ namespace SHM
         bool InitWorld() const;
         void outLoop();
         void inLoop();
+        void saveImage(char* file_path);
 
 
 

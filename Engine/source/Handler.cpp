@@ -9,11 +9,17 @@ bool Handler::firstMouse = true;
 Handler::Handler(GLFWwindow *window, std::shared_ptr<Camera> camera){
     Handler::camera = camera;
     Handler::firstMouse = true;
+    last_frame_time = glfwGetTime();
     glfwSetCursorPosCallback(window, &Handler::mouse);
 }
 
 void Handler::keyboard(GLFWwindow *window){
-    float cameraSpeed = 2.5f * 0.0002f ;
+
+    float now = glfwGetTime();
+    float delta_time = now - last_frame_time;
+    last_frame_time = now;
+
+    float cameraSpeed = 2.5f * delta_time;
 
     if(glfwGetKey(window,GLFW_KEY_W) == GLFW_PRESS){
         Handler::camera->m_position += cameraSpeed * Handler::camera->m_front;

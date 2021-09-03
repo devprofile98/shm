@@ -24,6 +24,7 @@ unsigned int TextureFromFile(const char *path, const std::string &directory, boo
         else if (nrComponents == 4)
             format = GL_RGBA;
 
+        glActiveTexture(GL_TEXTURE0 + Model::texture_layout_counter);
         glBindTexture(GL_TEXTURE_2D, textureID);
         glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
         glGenerateMipmap(GL_TEXTURE_2D);
@@ -32,7 +33,13 @@ unsigned int TextureFromFile(const char *path, const std::string &directory, boo
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        std::cout<<
+                    "Engine::TEXTURE::DEBUG::-> loaded succesfully in slot number "<<
+                    Model::texture_layout_counter <<
+                    std::endl;
 
+        Model::texture_layout_counter++;
+//        glActiveTexture(GL_TEXTURE0);
         stbi_image_free(data);
     }
     else
@@ -59,7 +66,7 @@ void Model::Draw(std::shared_ptr<shader> sh){
     glm::mat4 model{1.0f};
     model = glm::translate(model, m_position);
     model = glm::scale(model, m_scale);
-    //    model = glm::rotate(model, glm::radians(90.0f), m_rotation);
+        model = glm::rotate(model, glm::radians(90.0f), m_rotation);
 
     if (sh){
         // calculate for shadow map
@@ -194,6 +201,20 @@ Mesh Model::processMesh(aiMesh *mesh, const aiScene *scene){
 
     aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
 
+    aiColor3D color;
+    Material_INT mat;
+    // Read mtl file vertex data
+    material->Get(AI_MATKEY_COLOR_AMBIENT, color);
+    mat.ka = glm::vec4(color.r, color.g, color.b, 1.0);
+    std::cout <<color.r << color.g << color.b<<std::endl;
+    material->Get(AI_MATKEY_COLOR_DIFFUSE, color);
+    mat.kd = glm::vec4(color.r, color.g, color.b, 1.0);
+    material->Get(AI_MATKEY_COLOR_SPECULAR, color);
+    mat.ks = glm::vec4(color.r, color.g, color.b, 1.0);
+
+
+    std::cout << "\n\n\n\n material colors is " << mat << std::endl;
+
     std::vector<Texture_INT> diffuseMap = loadMaterialTexture(material, aiTextureType_DIFFUSE, "texture_diffuse");
     textures.insert(textures.end(), diffuseMap.begin(), diffuseMap.end());
 
@@ -207,9 +228,11 @@ Mesh Model::processMesh(aiMesh *mesh, const aiScene *scene){
     // 4. height maps
     std::vector<Texture_INT> heightMaps = loadMaterialTexture(material, aiTextureType_AMBIENT, "texture_height");
     textures.insert(textures.end(), heightMaps.begin(), heightMaps.end());
+
+    if(textures.size() <= 0) mat.should_draw = true;
     
     // return a mesh object created from the extracted mesh data
-    return Mesh(vertices, indices, textures);
+    return Mesh(vertices, indices, textures, mat);
 }
 
 std::vector<Texture_INT> Model::loadMaterialTexture(aiMaterial *material, aiTextureType type, std::string typeName){
@@ -233,9 +256,12 @@ std::vector<Texture_INT> Model::loadMaterialTexture(aiMaterial *material, aiText
             texture.id = TextureFromFile(str.C_Str(), this->directory);
             texture.type = typeName;
             texture.path = str.C_Str();
+            texture.bounded_slot = Model::texture_layout_counter -1;
             textures.push_back(texture);
             textures_loaded.push_back(texture);  // store it as texture loaded for entire model, to ensure we won't unnecesery load duplicate textures.
         }
     }
     return textures;
 } 
+
+uint32_t Model::texture_layout_counter =0;

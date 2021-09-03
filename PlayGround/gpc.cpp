@@ -20,7 +20,7 @@ cyclon::ParticleAnchorSpring pas{&anchor_pos, 0.99f, 0.5f};
 cyclon::ParticleContact contact[1];
 cyclon::ParticleRod *rods[4];
 cyclon::ParticleContactResolver pc_resolver{4};
-
+bool first_time = true;
 
 auto now = std::chrono::high_resolution_clock::now();
 
@@ -57,12 +57,12 @@ void Engine::outLoop(){
     newShader3->createProgram();
     int ball = Engine::getRenderer()
             ->LoadModel(
-                "F:/project/SHM/PlayGround/assets/second/cube.obj",
+                "F:/project/SHM/PlayGround/assets/second/cone.obj",
                 newShader3
                 );
     newShader3->use();
     newShader3->useGlobalVariables();
-    GET_MODEL(ball)->setPosition(glm::vec3{-2.0f, 10.0f, 3.0f});
+    GET_MODEL(ball)->setPosition(glm::vec3{0.0f, 1.0f, 2.0f});/*-1.0f, 1.0f, 3.0f*/
     GET_MODEL(ball)->setScale(glm::vec3{0.5, 0.5, 0.5});
 
     newShader4->createProgram();
@@ -75,6 +75,7 @@ void Engine::outLoop(){
     newShader4->useGlobalVariables();
     GET_MODEL(ball1)->setPosition(glm::vec3{-4.0f, 1.0f, -3.0f});
     GET_MODEL(ball1)->setScale(glm::vec3{0.5, 0.5, 0.5});
+    GET_MODEL(ball1)->setRotation(glm::vec3{10.0f});
 
     int ball2 = Engine::getRenderer()
             ->LoadModel(
@@ -147,41 +148,33 @@ void Engine::inLoop(){
                 std::chrono::high_resolution_clock::now() - now)
             .count() > 10)
     {
+//        if (first_time){
+//            first_time = !first_time;
+//            Engine::saveImage("shadow.png");
+//        }
 
-//        g.updateForce(&parts[0], 0.0016f);
-//        parts[0].integrate(0.0016f);
-
-//        GET_MODEL(1)->setPosition(
+//        parts[2].integrate(0.0016f);
+//        GET_MODEL(3)->setPosition(
 //                    glm::vec3(
-//                        parts[0].position.x,
-//                    parts[0].position.y,
-//                parts[0].position.z
+//                        parts[2].position.x,
+//                    parts[2].position.y,
+//                parts[2].position.z
 //                ));
 
-//        g.updateForce(&parts[2], 0.0016f);
-        parts[2].integrate(0.0016f);
-        GET_MODEL(3)->setPosition(
-                    glm::vec3(
-                        parts[2].position.x,
-                    parts[2].position.y,
-                parts[2].position.z
-                ));
+//        pas.updateForce(&parts[1], 0.0016);
+//        parts[1].integrate(0.0016f);
+//        GET_MODEL(4)->setPosition(
+//                    glm::vec3(
+//                        parts[1].position.x,
+//                    parts[1].position.y,
+//                parts[1].position.z
+//                ));
 
-//        contact.resolve(0.0016f);
-
-//        g.updateForce(&parts[1], 0.0016f);
-        pas.updateForce(&parts[1], 0.0016);
-        parts[1].integrate(0.0016f);
-        GET_MODEL(4)->setPosition(
-                    glm::vec3(
-                        parts[1].position.x,
-                    parts[1].position.y,
-                parts[1].position.z
-                ));
-
-        pc_resolver.resolveContacts(contact, 1, 0.0016);
+//        pc_resolver.resolveContacts(contact, 1, 0.0016);
 
     }
+
+    GET_MODEL(2)->setPosition(glm::vec3{sin((float)glfwGetTime()) * 5 , 2.0f, 0.0f});
 }
 }
 

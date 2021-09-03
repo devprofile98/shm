@@ -1,10 +1,11 @@
 #include "Mesh.hpp"
 
 
-Mesh::Mesh(std::vector<Vertex> vertices1, std::vector<uint32_t> indices1, std::vector<Texture_INT> textures1):
+Mesh::Mesh(std::vector<Vertex> vertices1, std::vector<uint32_t> indices1, std::vector<Texture_INT> textures1, Material_INT mat):
     vertices(vertices1),
     indices(indices1),
-    textures(textures1)
+    textures(textures1),
+    mat(mat)
 {
     setupMesh();
 }
@@ -46,7 +47,7 @@ void Mesh::setupMesh()
         shader->use();
         for(unsigned int i = 0; i < textures.size(); i++)
         {
-            glActiveTexture(GL_TEXTURE0 + i); // active proper texture unit before binding
+            glActiveTexture(GL_TEXTURE0 + (int)textures[i].bounded_slot); // active proper texture unit before binding
             // retrieve texture number (the N in diffuse_textureN)
             std::string number;
             std::string name = textures[i].type;
@@ -60,10 +61,15 @@ void Mesh::setupMesh()
                 number = std::to_string(heightNr++); // transfer unsigned int to stream
 
             // now set the sampler to the correct texture unit
-            glUniform1i(glGetUniformLocation(shader->ID, (name + number).c_str()), i);
+            glUniform1i(glGetUniformLocation(shader->ID, (name + number).c_str()), (int)textures[i].bounded_slot);
+//            std::cout << "SET" << name+number << " in slot number: " << i << (int)textures[i].bounded_slot << std::endl;
             // and finally bind the texture
             glBindTexture(GL_TEXTURE_2D, textures[i].id);
+
         }
+
+        shader->setVec4("kd", mat.kd);
+        if (mat.should_draw) shader->setInt("has_material", 1);
         
         // draw mesh
         glBindVertexArray(VAO);
@@ -72,4 +78,5 @@ void Mesh::setupMesh()
 
         // always good practice to set everything back to defaults once configured.
         glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, 0);
     }
