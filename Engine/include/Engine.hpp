@@ -20,7 +20,7 @@ namespace SHM
         OPENGL,
         VULKAN
     };
-
+//    class Application;
     class SHM_EXPORT Engine{
     public:
         Engine(const char* project_name, API_TYPE api_type);
@@ -41,17 +41,23 @@ namespace SHM
         void outLoop();
         void inLoop();
         void saveImage(char* file_path);
-
+//        void setKeyBinding(Application *app);
+        ContextManager* context_manager;
 
 
     private:
-        ContextManager* context_manager;
         void setRenderer(API_TYPE api_type);
         static std::shared_ptr<BaseRenderer> m_renderer;
 
         static std::shared_ptr<Camera > m_camera;
         Handler* m_handler;
     };
+
+
+//    class SHM_EXPORT Application{
+//    public:
+//        virtual void space();
+//    };
 
 }
 #endif //SHM_ENGINE_H

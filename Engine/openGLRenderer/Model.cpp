@@ -66,7 +66,7 @@ void Model::Draw(std::shared_ptr<shader> sh){
     glm::mat4 model{1.0f};
     model = glm::translate(model, m_position);
     model = glm::scale(model, m_scale);
-    model = glm::rotate(model, glm::radians(90.0f), m_rotation);
+    model = glm::rotate(model, glm::radians(1.57f), m_rotation);
 
     if (sh){
         // calculate for shadow map
