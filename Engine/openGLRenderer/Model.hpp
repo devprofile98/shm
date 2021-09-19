@@ -5,6 +5,7 @@
 #include <GLFW/glfw3.h>
 //gl math
 #include <glm/glm.hpp>
+#include <glm/gtx/string_cast.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
@@ -24,6 +25,7 @@ class Model{
 public:
     Model(const char* path, std::shared_ptr<shader> shader_program);
     void Draw(std::shared_ptr<shader> sh=nullptr);
+    void DrawInstances(std::vector<glm::vec3>& positions, std::shared_ptr<shader> shader_program);
     std::vector<Texture_INT> textures_loaded;
     std::vector<Mesh> meshes;
     std::shared_ptr<shader> getShader();

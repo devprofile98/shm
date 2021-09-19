@@ -9,7 +9,7 @@ namespace SHM{
     class SHM_EXPORT ContextManager{
     public:
         ContextManager(const char* window_name);
-        ~ContextManager();
+        virtual ~ContextManager();
 
         static void FrameBufferCallback(GLFWwindow* window, int width, int height);
         GLFWwindow* GetWindow() const;

@@ -10,6 +10,7 @@
 #include "Camera.hpp"
 #include "Handler.hpp"
 #include "openGLRenderer.hpp"
+#include <string_view>
 
 
 namespace SHM

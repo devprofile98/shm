@@ -66,7 +66,7 @@ void Model::Draw(std::shared_ptr<shader> sh){
     glm::mat4 model{1.0f};
     model = glm::translate(model, m_position);
     model = glm::scale(model, m_scale);
-        model = glm::rotate(model, glm::radians(90.0f), m_rotation);
+    model = glm::rotate(model, glm::radians(90.0f), m_rotation);
 
     if (sh){
         // calculate for shadow map
@@ -85,6 +85,14 @@ void Model::Draw(std::shared_ptr<shader> sh){
         else{
             meshes[i].Draw(shader_program);
         }
+    }
+}
+
+void Model::DrawInstances(std::vector<glm::vec3> &positions, std::shared_ptr<shader> sh)
+{
+    for(glm::vec3& pos: positions){
+        m_position = pos;
+        this->Draw(sh);
     }
 }
 

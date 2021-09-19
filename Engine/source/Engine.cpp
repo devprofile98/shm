@@ -65,7 +65,7 @@ void Engine::MainRenderLoop(){
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         context_manager->processInput();
-        inLoop();
+//        inLoop();
 
         // calculate Shadows
         glm::mat4 lightProjection, lightView;
@@ -80,10 +80,10 @@ void Engine::MainRenderLoop(){
 
         glViewport(0, 0, 1024, 1024);
         glBindFramebuffer(GL_FRAMEBUFFER, m_renderer->depth_map_fbo);
-            glClear(GL_DEPTH_BUFFER_BIT);
-            glActiveTexture(GL_TEXTURE0);
-            glBindTexture(GL_TEXTURE_2D, m_renderer->shadow_map_texture);
-            m_renderer->Draw(m_renderer->m_shadow_map_shader);
+        glClear(GL_DEPTH_BUFFER_BIT);
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, m_renderer->shadow_map_texture);
+        m_renderer->Draw(m_renderer->m_shadow_map_shader);
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
         // TODO fix memory leak here
@@ -93,18 +93,25 @@ void Engine::MainRenderLoop(){
         //                    "F:/project/SHM/Engine/assets/model_loading.fs"
         //                     );
         //        }
+        if (glfwGetKey(context_manager->GetWindow(), GLFW_KEY_P) == GLFW_PRESS){
+
+            saveImage("screenshot.png");
+        }
 
         //        m_renderer->shader_program.use();
         SHM::BUFFERS::uploadSubDataToUBO(Engine::getRenderer()->ubo_vp, Engine::getRenderer()->getViewMatrix(), sizeof(glm::mat4));
         SHM::BUFFERS::uploadSubDataToUBO(m_renderer->ubo_vp, lightSpaceMatrix, 2*sizeof(glm::mat4));
 
         m_renderer->setViewMatrix(glm::lookAt(m_camera->m_position, m_camera->m_position + m_camera->m_front, m_camera->m_up));
+
         //        SHM::BUFFERS::uploadSubDataToUBO(m_renderer->ubo_lights, m_camera->m_position, 3*sizeof(glm::vec4));
 
         // drawing user defined objects
         glViewport(0, 0, 1920, 1080);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glBindTexture(GL_TEXTURE_2D, m_renderer->shadow_map_texture);
+        inLoop();
+
         m_renderer->Draw();
 
         m_handler->keyboard(context_manager->GetWindow());
@@ -164,21 +171,21 @@ bool Engine::InitWorld() const
 
 void Engine::saveImage(char *file_path){
 
-        int width=1024, height;
-        glBindBuffer(GL_TEXTURE_2D, getRenderer()->shadow_map_texture);
-        glfwGetFramebufferSize(context_manager->GetWindow(), &width, &height);
-        GLsizei nrchannel = 3;
-        GLsizei stride = width * nrchannel;
-        stride += (stride % 4) ? (4 - stride % 4) : 0;
+    int width=1024, height;
+    glBindBuffer(GL_TEXTURE_2D, getRenderer()->shadow_map_texture);
+    glfwGetFramebufferSize(context_manager->GetWindow(), &width, &height);
+    GLsizei nrchannel = 3;
+    GLsizei stride = width * nrchannel;
+    stride += (stride % 4) ? (4 - stride % 4) : 0;
 
-        GLsizei bufferSize = stride * height;
-        std::vector<char> buffer(bufferSize);
+    GLsizei bufferSize = stride * height;
+    std::vector<char> buffer(bufferSize);
 
-        glPixelStorei(GL_PACK_ALIGNMENT, 4);
-        glReadBuffer(GL_FRONT);
-        glReadPixels(0, 0, width, height, GL_RGB, GL_UNSIGNED_BYTE, buffer.data());
-        stbi_flip_vertically_on_write(true);
-        stbi_write_png(file_path, width, height, nrchannel, buffer.data(), stride);
+    glPixelStorei(GL_PACK_ALIGNMENT, 4);
+    glReadBuffer(GL_FRONT);
+    glReadPixels(0, 0, width, height, GL_RGB, GL_UNSIGNED_BYTE, buffer.data());
+    stbi_flip_vertically_on_write(true);
+    stbi_write_png(file_path, width, height, nrchannel, buffer.data(), stride);
 }
 
 std::shared_ptr<BaseRenderer> Engine::m_renderer = nullptr;
