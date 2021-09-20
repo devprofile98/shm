@@ -121,6 +121,11 @@ void Engine::MainRenderLoop(){
     }
 }
 
+Handler *Engine::getHandler()
+{
+    return m_handler;
+}
+
 std::shared_ptr<shader> Engine::CreateShader(const char *vertex_code, const char *fragment_code)
 {
     std::shared_ptr<shader> sh{new shader{vertex_code, fragment_code}};

@@ -7,6 +7,13 @@
 
 namespace SHM{
 
+    class SHM_EXPORT Command{
+      public:
+        virtual ~Command(){};
+        virtual void execute(){};
+    };
+
+
     class SHM_EXPORT Handler{
         public:
             Handler(GLFWwindow *window, std::shared_ptr<Camera> camera);
@@ -20,6 +27,8 @@ namespace SHM{
             static inline std::shared_ptr<Camera> camera;
             float last_frame_time;
 
+            // buttons
+            Command* space_btn;
 
     };
 

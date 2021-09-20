@@ -31,6 +31,10 @@ void Handler::keyboard(GLFWwindow *window){
         Handler::camera->m_position -= glm::normalize(glm::cross(Handler::camera->m_front, Handler::camera->m_up)) * cameraSpeed;
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
         Handler::camera->m_position += glm::normalize(glm::cross(Handler::camera->m_front, Handler::camera->m_up)) * cameraSpeed;
+
+    if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
+        this->space_btn->execute();
+
 }
 
 
@@ -66,6 +70,4 @@ void Handler::mouse(GLFWwindow *window, double x, double y){
 }
 
 // Camera* SHM::Handler::camera = nullptr;
-
-
 }
