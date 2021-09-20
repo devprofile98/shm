@@ -101,14 +101,15 @@ vec3 CalculateDirectionalLight(DirectionalLight light, vec3 normal, vec3 view_di
     vec3 light_dir = normalize(-light.direction.xyz);
     vec3 ambient = light.ambient.rgb * texture(texture_diffuse1, TexCoords).rgb;
     float diff = max(dot(light_dir,normal), 0.0);
-    vec3 diffuse = light.diffuse.rgb * kd.rgb * diff * texture(texture_diffuse1, TexCoords).rgb;
+    vec3 diffuse = vec3(0.5, 0.5, 0.0) * kd.rgb * diff * texture(texture_diffuse1, TexCoords).rgb;
     vec3 reflectDir = reflect(-light_dir, normal);
     float spec = pow(max(dot(view_dir, reflectDir), 0.0), 64.0);
 
 //    vec3 specular = light.specular.rgb * spec * texture(texture_specular1, TexCoords).rgb;
     float shadow = ShadowCalculation(FragPosLightSpace);
     if (!has_material)
-        return (ambient/5 + diffuse)*(1.0 - shadow); //specular +
+        return (ambient + diffuse); //specular +
+//        return light.direction.rgb;
     else
         return kd.rgb;
 }
@@ -130,8 +131,9 @@ vec3 CalculatePointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 view_
     specular *= attenuation;
     if (!has_material)
         return (ambient/5 + diffuse) * (1.0 - shadow);
+//        return vec3(0.5, 0.0, 0.5);
     else
-        return (kd.rgb);
+        return kd.rgb;
 }
 
 vec3 CalculateSpotLight(SpotLight light, vec3 normal, vec3 fragPos, vec3 view_dir){
@@ -162,8 +164,9 @@ vec3 CalculateSpotLight(SpotLight light, vec3 normal, vec3 fragPos, vec3 view_di
     specular *= attenuation;
     if (!has_material)
         return (ambient/5) + (diffuse  + specular) * (1.0 - shadow);
+//        return vec3(0.5, 0.0, 0.5);
     else
-        return ( kd.rgb);
+        return kd.rgb;
 }
 
 
@@ -175,18 +178,14 @@ void main(){
     vec3 viewDir = normalize(light.viewPos.xyz - FragPos);
     vec3 result= vec3(0);
     result += CalculateDirectionalLight(light, norm, viewDir);
-    for(int i = 0; i < 3; i++)
-       result += CalculateSpotLight(spots[i], norm, FragPos, viewDir);
+//    for(int i = 0; i < 3; i++)
+//       result += CalculateSpotLight(spots[i], norm, FragPos, viewDir);
 
-    for(int j = 0; j < 2; j++){
-        result += CalculatePointLight(point[j], norm, FragPos, viewDir);
-        }
+//    for(int j = 0; j < 2; j++){
+//        result += CalculatePointLight(point[j], norm, FragPos, viewDir);
+//        }
 
     float shadow = ShadowCalculation(FragPosLightSpace);
-//    FragColor = vec4(vec3(shadow) , 1.0);
-//    FragColor = vec4(vec3(texture(shadowMap, TexCoords).r), 1.0);
-//    if (has_material)
-//        FragColor = vec4(kd.rgb, 1.0);
-//    else
+
         FragColor = vec4(result, 1.0);
 }

@@ -112,7 +112,7 @@ Bird birdi;
 // space button --- > add velocity to y axis
 // -----------------------------------------
 void spacebtn(){
-    birdi.velocity += glm::vec2{0.0f, 4.0f};
+    birdi.velocity += glm::vec2{0.0f, 3.0f};
 }
 
 // define action for space button
@@ -159,7 +159,7 @@ void Engine::outLoop(){
     pipeshader->useGlobalVariables();
     int pipe = Engine::getRenderer()
             ->LoadModel(
-                "F:/project/SHM/PlayGround/assets/second/pipe.obj",
+                "F:/project/SHM/PlayGround/assets/second/texturedpipe.obj",
                 pipeshader
                 );
     //    GET_MODEL(pipe)->setScale({1.0, 4.0, 1.0});
@@ -168,7 +168,7 @@ void Engine::outLoop(){
     birdshader->useGlobalVariables();
     int bird = Engine::getRenderer()
             ->LoadModel(
-                "F:/project/SHM/PlayGround/assets/second/bird.obj",
+                "F:/project/SHM/PlayGround/assets/second/texturedbird.obj",
                 birdshader
                 );
     GET_MODEL(bird)->setPosition({-3.0f, 5.7f , 0.0f});
@@ -207,8 +207,9 @@ void Engine::inLoop(){
 
     for (int i=0; i<128;i++)
         if (game.detectCollisions(&birdi, &pipes[i])){
-            std::cout << "collision detected with " << i << std::endl;
-            std::cout << glm::to_string(birdi.centerPosition - pipes[i].centerPosition) <<std::endl;
+//            std::cout << "collision detected with " << i << std::endl;
+            birdi.isAwaik = false;
+//            std::cout << glm::to_string(birdi.centerPosition - pipes[i].centerPosition) <<std::endl;
         }
     line_shader->use();
     glBindVertexArray(vao);
@@ -226,8 +227,8 @@ void Engine::inLoop(){
     glLineWidth(2.0f);
     glPointSize(5.0f);
 
-    birdi.updatePhysics(0.0016);
-    std::cout << birdi.centerPosition.y <<std::endl;
+    birdi.updatePhysics(0.009);
+//    std::cout << birdi.centerPosition.y <<std::endl;
 
 }
 }

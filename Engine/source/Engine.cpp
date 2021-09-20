@@ -17,7 +17,7 @@ Engine::Engine(const char* project_name, API_TYPE api_type){
     SHM::BUFFERS::uploadSubDataToUBO(m_renderer->ubo_vp, m_renderer->getProjectionMatrix());
     SHM::BUFFERS::uploadSubDataToUBO(m_renderer->ubo_vp, m_renderer->getViewMatrix(), sizeof(glm::mat4));
 
-    SHM::BUFFERS::uploadSubDataToUBO(m_renderer->ubo_lights, glm::vec3(0.0,-1.0,0.0));
+    SHM::BUFFERS::uploadSubDataToUBO(m_renderer->ubo_lights, glm::vec3(1.0,-1.0,0.0));
     SHM::BUFFERS::uploadSubDataToUBO(m_renderer->ubo_lights, glm::vec3(0.9,0.9,0.9), sizeof(glm::vec4));
     SHM::BUFFERS::uploadSubDataToUBO(m_renderer->ubo_lights, glm::vec3(-1.0,0.0,-2.0), 3*sizeof(glm::vec4));
 
