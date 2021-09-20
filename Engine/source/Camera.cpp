@@ -11,7 +11,4 @@ namespace SHM{
         m_up = up;
         m_fov = 45.0f;
     }
-
-
-
 }

@@ -12,7 +12,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 add_subdirectory(Engine)
 add_subdirectory(shm-physics)
 add_executable(playground PlayGround/main.cpp)
-target_include_directories(playground PUBLIC Engine/include/ Engine/openGLRenderer/ shm-physics/include/cyclon/)
+target_include_directories(playground PUBLIC Engine/include/ Engine/openGLRenderer/ shm-physics/include/cyclon/ cyclone-physics/include/cyclone)
 
 
 if (WIN32)

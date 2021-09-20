@@ -3,6 +3,7 @@
 #include "Light.hpp"
 #include "chrono"
 #include "physics.hpp"
+#include "glm/gtx/string_cast.hpp"
 
 
 #define GET_MODEL(x) Engine::getRenderer()->getModelByIndex(x)
@@ -53,6 +54,7 @@ void Engine::outLoop(){
     newShader2->use();
     newShader2->useGlobalVariables();
     GET_MODEL(ground)->setPosition(glm::vec3{0.0f, -1.0f, 0.0f});
+    GET_MODEL(ground)->setScale(glm::vec3{0.5f, 0.5f, 0.5f});
 
     newShader3->createProgram();
     int ball = Engine::getRenderer()
@@ -62,7 +64,7 @@ void Engine::outLoop(){
                 );
     newShader3->use();
     newShader3->useGlobalVariables();
-    GET_MODEL(ball)->setPosition(glm::vec3{0.0f, 1.0f, 2.0f});/*-1.0f, 1.0f, 3.0f*/
+    GET_MODEL(ball)->setPosition(glm::vec3{0.0f, 1.0f, 2.0f}); /*-1.0f, 1.0f, 3.0f*/
     GET_MODEL(ball)->setScale(glm::vec3{0.5, 0.5, 0.5});
 
     newShader4->createProgram();

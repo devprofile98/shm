@@ -66,7 +66,7 @@ void Model::Draw(std::shared_ptr<shader> sh){
     glm::mat4 model{1.0f};
     model = glm::translate(model, m_position);
     model = glm::scale(model, m_scale);
-        model = glm::rotate(model, glm::radians(90.0f), m_rotation);
+    model = glm::rotate(model, glm::radians(1.5f), m_rotation);
 
     if (sh){
         // calculate for shadow map
@@ -88,6 +88,14 @@ void Model::Draw(std::shared_ptr<shader> sh){
     }
 }
 
+void Model::DrawInstances(std::vector<glm::vec3> &positions, std::shared_ptr<shader> sh)
+{
+    for(glm::vec3& pos: positions){
+        m_position = pos;
+        this->Draw(sh);
+    }
+}
+
 std::shared_ptr<shader> Model::getShader()
 {
     return shader_program;
@@ -101,11 +109,11 @@ void Model::setPosition(const glm::vec3 &pos)
 void Model::setScale(const glm::vec3 &scale)
 {
     this->m_scale = scale;
-    std::cout << m_scale.x << m_scale.y <<m_scale.z<<std::endl;
 }
 
-void Model::setRotation(const glm::vec3 &rot)
+void Model::setRotation(const glm::vec3 &rot, float radians)
 {
+    this->m_rotation_radians = radians;
     this->m_rotation = rot;
 }
 

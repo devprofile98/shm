@@ -35,6 +35,7 @@
 
 // include common header files
 #include "BaseRenderer.hpp"
+#include "Common.hpp"
 
 // #include "openGLRenderer.hpp"
 #include "context_manager.hpp"
