@@ -39,7 +39,7 @@ namespace SHM
         bool firstMouse=true;
 
         bool InitWorld() const;
-        void outLoop();
+        void outLoop(GLFWwindow* window=nullptr);
         void inLoop();
         void saveImage(char* file_path);
 //        void setKeyBinding(Application *app);
@@ -53,12 +53,6 @@ namespace SHM
         static std::shared_ptr<Camera > m_camera;
         static inline Handler* m_handler;
     };
-
-
-//    class SHM_EXPORT Application{
-//    public:
-//        virtual void space();
-//    };
 
 }
 #endif //SHM_ENGINE_H

@@ -7,6 +7,16 @@
 
 namespace SHM{
 
+//void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
+//{
+//    if (key == GLFW_KEY_SPACE && action == GLFW_PRESS)
+//    {
+//        currentXPos--;
+//        if (currentXPos < 0)
+//            currentXPos = 0;
+//    }
+//}
+
     class SHM_EXPORT Command{
       public:
         virtual ~Command(){};
@@ -29,6 +39,9 @@ namespace SHM{
 
             // buttons
             Command* space_btn;
+//            void execspace(){
+//                space_btn->execute();
+//            }
 
     };
 

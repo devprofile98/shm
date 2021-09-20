@@ -32,7 +32,7 @@ public:
 
     void setPosition(const glm::vec3& pos);
     void setScale(const glm::vec3& scale);
-    void setRotation(const glm::vec3& rot);
+    void setRotation(const glm::vec3& rot, float radians=0);
 
     const glm::vec3 *getPosition() const;
     const glm::vec3 *getScale() const;
@@ -43,6 +43,7 @@ private:
     std::shared_ptr<shader> shader_program;
     void loadModel(std::string path);
     glm::vec3 m_position, m_rotation, m_scale;
+    float m_rotation_radians;
     void processNode(aiNode *node, const aiScene *scene);
     Mesh processMesh(aiMesh *mesh, const aiScene *scene);
     std::vector<Texture_INT> loadMaterialTexture(aiMaterial *mat, aiTextureType type, std::string typeName);

@@ -105,10 +105,10 @@ vec3 CalculateDirectionalLight(DirectionalLight light, vec3 normal, vec3 view_di
     vec3 reflectDir = reflect(-light_dir, normal);
     float spec = pow(max(dot(view_dir, reflectDir), 0.0), 64.0);
 
-//    vec3 specular = light.specular.rgb * spec * texture(texture_specular1, TexCoords).rgb;
+    vec3 specular = vec3(0.5, 0.5, 0.0) * spec * texture(texture_diffuse1, TexCoords).rgb;
     float shadow = ShadowCalculation(FragPosLightSpace);
     if (!has_material)
-        return (ambient + diffuse); //specular +
+        return ambient/2 + (diffuse + specular) * (1- shadow); //specular +
 //        return light.direction.rgb;
     else
         return kd.rgb;

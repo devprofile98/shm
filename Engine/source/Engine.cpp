@@ -23,7 +23,7 @@ Engine::Engine(const char* project_name, API_TYPE api_type){
 
 
     // perparing user configurations
-    outLoop();
+    outLoop(context_manager->GetWindow());
 
 }
 

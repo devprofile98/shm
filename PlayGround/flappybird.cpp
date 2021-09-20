@@ -10,6 +10,8 @@ namespace SHM {
 
 std::shared_ptr<shader> pipeshader = Engine::CreateShader("F:/project/SHM/PlayGround/assets/second/model_loading.vs", "F:/project/SHM/PlayGround/assets/second/model_loading.fs");
 std::shared_ptr<shader> birdshader = Engine::CreateShader("F:/project/SHM/PlayGround/assets/second/model_loading.vs", "F:/project/SHM/PlayGround/assets/second/model_loading.fs");
+std::shared_ptr<shader> wingshader = Engine::CreateShader("F:/project/SHM/PlayGround/assets/second/model_loading.vs", "F:/project/SHM/PlayGround/assets/second/model_loading.fs");
+
 std::shared_ptr<shader> line_shader = Engine::CreateShader("F:/project/SHM/PlayGround/assets/vert.vs", "F:/project/SHM/PlayGround/assets/frag.fs");
 
 float vertices[] = {
@@ -38,6 +40,9 @@ public:
     bool isAwaik = true;
     glm::vec3 centerPosition; // bounding volume center
     glm::vec2 velocity{0.0f, 0.0f};
+    void addVelocity(glm::vec2 v){
+        velocity += v;
+    }
 
     virtual void updatePhysics(float deltatime=0.016f){};
 
@@ -112,7 +117,6 @@ Bird birdi;
 // space button --- > add velocity to y axis
 // -----------------------------------------
 void spacebtn(){
-    birdi.velocity += glm::vec2{0.0f, 3.0f};
 }
 
 // define action for space button
@@ -120,18 +124,35 @@ void spacebtn(){
 class JumpAction: public Command{
 public:
     virtual void execute() override{
-        std::cout << "space pressed"<<std::endl;
-        spacebtn();
+//        std::cout << "space pressed"<<std::endl;
+//        spacebtn();
     };
 };
-JumpAction space{}; // object
+
+void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
+{
+    if (key == GLFW_KEY_SPACE && action == GLFW_PRESS)
+    {
+//        birdi.velocity += glm::vec2{0.0f, 3.0f};
+        if (birdi.velocity.y < 0){
+           birdi.velocity.y = 4;
+        }
+           else {
+            birdi.addVelocity({0.0f, 3.0f});
+           }
+
+    }
+}
+//glfwSetKeyCallback(Engine::context_manager->windows, key_callback);
+//JumpAction space{}; // object
 
 
 //set out of render-loop config and command
-void Engine::outLoop(){
+void Engine::outLoop(GLFWwindow* window){
     Engine::m_camera->m_position = glm::vec3{2.0f, 4.7f, 11.0f};
+    glfwSetKeyCallback(window, key_callback);
 
-    Engine::getHandler()->space_btn = &space;
+//    Engine::getHandler()->space_btn = &space;
 
     // set line prop
     line_shader->createProgram();
@@ -177,6 +198,16 @@ void Engine::outLoop(){
     GET_MODEL(bird)->setRotation({0.0f, 1.0f, 0.0f});
     GET_MODEL(bird)->setRotation({0.0f , -1.0f, 0.0f});
 
+    wingshader->createProgram();
+    wingshader->useGlobalVariables();
+    int wing = Engine::getRenderer()
+            ->LoadModel(
+                "F:/project/SHM/PlayGround/assets/second/texturedwing.obj",
+                wingshader
+                );
+    GET_MODEL(wing)->setScale({0.75f, 0.75f, 0.75f});
+    GET_MODEL(wing)->setRotation({0.0, 1.0, 0.0}, 1.0f);
+
     // building pipes collider
     float height=0.0f;
     for(int i=0; i <128; i++){
@@ -204,12 +235,11 @@ void Engine::inLoop(){
     Engine::m_camera->m_position = glm::vec3{GET_MODEL(1)->getPosition()->x, 4.7f, 11.0f};
     //    birdi.centerPosition = glm::vec3{GET_MODEL(1)->getPosition()->x, GET_MODEL(1)->getPosition()->y, GET_MODEL(1)->getPosition()->z};
     GET_MODEL(1)->setPosition({birdi.centerPosition.x, birdi.centerPosition.y, birdi.centerPosition.z});
-
+    GET_MODEL(2)->setPosition({birdi.centerPosition.x, birdi.centerPosition.y, birdi.centerPosition.z + birdi.radius/2});
+    GET_MODEL(2)->setRotation({0.0, 1.0, 0.0}, 1.0f);
     for (int i=0; i<128;i++)
         if (game.detectCollisions(&birdi, &pipes[i])){
-//            std::cout << "collision detected with " << i << std::endl;
             birdi.isAwaik = false;
-//            std::cout << glm::to_string(birdi.centerPosition - pipes[i].centerPosition) <<std::endl;
         }
     line_shader->use();
     glBindVertexArray(vao);
