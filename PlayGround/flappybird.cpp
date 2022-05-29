@@ -8,11 +8,11 @@
 
 namespace SHM {
 
-std::shared_ptr<shader> pipeshader = Engine::CreateShader("F:/project/SHM/PlayGround/assets/second/model_loading.vs", "F:/project/SHM/PlayGround/assets/second/model_loading.fs");
-std::shared_ptr<shader> birdshader = Engine::CreateShader("F:/project/SHM/PlayGround/assets/second/model_loading.vs", "F:/project/SHM/PlayGround/assets/second/model_loading.fs");
-std::shared_ptr<shader> wingshader = Engine::CreateShader("F:/project/SHM/PlayGround/assets/second/model_loading.vs", "F:/project/SHM/PlayGround/assets/second/model_loading.fs");
+std::shared_ptr<shader> pipeshader = Engine::CreateShader("/home/ahmad/Documents/projects/cpp/shm/PlayGround/assets/second/model_loading.vs", "/home/ahmad/Documents/projects/cpp/shm/PlayGround/assets/second/model_loading.fs");
+std::shared_ptr<shader> birdshader = Engine::CreateShader("/home/ahmad/Documents/projects/cpp/shm/PlayGround/assets/second/model_loading.vs", "/home/ahmad/Documents/projects/cpp/shm/PlayGround/assets/second/model_loading.fs");
+std::shared_ptr<shader> wingshader = Engine::CreateShader("/home/ahmad/Documents/projects/cpp/shm/PlayGround/assets/second/model_loading.vs", "/home/ahmad/Documents/projects/cpp/shm/PlayGround/assets/second/model_loading.fs");
 
-std::shared_ptr<shader> line_shader = Engine::CreateShader("F:/project/SHM/PlayGround/assets/vert.vs", "F:/project/SHM/PlayGround/assets/frag.fs");
+std::shared_ptr<shader> line_shader = Engine::CreateShader("/home/ahmad/Documents/projects/cpp/shm/PlayGround/assets/vert.vs", "/home/ahmad/Documents/projects/cpp/shm/PlayGround/assets/frag.fs");
 
 float vertices[] = {
     0.0f, 0.0f, 0.0f, // 0
@@ -180,7 +180,7 @@ void Engine::outLoop(GLFWwindow* window){
     pipeshader->useGlobalVariables();
     int pipe = Engine::getRenderer()
             ->LoadModel(
-                "F:/project/SHM/PlayGround/assets/second/texturedpipe.obj",
+                "/home/ahmad/Documents/projects/cpp/shm/PlayGround/assets/second/texturedpipe.obj",
                 pipeshader
                 );
     //    GET_MODEL(pipe)->setScale({1.0, 4.0, 1.0});
@@ -189,7 +189,7 @@ void Engine::outLoop(GLFWwindow* window){
     birdshader->useGlobalVariables();
     int bird = Engine::getRenderer()
             ->LoadModel(
-                "F:/project/SHM/PlayGround/assets/second/texturedbird.obj",
+                "/home/ahmad/Documents/projects/cpp/shm/PlayGround/assets/second/texturedbird.obj",
                 birdshader
                 );
     GET_MODEL(bird)->setPosition({-3.0f, 5.7f , 0.0f});
@@ -202,7 +202,7 @@ void Engine::outLoop(GLFWwindow* window){
     wingshader->useGlobalVariables();
     int wing = Engine::getRenderer()
             ->LoadModel(
-                "F:/project/SHM/PlayGround/assets/second/texturedwing.obj",
+                "/home/ahmad/Documents/projects/cpp/shm/PlayGround/assets/second/texturedwing.obj",
                 wingshader
                 );
     GET_MODEL(wing)->setScale({0.75f, 0.75f, 0.75f});

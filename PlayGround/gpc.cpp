@@ -10,9 +10,9 @@
 
 namespace SHM {
 
-std::shared_ptr<shader> newShader2 = Engine::CreateShader("F:/project/SHM/PlayGround/assets/second/model_loading.vs", "F:/project/SHM/PlayGround/assets/second/model_loading.fs");
-std::shared_ptr<shader> newShader3 = Engine::CreateShader("F:/project/SHM/PlayGround/assets/second/model_loading.vs", "F:/project/SHM/PlayGround/assets/second/model_loading.fs");
-std::shared_ptr<shader> newShader4 = Engine::CreateShader("F:/project/SHM/PlayGround/assets/second/model_loading.vs", "F:/project/SHM/PlayGround/assets/second/model_loading.fs");
+std::shared_ptr<shader> newShader2 = Engine::CreateShader("/home/ahmad/Documents/projects/cpp/shm/PlayGround/assets/second/model_loading.vs", "/home/ahmad/Documents/projects/cpp/shm/PlayGround/assets/second/model_loading.fs");
+std::shared_ptr<shader> newShader3 = Engine::CreateShader("/home/ahmad/Documents/projects/cpp/shm/PlayGround/assets/second/model_loading.vs", "/home/ahmad/Documents/projects/cpp/shm/PlayGround/assets/second/model_loading.fs");
+std::shared_ptr<shader> newShader4 = Engine::CreateShader("/home/ahmad/Documents/projects/cpp/shm/PlayGround/assets/second/model_loading.vs", "/home/ahmad/Documents/projects/cpp/shm/PlayGround/assets/second/model_loading.fs");
 
 cyclon::Particle parts[4];
 cyclon::ParticleGravity g{cyclon::Vector3{0.0f, -1.0f, 0.0f}};
@@ -41,14 +41,14 @@ private:
     cyclon::Particle *parts;
 };
 
-void Engine::outLoop(){
+void Engine::outLoop(GLFWwindow* window){
     // write your configuration code to run before Engine::MainRenderLoop
     glm::mat4 model = glm::translate(glm::mat4{1.0}, glm::vec3(-3.0, -1.0, -1.0));
     model = glm::translate(model, glm::vec3(10.0, 10.0, 10.0));
     newShader2->createProgram();
     int ground = Engine::getRenderer()
             ->LoadModel(
-                "F:/project/SHM/PlayGround/assets/second/untitled.obj",
+                "/home/ahmad/Documents/projects/cpp/shm/PlayGround/assets/second/untitled.obj",
                 newShader2
                 );
     newShader2->use();
@@ -59,7 +59,7 @@ void Engine::outLoop(){
     newShader3->createProgram();
     int ball = Engine::getRenderer()
             ->LoadModel(
-                "F:/project/SHM/PlayGround/assets/second/cone.obj",
+                "/home/ahmad/Documents/projects/cpp/shm/PlayGround/assets/second/cone.obj",
                 newShader3
                 );
     newShader3->use();
@@ -70,7 +70,7 @@ void Engine::outLoop(){
     newShader4->createProgram();
     int ball1 = Engine::getRenderer()
             ->LoadModel(
-                "F:/project/SHM/PlayGround/assets/second/cube.obj",
+                "/home/ahmad/Documents/projects/cpp/shm/PlayGround/assets/second/cube.obj",
                 newShader4
                 );
     newShader4->use();
@@ -81,7 +81,7 @@ void Engine::outLoop(){
 
     int ball2 = Engine::getRenderer()
             ->LoadModel(
-                "F:/project/SHM/PlayGround/assets/second/cube.obj",
+                "/home/ahmad/Documents/projects/cpp/shm/PlayGround/assets/second/cube.obj",
                 newShader3
                 );
     newShader3->use();
@@ -92,7 +92,7 @@ void Engine::outLoop(){
 
     int ball3 = Engine::getRenderer()
             ->LoadModel(
-                "F:/project/SHM/PlayGround/assets/second/cube.obj",
+                "/home/ahmad/Documents/projects/cpp/shm/PlayGround/assets/second/cube.obj",
                 newShader3
                 );
     newShader3->use();

@@ -8,7 +8,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
 set(shm_src 
 #    F:/project/SHM/PlayGround/world.cpp
 #    F:/project/SHM/PlayGround/gpc.cpp
-    F:/project/SHM/PlayGround/flappybird.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/../PlayGround/flappybird.cpp
     source/glad.c
     source/Engine.cpp
     source/context_manager.cpp
@@ -36,27 +36,27 @@ set(cyclon_src
     ../shm-physics/src/pcontacts.cpp
 )
 
-set(physic_src
-    ../cyclone-physics/src/body.cpp
-    ../cyclone-physics/src/collide_coarse.cpp
-    ../cyclone-physics/src/collide_fine.cpp
-    ../cyclone-physics/src/contacts.cpp
-    ../cyclone-physics/src/core.cpp
-    ../cyclone-physics/src/fgen.cpp
-    ../cyclone-physics/src/joints.cpp
-    ../cyclone-physics/src/particle.cpp
-    ../cyclone-physics/src/pcontacts.cpp
-    ../cyclone-physics/src/pfgen.cpp
-    ../cyclone-physics/src/plinks.cpp
-    ../cyclone-physics/src/pworld.cpp
-    ../cyclone-physics/src/random.cpp
-    ../cyclone-physics/src/world.cpp
-)
+# set(physic_src
+#     ../cyclone-physics/src/body.cpp
+#     ../cyclone-physics/src/collide_coarse.cpp
+#     ../cyclone-physics/src/collide_fine.cpp
+#     ../cyclone-physics/src/contacts.cpp
+#     ../cyclone-physics/src/core.cpp
+#     ../cyclone-physics/src/fgen.cpp
+#     ../cyclone-physics/src/joints.cpp
+#     ../cyclone-physics/src/particle.cpp
+#     ../cyclone-physics/src/pcontacts.cpp
+#     ../cyclone-physics/src/pfgen.cpp
+#     ../cyclone-physics/src/plinks.cpp
+#     ../cyclone-physics/src/pworld.cpp
+#     ../cyclone-physics/src/random.cpp
+#     ../cyclone-physics/src/world.cpp
+# )
 
 
-add_subdirectory(include/shys)
-add_library(shm-engine SHARED ${opengl_renderer_src} ${shm_src} ${cyclon_src} ${physic_src} )
-target_link_libraries(shm-engine shys)
+# add_subdirectory(include/shys)
+add_library(shm-engine SHARED ${opengl_renderer_src} ${shm_src} ${cyclon_src} )
+target_link_libraries(shm-engine ${CMAKE_DL_LIBS})
 if (WIN32)
     target_link_libraries(shm-engine "F:/project/SHM/Engine/include/GLFW/glfw3.lib")
     target_link_libraries(shm-engine "F:/project/SHM/Engine/include/assimp/assimp-vc142-mtd.lib")
