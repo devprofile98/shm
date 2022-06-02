@@ -4,7 +4,7 @@ project(PlayGround)
 set(THREADS_PREFER_PTHREAD_FLAG ON)
 find_package(Threads REQUIRED)
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
 
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
@@ -26,3 +26,12 @@ elseif(UNIX)
 	target_link_libraries(playground assimp)
 endif()
 target_link_libraries(playground shm-engine)
+
+# copy the asset folder to generated bin file
+# so the asset folder can be used in the game
+# and the path can be relative
+add_custom_command(
+	TARGET playground 
+	POST_BUILD
+	COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/PlayGround/assets ${CMAKE_BINARY_DIR}/bin/assets
+)

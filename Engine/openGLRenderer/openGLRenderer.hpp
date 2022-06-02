@@ -15,14 +15,7 @@
 
 namespace SHM{
 
-//    struct Light{
-//        glm::vec3 position;
-//        glm::vec3 ambient;
-//        glm::vec3 diffuse;
-//    };
-
     class Camera;
-
     class SHM_EXPORT openGLRenderer : public BaseRenderer{
     public:
         openGLRenderer(){};
@@ -48,6 +41,7 @@ namespace SHM{
         std::shared_ptr<Utility> GetUtility() const override;
         int getUboIndex(std::string ub_name) const override;
         Model *getModelByIndex(uint32_t index) override;
+        void registerActor(Actor* actor);
 
 
     private:

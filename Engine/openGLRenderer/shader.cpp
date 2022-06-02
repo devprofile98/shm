@@ -28,7 +28,7 @@ shader::shader(const char* vertexPath, const char* fragmentPath){
         fShaderCode = fragmentStream.str();
     }
     catch(std::ifstream::failure e){
-        std::cout << "SHADER::FILE::READ_ERROR:: CANT OPEN FILE SUCCESFULLY"<<std::endl;
+        std::cout << "SHADER::FILE::READ_ERROR:: FAILED TO OPEN SHADER FILE!"<<std::endl;
     }
 }
 

@@ -6,13 +6,16 @@
 
 namespace SHM{
 
-Engine::Engine(const char* project_name, API_TYPE api_type){
-    std::cout<<"START THE ENGINE"<<std::endl;
+Engine::Engine(const char* project_name, API_TYPE api_type, const char *cwd){
+    // this->cwd = std::string{cwd};
+    Engine::cwd = std::string{ cwd, std::string_view{cwd}.find_last_of("/")};
+    std::cout<<"START THE ENGINE at : " << this->cwd <<std::endl;
     context_manager = new ContextManager{project_name};
     m_handler = new Handler{context_manager->GetWindow(), m_camera};
     setRenderer(api_type);
     m_renderer->GetUtility()->InitWorld();
     InitWorld();
+
     // uploading camera and view matrices to buffers
     SHM::BUFFERS::uploadSubDataToUBO(m_renderer->ubo_vp, m_renderer->getProjectionMatrix());
     SHM::BUFFERS::uploadSubDataToUBO(m_renderer->ubo_vp, m_renderer->getViewMatrix(), sizeof(glm::mat4));
@@ -22,7 +25,7 @@ Engine::Engine(const char* project_name, API_TYPE api_type){
     SHM::BUFFERS::uploadSubDataToUBO(m_renderer->ubo_lights, glm::vec3(-1.0,0.0,-2.0), 3*sizeof(glm::vec4));
 
 
-    // perparing user configurations
+    // loading user configurations
     outLoop(context_manager->GetWindow());
 
 }
@@ -128,7 +131,10 @@ Handler *Engine::getHandler()
 
 std::shared_ptr<shader> Engine::CreateShader(const char *vertex_code, const char *fragment_code)
 {
-    std::shared_ptr<shader> sh{new shader{vertex_code, fragment_code}};
+    std::string _vertexPath {Engine::cwd + vertex_code};
+    std::string _fragmentPath {Engine::cwd + fragment_code};
+    std::cout << "shader file here: " << Engine::cwd << " - "<<  _vertexPath << " - " << _fragmentPath << std::endl;
+    std::shared_ptr<shader> sh{new shader{_vertexPath.c_str(), _fragmentPath.c_str()}};
     return sh;
 }
 
@@ -195,6 +201,7 @@ void Engine::saveImage(char *file_path){
 
 std::shared_ptr<BaseRenderer> Engine::m_renderer = nullptr;
 std::shared_ptr<Camera> Engine::m_camera{ new Camera{}};
+std::string Engine::cwd = ".";
 }
 
 

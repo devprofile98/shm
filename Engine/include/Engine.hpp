@@ -23,13 +23,14 @@ namespace SHM
 //    class Application;
     class SHM_EXPORT Engine{
     public:
-        Engine(const char* project_name, API_TYPE api_type);
+        Engine(const char* project_name, API_TYPE api_type, const char *cwd=nullptr);
         ~Engine();
 
         static std::shared_ptr<BaseRenderer> getRenderer();
         static std::shared_ptr<Camera> getCamera();
         void MainRenderLoop();
         static Handler * getHandler();
+        static std::string cwd;
 
         static std::shared_ptr<shader> CreateShader(const char *vertex_code, const char *fragment_code);
 

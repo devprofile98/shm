@@ -8,6 +8,7 @@
 #include "Core.hpp"
 #include "buffers.hpp"
 #include "Model.hpp"
+#include "Actor.hpp"
 
 
 namespace SHM{
@@ -38,6 +39,7 @@ namespace SHM{
         uint32_t ubo_vp, ubo_lights, ubo_spots, depth_map_fbo;
         std::shared_ptr<shader> m_shadow_map_shader;
         unsigned int shadow_map_texture;
+        std::vector<Actor*> m_actors;
 
     protected:
         glm::mat4 m_model;
@@ -45,6 +47,7 @@ namespace SHM{
         glm::mat4 m_view;
 //        std::shared_ptr<BaseUtility> m_utils;
         std::shared_ptr<Utility> m_utils;
+        
     private:
     };
 

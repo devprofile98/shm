@@ -261,7 +261,7 @@ std::vector<Texture_INT> Model::loadMaterialTexture(aiMaterial *material, aiText
         if(!skip)
         {   // if texture hasn't been loaded already, load it
             Texture_INT texture;
-            PATH(str.data);
+            IND_PATH(str.data);
             texture.id = TextureFromFile(str.C_Str(), this->directory);
             texture.type = typeName;
             texture.path = str.C_Str();

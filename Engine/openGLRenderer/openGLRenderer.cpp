@@ -117,4 +117,8 @@ Model *openGLRenderer::getModelByIndex(uint32_t index)
     return &models[index];
 }
 
+void openGLRenderer::registerActor(Actor* actor){
+    m_actors.push_back(actor);
+}
+
 }

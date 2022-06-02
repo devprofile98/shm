@@ -3,16 +3,14 @@
 #include "Light.hpp"
 #include "chrono"
 #include "glm/gtx/string_cast.hpp"
+#include "staticActor.hpp"
 
 #define GET_MODEL(x) Engine::getRenderer()->getModelByIndex(x)
+#define REGISTER_MODEL(x) Engine::getRenderer()->registerModel(x)
 
 namespace SHM {
 
-std::shared_ptr<shader> pipeshader = Engine::CreateShader("/home/ahmad/Documents/projects/cpp/shm/PlayGround/assets/second/model_loading.vs", "/home/ahmad/Documents/projects/cpp/shm/PlayGround/assets/second/model_loading.fs");
-std::shared_ptr<shader> birdshader = Engine::CreateShader("/home/ahmad/Documents/projects/cpp/shm/PlayGround/assets/second/model_loading.vs", "/home/ahmad/Documents/projects/cpp/shm/PlayGround/assets/second/model_loading.fs");
-std::shared_ptr<shader> wingshader = Engine::CreateShader("/home/ahmad/Documents/projects/cpp/shm/PlayGround/assets/second/model_loading.vs", "/home/ahmad/Documents/projects/cpp/shm/PlayGround/assets/second/model_loading.fs");
-
-std::shared_ptr<shader> line_shader = Engine::CreateShader("/home/ahmad/Documents/projects/cpp/shm/PlayGround/assets/vert.vs", "/home/ahmad/Documents/projects/cpp/shm/PlayGround/assets/frag.fs");
+// std::shared_ptr<shader> line_shader = Engine::CreateShader("/assets/vert.vs", "/assets/frag.fs");
 
 float vertices[] = {
     0.0f, 0.0f, 0.0f, // 0
@@ -143,30 +141,17 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 
     }
 }
-//glfwSetKeyCallback(Engine::context_manager->windows, key_callback);
-//JumpAction space{}; // object
-
 
 //set out of render-loop config and command
 void Engine::outLoop(GLFWwindow* window){
     Engine::m_camera->m_position = glm::vec3{2.0f, 4.7f, 11.0f};
     glfwSetKeyCallback(window, key_callback);
-
+    StaticActor sa{};
 //    Engine::getHandler()->space_btn = &space;
 
-    // set line prop
-    line_shader->createProgram();
-    line_shader->use();
-    line_shader->useGlobalVariables();
-    glGenVertexArrays(1, &vao);
-    glBindVertexArray(vao);
-    glGenBuffers(1, &vbo);
-    glBindBuffer(GL_ARRAY_BUFFER, vbo);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), &vertices, GL_STATIC_DRAW);
-
-    //    glGenBuffers(1, &ebo);
-    //    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
-    //    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(element), &element, GL_STATIC_DRAW);
+    std::shared_ptr<shader> pipeshader = Engine::CreateShader( "/assets/second/model_loading.vs", "/assets/second/model_loading.fs");
+    std::shared_ptr<shader> birdshader = Engine::CreateShader("/assets/second/model_loading.vs", "/assets/second/model_loading.fs");
+    std::shared_ptr<shader> wingshader = Engine::CreateShader("/assets/second/model_loading.vs", "/assets/second/model_loading.fs");
 
     glEnableVertexAttribArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
@@ -180,7 +165,7 @@ void Engine::outLoop(GLFWwindow* window){
     pipeshader->useGlobalVariables();
     int pipe = Engine::getRenderer()
             ->LoadModel(
-                "/home/ahmad/Documents/projects/cpp/shm/PlayGround/assets/second/texturedpipe.obj",
+                std::string{ Engine::cwd + "/assets/second/texturedpipe.obj"}.c_str(),
                 pipeshader
                 );
     //    GET_MODEL(pipe)->setScale({1.0, 4.0, 1.0});
@@ -189,7 +174,7 @@ void Engine::outLoop(GLFWwindow* window){
     birdshader->useGlobalVariables();
     int bird = Engine::getRenderer()
             ->LoadModel(
-                "/home/ahmad/Documents/projects/cpp/shm/PlayGround/assets/second/texturedbird.obj",
+                std::string{ Engine::cwd + "/assets/second/texturedbird.obj"}.c_str(),
                 birdshader
                 );
     GET_MODEL(bird)->setPosition({-3.0f, 5.7f , 0.0f});
@@ -202,7 +187,7 @@ void Engine::outLoop(GLFWwindow* window){
     wingshader->useGlobalVariables();
     int wing = Engine::getRenderer()
             ->LoadModel(
-                "/home/ahmad/Documents/projects/cpp/shm/PlayGround/assets/second/texturedwing.obj",
+                std::string{ Engine::cwd + "/assets/second/texturedwing.obj"}.c_str(),
                 wingshader
                 );
     GET_MODEL(wing)->setScale({0.75f, 0.75f, 0.75f});
@@ -241,24 +226,8 @@ void Engine::inLoop(){
         if (game.detectCollisions(&birdi, &pipes[i])){
             birdi.isAwaik = false;
         }
-    line_shader->use();
-    glBindVertexArray(vao);
-    glm::mat4 model{1.0};
-    model = glm::translate(model, glm::vec3{pipes[7].centerPosition.x, pipes[7].centerPosition.y + pipes[7].halfSize.y, pipes[7].centerPosition.z+2.0f});
-    model = glm::scale(model, glm::vec3{1, 1, 1});
-    line_shader->setMat4("projection", Engine::getRenderer()->getProjectionMatrix());
-    line_shader->setMat4("view", Engine::getRenderer()->getViewMatrix());
-    line_shader->setMat4("model", model);
-
-    glDrawArrays(GL_POINTS,0, 1);
-    /*    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);*/
-    //    glDrawElements(GL_LINES, 8, GL_UNSIGNED_INT, 0);
-    //    glDrawArrays(GL_LINES, 0, 4);
-    glLineWidth(2.0f);
-    glPointSize(5.0f);
 
     birdi.updatePhysics(0.009);
-//    std::cout << birdi.centerPosition.y <<std::endl;
-
 }
+
 }
