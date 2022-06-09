@@ -11,6 +11,12 @@ namespace SHM {
             virtual ~Actor();
 
             virtual void Load();
+
+            virtual std::shared_ptr<shader> setShader(const char*, const char*)=0;
+            virtual std::shared_ptr<shader> setShader(std::shared_ptr<shader>)=0;
+            virtual std::shared_ptr<shader> getShader()=0;
+            virtual int loadModel(const char* file_path)=0;
+
     };
 }
 

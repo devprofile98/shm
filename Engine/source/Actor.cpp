@@ -12,4 +12,5 @@ namespace SHM {
     void Actor::Load(){
         std::cout << "Actor class loaded" << std::endl;
     }
+    
 }

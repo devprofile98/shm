@@ -146,12 +146,6 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 void Engine::outLoop(GLFWwindow* window){
     Engine::m_camera->m_position = glm::vec3{2.0f, 4.7f, 11.0f};
     glfwSetKeyCallback(window, key_callback);
-    StaticActor sa{};
-//    Engine::getHandler()->space_btn = &space;
-
-    std::shared_ptr<shader> pipeshader = Engine::CreateShader( "/assets/second/model_loading.vs", "/assets/second/model_loading.fs");
-    std::shared_ptr<shader> birdshader = Engine::CreateShader("/assets/second/model_loading.vs", "/assets/second/model_loading.fs");
-    std::shared_ptr<shader> wingshader = Engine::CreateShader("/assets/second/model_loading.vs", "/assets/second/model_loading.fs");
 
     glEnableVertexAttribArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
@@ -160,38 +154,28 @@ void Engine::outLoop(GLFWwindow* window){
 
     // prepare bird
 
-    // load pipe
-    pipeshader->createProgram();
-    pipeshader->useGlobalVariables();
-    int pipe = Engine::getRenderer()
-            ->LoadModel(
-                std::string{ Engine::cwd + "/assets/second/texturedpipe.obj"}.c_str(),
-                pipeshader
-                );
-    //    GET_MODEL(pipe)->setScale({1.0, 4.0, 1.0});
+    StaticActor pipe{};
+    pipe.setShader("/assets/second/model_loading.vs", "/assets/second/model_loading.fs");
+    pipe.loadModel(std::string{ Engine::cwd + "/assets/second/texturedpipe.obj"}.c_str());
 
-    birdshader->createProgram();
-    birdshader->useGlobalVariables();
-    int bird = Engine::getRenderer()
-            ->LoadModel(
-                std::string{ Engine::cwd + "/assets/second/texturedbird.obj"}.c_str(),
-                birdshader
-                );
+    StaticActor bird_object{};
+    bird_object.setShader(pipe.getShader());
+    int bird = bird_object.loadModel(std::string{ Engine::cwd + "/assets/second/texturedbird.obj"}.c_str());
+
     GET_MODEL(bird)->setPosition({-3.0f, 5.7f , 0.0f});
     birdi.centerPosition = glm::vec3{-3.0f, 5.7f , 0.0f};
     GET_MODEL(bird)->setScale({0.5f, 0.5f, 0.5f});
     GET_MODEL(bird)->setRotation({0.0f, 1.0f, 0.0f});
     GET_MODEL(bird)->setRotation({0.0f , -1.0f, 0.0f});
 
-    wingshader->createProgram();
-    wingshader->useGlobalVariables();
-    int wing = Engine::getRenderer()
-            ->LoadModel(
-                std::string{ Engine::cwd + "/assets/second/texturedwing.obj"}.c_str(),
-                wingshader
-                );
+
+    StaticActor wing_object{};
+    wing_object.setShader(pipe.getShader());
+    int wing = wing_object.loadModel(std::string{ Engine::cwd + "/assets/second/texturedwing.obj"}.c_str());
+
     GET_MODEL(wing)->setScale({0.75f, 0.75f, 0.75f});
     GET_MODEL(wing)->setRotation({0.0, 1.0, 0.0}, 1.0f);
+
 
     // building pipes collider
     float height=0.0f;

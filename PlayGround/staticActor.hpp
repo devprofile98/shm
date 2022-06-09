@@ -10,6 +10,11 @@ class StaticActor : public SHM::Actor {
         virtual ~StaticActor();
 
         void Load() override;
+
+        std::shared_ptr<shader> setShader(const char* v_shader,const char* f_shader ) override;
+        std::shared_ptr<shader> setShader(std::shared_ptr<shader>) override;
+        std::shared_ptr<shader> getShader();
+        int loadModel(const char* file_path) override;
 };
 
 
