@@ -5,29 +5,18 @@ StaticActor::StaticActor() {
     std::cout << "statically called Static actor to add actor" << std::endl;
 }
 
-StaticActor::~StaticActor() {}
+StaticActor::~StaticActor() {
+    std::cout << "Static Actor destroyed!" << std::endl;
 
-void StaticActor::Load() {}
-
-std::shared_ptr<shader> StaticActor::setShader(const char* v_shader, const char* f_shader) {
-    this->m_object_shader = SHM::Engine::CreateShader( v_shader, f_shader);
-    this->m_object_shader->createProgram();
-    this->m_object_shader->useGlobalVariables();
-    return this->m_object_shader;
 }
 
+void StaticActor::setUpModel() {}
 
-std::shared_ptr<shader> StaticActor::setShader(std::shared_ptr<shader> source_shader) {
-    this->m_object_shader = source_shader;
-    return this->m_object_shader;
+void StaticActor::eachFrame() {
+    // this->model->DrawInstances(pipes_pos, nullptr);
+
 }
 
-std::shared_ptr<shader> StaticActor::getShader(){
-    return this->m_object_shader;
+void StaticActor::add_pipe_pos(const glm::vec3 &pos){
+    pipes_pos.push_back(pos);
 }
-
-int StaticActor::loadModel(const char* file_path){
-    this->model_id = SHM::Engine::getRenderer()->LoadModel(file_path, this->m_object_shader);
-    return this->model_id;
-}
-

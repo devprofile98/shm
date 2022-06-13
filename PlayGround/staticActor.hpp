@@ -1,7 +1,6 @@
 #ifndef PLAYGROUND_STATIC_ACTOR_H
 #define PLAYGROUND_STATIC_ACTOR_H
 
-#include "Engine.hpp"
 #include "Actor.hpp"
 
 class StaticActor : public SHM::Actor {
@@ -9,12 +8,12 @@ class StaticActor : public SHM::Actor {
         StaticActor();
         virtual ~StaticActor();
 
-        void Load() override;
+        void setUpModel() override;
+        void eachFrame() override;
 
-        std::shared_ptr<shader> setShader(const char* v_shader,const char* f_shader ) override;
-        std::shared_ptr<shader> setShader(std::shared_ptr<shader>) override;
-        std::shared_ptr<shader> getShader();
-        int loadModel(const char* file_path) override;
+        std::vector<glm::vec3> pipes_pos; // list of all pipes position in game
+        void add_pipe_pos(const glm::vec3 &pos);
+
 };
 
 

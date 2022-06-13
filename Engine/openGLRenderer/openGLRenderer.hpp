@@ -23,7 +23,7 @@ namespace SHM{
         ~openGLRenderer(){};
         void Draw(std::shared_ptr<shader> sh=nullptr) override;
 
-        int LoadModel(const char* filepath, std::shared_ptr<shader> shader) override;
+        std::unique_ptr<Model> LoadModel(const char* filepath, std::shared_ptr<shader> shader) override;
 
         // Deprecated function
         void LoadShaders(const char* vs_path, const char* fs_path) override;
@@ -41,7 +41,7 @@ namespace SHM{
         std::shared_ptr<Utility> GetUtility() const override;
         int getUboIndex(std::string ub_name) const override;
         Model *getModelByIndex(uint32_t index) override;
-        void registerActor(Actor* actor);
+        // void registerActor(Actor* actor);
 
 
     private:

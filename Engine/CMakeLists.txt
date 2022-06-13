@@ -10,6 +10,8 @@ set(shm_src
 #    F:/project/SHM/PlayGround/gpc.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/../PlayGround/flappybird.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/../PlayGround/staticActor.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/../PlayGround/birdModel.cpp
+
     source/glad.c
     source/Engine.cpp
     source/context_manager.cpp

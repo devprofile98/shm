@@ -4,6 +4,7 @@
 #include "chrono"
 #include "glm/gtx/string_cast.hpp"
 #include "staticActor.hpp"
+#include "birdModel.hpp"
 
 #define GET_MODEL(x) Engine::getRenderer()->getModelByIndex(x)
 #define REGISTER_MODEL(x) Engine::getRenderer()->registerModel(x)
@@ -109,7 +110,6 @@ public:
 
 GameApplication game;
 Pipe *pipes = new Pipe[128];
-std::vector<glm::vec3> pipes_pos; // list of all pipes position in game
 Bird birdi;
 
 // space button --- > add velocity to y axis
@@ -154,27 +154,27 @@ void Engine::outLoop(GLFWwindow* window){
 
     // prepare bird
 
-    StaticActor pipe{};
+    static StaticActor pipe{};
     pipe.setShader("/assets/second/model_loading.vs", "/assets/second/model_loading.fs");
     pipe.loadModel(std::string{ Engine::cwd + "/assets/second/texturedpipe.obj"}.c_str());
 
-    StaticActor bird_object{};
+    static BirdActor bird_object{};
     bird_object.setShader(pipe.getShader());
-    int bird = bird_object.loadModel(std::string{ Engine::cwd + "/assets/second/texturedbird.obj"}.c_str());
+    bird_object.loadModel(std::string{ Engine::cwd + "/assets/second/texturedbird.obj"}.c_str());
 
-    GET_MODEL(bird)->setPosition({-3.0f, 5.7f , 0.0f});
+    // GET_MODEL(bird)->setPosition({-3.0f, 5.7f , 0.0f});
     birdi.centerPosition = glm::vec3{-3.0f, 5.7f , 0.0f};
-    GET_MODEL(bird)->setScale({0.5f, 0.5f, 0.5f});
-    GET_MODEL(bird)->setRotation({0.0f, 1.0f, 0.0f});
-    GET_MODEL(bird)->setRotation({0.0f , -1.0f, 0.0f});
+    // GET_MODEL(bird)->setScale({0.5f, 0.5f, 0.5f});
+    // GET_MODEL(bird)->setRotation({0.0f, 1.0f, 0.0f});
+    // GET_MODEL(bird)->setRotation({0.0f , -1.0f, 0.0f});
 
 
-    StaticActor wing_object{};
-    wing_object.setShader(pipe.getShader());
-    int wing = wing_object.loadModel(std::string{ Engine::cwd + "/assets/second/texturedwing.obj"}.c_str());
+    // StaticActor wing_object{};
+    // wing_object.setShader(pipe.getShader());
+    // int wing = wing_object.loadModel(std::string{ Engine::cwd + "/assets/second/texturedwing.obj"}.c_str());
 
-    GET_MODEL(wing)->setScale({0.75f, 0.75f, 0.75f});
-    GET_MODEL(wing)->setRotation({0.0, 1.0, 0.0}, 1.0f);
+    // GET_MODEL(wing)->setScale({0.75f, 0.75f, 0.75f});
+    // GET_MODEL(wing)->setRotation({0.0, 1.0, 0.0}, 1.0f);
 
 
     // building pipes collider
@@ -185,11 +185,13 @@ void Engine::outLoop(GLFWwindow* window){
         if (i % 2 == 0){
             pipes[i].centerPosition = glm::vec3{static_cast<float>(i*2), height, 0};
             pipes[i].halfSize = glm::vec3{0.95, 2.4f, 0.0};
-            pipes_pos.push_back({static_cast<float>(i*2), height, 0});
+            // pipes_pos.push_back({static_cast<float>(i*2), height, 0});
+            pipe.add_pipe_pos({static_cast<float>(i*2), height, 0});
         }else{
             pipes[i].centerPosition = glm::vec3{static_cast<float>(i*2), 9+height, 0};
             pipes[i].halfSize = glm::vec3{0.95, 2.4f, 0.0};
-            pipes_pos.push_back({static_cast<float>(i*2), 9+height, 0});
+            // pipes_pos.push_back({static_cast<float>(i*2), 9+height, 0});
+            pipe.add_pipe_pos({static_cast<float>(i*2), 9+height, 0});
         }
     }
 
@@ -199,17 +201,17 @@ void Engine::outLoop(GLFWwindow* window){
 void Engine::inLoop(){
     // for pipe in pipes
     // check collision with the bird
-    GET_MODEL(0)->DrawInstances(pipes_pos, nullptr);
+    // GET_MODEL(0)->DrawInstances(pipes_pos, nullptr);
     Engine::m_camera->m_front = glm::vec3{0.0f, 0.0f, -1.0f};
-    Engine::m_camera->m_position = glm::vec3{GET_MODEL(1)->getPosition()->x, 4.7f, 11.0f};
-    //    birdi.centerPosition = glm::vec3{GET_MODEL(1)->getPosition()->x, GET_MODEL(1)->getPosition()->y, GET_MODEL(1)->getPosition()->z};
-    GET_MODEL(1)->setPosition({birdi.centerPosition.x, birdi.centerPosition.y, birdi.centerPosition.z});
-    GET_MODEL(2)->setPosition({birdi.centerPosition.x, birdi.centerPosition.y, birdi.centerPosition.z + birdi.radius/2});
-    GET_MODEL(2)->setRotation({0.0, 1.0, 0.0}, 1.0f);
-    for (int i=0; i<128;i++)
-        if (game.detectCollisions(&birdi, &pipes[i])){
-            birdi.isAwaik = false;
-        }
+    // Engine::m_camera->m_position = glm::vec3{GET_MODEL(1)->getPosition()->x, 4.7f, 11.0f};
+    // //    birdi.centerPosition = glm::vec3{GET_MODEL(1)->getPosition()->x, GET_MODEL(1)->getPosition()->y, GET_MODEL(1)->getPosition()->z};
+    // GET_MODEL(1)->setPosition({birdi.centerPosition.x, birdi.centerPosition.y, birdi.centerPosition.z});
+    // GET_MODEL(2)->setPosition({birdi.centerPosition.x, birdi.centerPosition.y, birdi.centerPosition.z + birdi.radius/2});
+    // GET_MODEL(2)->setRotation({0.0, 1.0, 0.0}, 1.0f);
+    // for (int i=0; i<128;i++)
+    //     if (game.detectCollisions(&birdi, &pipes[i])){
+    //         birdi.isAwaik = false;
+    //     }
 
     birdi.updatePhysics(0.009);
 }

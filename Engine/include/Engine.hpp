@@ -4,13 +4,14 @@
 #define MAKE_SHM_LIB
 
 #include "Core.hpp"
-#include <memory>
-#include <iostream>
-#include <stdint.h>
 #include "Camera.hpp"
 #include "Handler.hpp"
 #include "openGLRenderer.hpp"
+
 #include <string_view>
+#include <memory>
+#include <iostream>
+#include <stdint.h>
 
 
 namespace SHM

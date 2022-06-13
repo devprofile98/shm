@@ -25,6 +25,7 @@ unsigned int TextureFromFile(const char *path, const std::string &directory, boo
 class Model{
 public:
     Model(const char* path, std::shared_ptr<shader> shader_program);
+    ~Model();
     void Draw(std::shared_ptr<shader> sh=nullptr);
     void DrawInstances(std::vector<glm::vec3>& positions, std::shared_ptr<shader> shader_program);
     std::vector<Texture_INT> textures_loaded;

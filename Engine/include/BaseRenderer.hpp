@@ -8,7 +8,7 @@
 #include "Core.hpp"
 #include "buffers.hpp"
 #include "Model.hpp"
-#include "Actor.hpp"
+#include "BaseActor.hpp"
 
 
 namespace SHM{
@@ -18,7 +18,8 @@ namespace SHM{
         BaseRenderer(){};
         virtual ~BaseRenderer(){};
         virtual void Draw(std::shared_ptr<shader> sh=nullptr)=0;
-        virtual int LoadModel(const char* filepath, std::shared_ptr<shader> shader)=0;
+        // virtual int LoadModel(const char* filepath, std::shared_ptr<shader> shader)=0;
+        virtual std::unique_ptr<Model> LoadModel(const char* filepath, std::shared_ptr<shader> shader)=0;
         virtual void LoadShaders(const char* vs_path, const char* fs_path)=0;
         virtual void changePosition(uint32_t object_id,const glm::vec3& vec)=0;
         virtual void changeScale(uint32_t object_id, const glm::vec3& vec)=0;
@@ -39,7 +40,7 @@ namespace SHM{
         uint32_t ubo_vp, ubo_lights, ubo_spots, depth_map_fbo;
         std::shared_ptr<shader> m_shadow_map_shader;
         unsigned int shadow_map_texture;
-        std::vector<Actor*> m_actors;
+        std::vector<BaseActor*> m_actors;
 
     protected:
         glm::mat4 m_model;

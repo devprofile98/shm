@@ -20,18 +20,23 @@ openGLRenderer::openGLRenderer(std::shared_ptr<Camera> camera)
 }
 
 void openGLRenderer::Draw(std::shared_ptr<shader> sh){
-    for(unsigned long long i=0;i< models.size(); i++){
-        if(sh) models[i].Draw(sh);
-        else models[i].Draw();
+    for(unsigned long long i=0;i< m_actors.size(); i++){
+        if(sh){
+            m_actors[i]->model->Draw(sh);
+        }
+        else m_actors[i]->model->Draw();
+
     }
 }
 
-int openGLRenderer::LoadModel(const char* filepath, std::shared_ptr<shader> shader){
+std::unique_ptr<Model> openGLRenderer::LoadModel(const char* filepath, std::shared_ptr<shader> shader){
     uint32_t temp = models.size();
-    Model model{filepath, shader};
-    models.push_back(model);
-    std::cout << "value is : " << models.size() << &models.at(temp) <<std::endl;
-    return temp;
+    std::unique_ptr<Model> model{new Model{filepath, shader}};
+    // Model model{filepath, shader};
+    // models.push_back(model);
+
+    // std::cout << "value is : " << models.size() << &models.at(temp) <<std::endl;
+    return model;
 }
 
 void openGLRenderer::LoadShaders(const char* vs_path, const char* fs_path)
@@ -117,8 +122,8 @@ Model *openGLRenderer::getModelByIndex(uint32_t index)
     return &models[index];
 }
 
-void openGLRenderer::registerActor(Actor* actor){
-    m_actors.push_back(actor);
-}
+// void openGLRenderer::registerActor(Actor* actor){
+//     m_actors.push_back(actor);
+// }
 
 }
