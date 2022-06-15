@@ -161,7 +161,7 @@ void Engine::outLoop(GLFWwindow* window){
     static BirdActor bird_object{};
     bird_object.setShader(pipe.getShader());
     bird_object.loadModel(std::string{ Engine::cwd + "/assets/second/texturedbird.obj"}.c_str());
-
+    bird_object.setUpModel();
     // GET_MODEL(bird)->setPosition({-3.0f, 5.7f , 0.0f});
     birdi.centerPosition = glm::vec3{-3.0f, 5.7f , 0.0f};
     // GET_MODEL(bird)->setScale({0.5f, 0.5f, 0.5f});
@@ -185,12 +185,10 @@ void Engine::outLoop(GLFWwindow* window){
         if (i % 2 == 0){
             pipes[i].centerPosition = glm::vec3{static_cast<float>(i*2), height, 0};
             pipes[i].halfSize = glm::vec3{0.95, 2.4f, 0.0};
-            // pipes_pos.push_back({static_cast<float>(i*2), height, 0});
             pipe.add_pipe_pos({static_cast<float>(i*2), height, 0});
         }else{
             pipes[i].centerPosition = glm::vec3{static_cast<float>(i*2), 9+height, 0};
             pipes[i].halfSize = glm::vec3{0.95, 2.4f, 0.0};
-            // pipes_pos.push_back({static_cast<float>(i*2), 9+height, 0});
             pipe.add_pipe_pos({static_cast<float>(i*2), 9+height, 0});
         }
     }

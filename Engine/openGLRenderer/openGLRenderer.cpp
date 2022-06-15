@@ -21,6 +21,7 @@ openGLRenderer::openGLRenderer(std::shared_ptr<Camera> camera)
 
 void openGLRenderer::Draw(std::shared_ptr<shader> sh){
     for(unsigned long long i=0;i< m_actors.size(); i++){
+        m_actors[i]->eachFrame();
         if(sh){
             m_actors[i]->model->Draw(sh);
         }

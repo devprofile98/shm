@@ -13,5 +13,8 @@ void BirdActor::setUpModel() {
     this->model->setScale({0.5f, 0.5f, 0.5f});
     // this->model->setRotation({0.0f, 1.0f, 0.0f});
     this->model->setRotation({0.0f , -1.0f, 0.0f});
+    SHM::Engine::getCamera()->attachTo(this, (uint8_t)SHM::Camera::ATTACH::X);
 }
-void BirdActor::eachFrame() {}
+void BirdActor::eachFrame() {
+    this->model->setPosition({this->model->getPosition()->x + 0.1, 0, 0});
+}

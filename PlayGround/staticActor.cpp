@@ -10,11 +10,11 @@ StaticActor::~StaticActor() {
 
 }
 
-void StaticActor::setUpModel() {}
+void StaticActor::setUpModel() {
+}
 
 void StaticActor::eachFrame() {
-    // this->model->DrawInstances(pipes_pos, nullptr);
-
+    this->model->DrawInstances(pipes_pos, nullptr);
 }
 
 void StaticActor::add_pipe_pos(const glm::vec3 &pos){

@@ -120,7 +120,7 @@ void Engine::MainRenderLoop(){
         m_handler->keyboard(context_manager->GetWindow());
         glfwSwapBuffers(context_manager->GetWindow());
         glfwPollEvents();
-
+        Engine::getCamera()->updateCameraPosition();
     }
 }
 
