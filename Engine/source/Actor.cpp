@@ -7,7 +7,9 @@ namespace SHM {
         std::cout << "statically called Static actor to add actor" << std::endl;
     }
 
-    Actor::~Actor() {}
+    Actor::~Actor() {
+        delete m_physic_component;
+    }
 
     void Actor::Load() {}
 

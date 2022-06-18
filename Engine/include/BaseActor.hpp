@@ -5,7 +5,6 @@
 // #include "Engine.hpp"
 #include "shader.hpp"
 #include "Model.hpp"
-
 namespace SHM {
     class BaseActor {
         public: 
@@ -17,6 +16,7 @@ namespace SHM {
             std::unique_ptr<Model> model;
             virtual void setUpModel()=0;
             virtual void eachFrame()=0;
+
         protected:
             std::shared_ptr<shader> m_object_shader;
     };

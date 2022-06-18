@@ -93,22 +93,22 @@ public:
 
 // represent common functionality for game
 // ------------------------------------------
-class GameApplication{
-public:
-    // detect collisions
-    bool detectCollisions(Bird *b, Pipe *p){
-        // rectangle and circle detection
-        glm::vec2 diff{b->centerPosition - p->centerPosition};
-        //        glm::vec2 diff{center - p->center};
-        glm::vec2 clamped = glm::clamp(diff, glm::vec2(-p->halfSize), glm::vec2(p->halfSize));
-        glm::vec2 closest = glm::vec2(p->centerPosition) + clamped;
-        diff= closest - glm::vec2(b->centerPosition);
-        float result = glm::length(diff);
-        return result < b->radius;
-    };
-};
+// class GameApplication{
+// public:
+//     // detect collisions
+//     bool detectCollisions(Bird *b, Pipe *p){
+//         // rectangle and circle detection
+//         glm::vec2 diff{b->centerPosition - p->centerPosition};
+//         //        glm::vec2 diff{center - p->center};
+//         glm::vec2 clamped = glm::clamp(diff, glm::vec2(-p->halfSize), glm::vec2(p->halfSize));
+//         glm::vec2 closest = glm::vec2(p->centerPosition) + clamped;
+//         diff= closest - glm::vec2(b->centerPosition);
+//         float result = glm::length(diff);
+//         return result < b->radius;
+//     };
+// };
 
-GameApplication game;
+// GameApplication game;
 Pipe *pipes = new Pipe[128];
 Bird birdi;
 

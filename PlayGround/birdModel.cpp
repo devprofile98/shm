@@ -2,6 +2,7 @@
 
 BirdActor::BirdActor(){
     SHM::Engine::getRenderer()->m_actors.push_back(this);
+    this->m_physic_component = new BirdPhysic{{0.0f, 0.0f, 0.0f}, {0.1f, 0.0f }}; 
     std::cout << "BIRD Actor created!" << std::endl;
 }
 BirdActor::~BirdActor(){
@@ -16,5 +17,5 @@ void BirdActor::setUpModel() {
     SHM::Engine::getCamera()->attachTo(this, (uint8_t)SHM::Camera::ATTACH::X);
 }
 void BirdActor::eachFrame() {
-    this->model->setPosition({this->model->getPosition()->x + 0.1, 0, 0});
+    this->model->setPosition({this->model->getPosition()->x + 0.1, 4, 0});
 }

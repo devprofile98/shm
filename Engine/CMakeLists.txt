@@ -11,6 +11,7 @@ set(shm_src
     ${CMAKE_CURRENT_SOURCE_DIR}/../PlayGround/flappybird.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/../PlayGround/staticActor.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/../PlayGround/birdModel.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/../PlayGround/birdPhysic.cpp
 
     source/glad.c
     source/Engine.cpp
@@ -38,8 +39,15 @@ set(cyclon_src
     ../shm-physics/src/pcontacts.cpp
 )
 
+set(physic_src
+    include/physics/BasePhysics.cpp
+    include/physics/WorldObject.cpp
+    include/physics/PhysicWorld.cpp
+
+)
+
 # add_subdirectory(include/shys)
-add_library(shm-engine SHARED ${opengl_renderer_src} ${shm_src} ${cyclon_src} )
+add_library(shm-engine SHARED ${opengl_renderer_src} ${shm_src} ${cyclon_src} ${physic_src} )
 target_link_libraries(shm-engine ${CMAKE_DL_LIBS})
 if (WIN32)
     # make sure that the paths point to the right files
@@ -52,5 +60,11 @@ elseif(UNIX)
 endif()
 
 target_include_directories(shm-engine PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/openGLRenderer/)
-target_include_directories(shm-engine PUBLIC include/ ../shm-physics/include/cyclon/ ../cyclone-physics/include/)
+target_include_directories(
+    shm-engine PUBLIC 
+    
+    include/
+    ../shm-physics/include/cyclon/
+    ../cyclone-physics/include/
+    )
 

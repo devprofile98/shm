@@ -2,6 +2,7 @@
 #define PLAYGROUND_BIRD_ACTOR_H
 
 #include "Actor.hpp"
+#include "birdPhysic.hpp"
 
 class BirdActor : public SHM::Actor {
     public:

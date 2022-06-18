@@ -5,6 +5,7 @@
 #include <iostream>
 #include "Engine.hpp"
 #include "BaseActor.hpp"
+#include "physics/BasePhysics.hpp"
 
 
 namespace SHM {
@@ -19,6 +20,9 @@ namespace SHM {
             void loadModel(const char* file_path) override;
             void setUpModel() override;
             void eachFrame() override;
+
+            PHYSICS::PhysicObject* m_physic_component=nullptr;
+
 
     };
 }
