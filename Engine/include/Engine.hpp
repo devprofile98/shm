@@ -13,6 +13,8 @@
 #include <iostream>
 #include <stdint.h>
 
+#include "physics/PhysicWorld.hpp"
+
 
 namespace SHM
 {
@@ -46,6 +48,7 @@ namespace SHM
         void saveImage(char* file_path);
 //        void setKeyBinding(Application *app);
         ContextManager* context_manager;
+        static PHYSICS::World* getPhysicWorld();
 
 
     private:
@@ -54,6 +57,7 @@ namespace SHM
 
         static std::shared_ptr<Camera > m_camera;
         static inline Handler* m_handler;
+        static PHYSICS::World* m_world;
     };
 
 }

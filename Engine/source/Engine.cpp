@@ -33,6 +33,7 @@ Engine::Engine(const char* project_name, API_TYPE api_type, const char *cwd){
 Engine::~Engine(){
     delete context_manager;
     delete m_handler;
+    delete m_world;
     std::cout<<"Engine Destructed"<<std::endl;
 }
 
@@ -61,7 +62,7 @@ std::shared_ptr<Camera> Engine::getCamera(){
 
 // Main Render Loop
 // ---------------------------------
-void Engine::MainRenderLoop(){
+void Engine::MainRenderLoop() {
     while (!glfwWindowShouldClose(context_manager->GetWindow())){
 
         glClearColor(0.4f, 0.7f, 0.8f, 1.0f);
@@ -120,6 +121,7 @@ void Engine::MainRenderLoop(){
         m_handler->keyboard(context_manager->GetWindow());
         glfwSwapBuffers(context_manager->GetWindow());
         glfwPollEvents();
+        Engine::m_world->updateWorld(0.01f);
         Engine::getCamera()->updateCameraPosition();
     }
 }
@@ -180,6 +182,10 @@ bool Engine::InitWorld() const
     return -23;
 }
 
+PHYSICS::World* Engine::getPhysicWorld() {
+    return Engine::m_world;
+}
+
 void Engine::saveImage(char *file_path){
 
     int width=1024, height;
@@ -202,6 +208,8 @@ void Engine::saveImage(char *file_path){
 std::shared_ptr<BaseRenderer> Engine::m_renderer = nullptr;
 std::shared_ptr<Camera> Engine::m_camera{ new Camera{}};
 std::string Engine::cwd = ".";
+        // initialize physics
+PHYSICS::World* Engine::m_world = new PHYSICS::World{};
 }
 
 

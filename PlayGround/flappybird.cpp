@@ -157,6 +157,7 @@ void Engine::outLoop(GLFWwindow* window){
     static StaticActor pipe{};
     pipe.setShader("/assets/second/model_loading.vs", "/assets/second/model_loading.fs");
     pipe.loadModel(std::string{ Engine::cwd + "/assets/second/texturedpipe.obj"}.c_str());
+    pipe.setUpModel();
 
     static BirdActor bird_object{};
     bird_object.setShader(pipe.getShader());
@@ -178,20 +179,7 @@ void Engine::outLoop(GLFWwindow* window){
 
 
     // building pipes collider
-    float height=0.0f;
-    for(int i=0; i <128; i++){
-        height = static_cast<float>(std::rand() % 3);
 
-        if (i % 2 == 0){
-            pipes[i].centerPosition = glm::vec3{static_cast<float>(i*2), height, 0};
-            pipes[i].halfSize = glm::vec3{0.95, 2.4f, 0.0};
-            pipe.add_pipe_pos({static_cast<float>(i*2), height, 0});
-        }else{
-            pipes[i].centerPosition = glm::vec3{static_cast<float>(i*2), 9+height, 0};
-            pipes[i].halfSize = glm::vec3{0.95, 2.4f, 0.0};
-            pipe.add_pipe_pos({static_cast<float>(i*2), 9+height, 0});
-        }
-    }
 
 }
 

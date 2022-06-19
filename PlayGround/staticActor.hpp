@@ -2,6 +2,7 @@
 #define PLAYGROUND_STATIC_ACTOR_H
 
 #include "Actor.hpp"
+#include "pipePhysic.hpp"
 
 class StaticActor : public SHM::Actor {
     public:

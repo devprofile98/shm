@@ -2,8 +2,8 @@
 
 namespace SHM::PHYSICS {
     
-    PhysicObject::PhysicObject(const glm::vec3& center, glm::vec2 velocity)
-            : centerPosition(center), velocity(velocity)
+    PhysicObject::PhysicObject(glm::vec3* center, glm::vec2 velocity, bool moveable)
+            : centerPosition(center), velocity(velocity), is_moveable(moveable) 
     {
 
     }

@@ -124,6 +124,12 @@ const glm::vec3 *Model::getPosition() const
     return &m_position;
 }
 
+
+glm::vec3 *Model::getPosition()
+{
+    return &m_position;
+}
+
 const glm::vec3 *Model::getScale() const
 {
     return &m_scale;

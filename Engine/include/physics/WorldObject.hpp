@@ -6,7 +6,7 @@
 namespace SHM::PHYSICS {   
     class WorldObject : public PhysicObject {
         public:
-            WorldObject(const glm::vec3& center, glm::vec2 velocity);
+            WorldObject(glm::vec3* center, glm::vec2 velocity, bool moveable=false);
             ~WorldObject();
     };
 }

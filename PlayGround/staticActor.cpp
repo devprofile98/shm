@@ -11,6 +11,22 @@ StaticActor::~StaticActor() {
 }
 
 void StaticActor::setUpModel() {
+    float height=0.0f;
+    for(int i=0; i <128; i++){
+        height = static_cast<float>(std::rand() % 3);
+
+        if (i % 2 == 0){
+            PipePhysic* another_pipe = new PipePhysic{new glm::vec3{static_cast<float>(i*2), height, 0}, {0.0f, 0.0f}};
+            another_pipe->halfSize = glm::vec3{0.95, 2.4f, 0.0};
+            SHM::Engine::getPhysicWorld()->registerToPhysics(another_pipe);
+            pipes_pos.push_back({static_cast<float>(i*2), height, 0});
+        }else{
+            PipePhysic* another_pipe = new PipePhysic{new glm::vec3{static_cast<float>(i*2), 9+height, 0}, {0.0f, 0.0f}};
+            another_pipe->halfSize = glm::vec3{0.95, 2.4f, 0.0};
+            SHM::Engine::getPhysicWorld()->registerToPhysics(another_pipe);
+            pipes_pos.push_back({static_cast<float>(i*2), 9+height, 0});
+        }
+    }
 }
 
 void StaticActor::eachFrame() {

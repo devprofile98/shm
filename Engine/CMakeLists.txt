@@ -12,6 +12,7 @@ set(shm_src
     ${CMAKE_CURRENT_SOURCE_DIR}/../PlayGround/staticActor.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/../PlayGround/birdModel.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/../PlayGround/birdPhysic.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/../PlayGround/pipePhysic.cpp
 
     source/glad.c
     source/Engine.cpp

@@ -37,6 +37,7 @@ public:
     void setRotation(const glm::vec3& rot, float radians=0);
 
     const glm::vec3 *getPosition() const;
+    glm::vec3 *getPosition();
     const glm::vec3 *getScale() const;
     const glm::vec3 *getRotation() const;
     static uint32_t texture_layout_counter;
