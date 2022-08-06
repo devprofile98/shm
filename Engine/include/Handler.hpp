@@ -1,9 +1,11 @@
 #ifndef SHM_HANDLER_H
 #define SHM_HANDLER_H
 
+#include <memory>
+
 #include "Core.hpp"
 #include "Camera.hpp"
-#include <memory>
+#include "BaseActor.hpp"
 
 namespace SHM{
 
@@ -20,7 +22,9 @@ namespace SHM{
     class SHM_EXPORT Command{
       public:
         virtual ~Command(){};
-        virtual void execute(){};
+        virtual void execute(const BaseActor& actor){
+            std::cout << "HERE A COMMAND JUST BEEN EXECUTED!" << std::endl;
+        };
     };
 
 
