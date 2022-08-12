@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.14)
 
 project(SHM VERSION 0.1)
 
-set (CMAKE_CXX_STANDARD 20)
+set (CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
 
 set(shm_src 
@@ -50,6 +50,8 @@ set(physic_src
 # add_subdirectory(include/shys)
 add_library(shm-engine SHARED ${opengl_renderer_src} ${shm_src} ${cyclon_src} ${physic_src} )
 target_link_libraries(shm-engine ${CMAKE_DL_LIBS})
+target_compile_options(shm-engine PRIVATE -g)
+
 if (WIN32)
     # make sure that the paths point to the right files
     target_link_libraries(shm-engine "F:/project/SHM/Engine/include/GLFW/glfw3.lib")

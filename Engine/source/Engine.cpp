@@ -4,72 +4,74 @@
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "stbi_image_write.h"
 
-namespace SHM{
+namespace SHM {
 
-Engine::Engine(const char* project_name, API_TYPE api_type, const char *cwd){
+Engine::Engine(const char *project_name, API_TYPE api_type, const char *cwd) {
     // this->cwd = std::string{cwd};
-    Engine::cwd = std::string{ cwd, std::string_view{cwd}.find_last_of("/")};
-    std::cout<<"START THE ENGINE at : " << this->cwd <<std::endl;
+    this->m_renderer = nullptr;
+    this->m_camera = std::shared_ptr<Camera>{new Camera{}};
+    this->cwd = ".";
+    // initialize physics
+    this->m_world = new PHYSICS::World{};
+    Engine::cwd = std::string{cwd, std::string_view{cwd}.find_last_of("/")};
+    std::cout << "START THE ENGINE at : " << this->cwd << std::endl;
     context_manager = new ContextManager{project_name};
     m_handler = new Handler{context_manager->GetWindow(), m_camera};
     setRenderer(api_type);
+    std::cout << "BEFORE" << std::endl;
     m_renderer->GetUtility()->InitWorld();
     InitWorld();
+    std::cout << "AFTER" << std::endl;
 
     // uploading camera and view matrices to buffers
     SHM::BUFFERS::uploadSubDataToUBO(m_renderer->ubo_vp, m_renderer->getProjectionMatrix());
     SHM::BUFFERS::uploadSubDataToUBO(m_renderer->ubo_vp, m_renderer->getViewMatrix(), sizeof(glm::mat4));
 
-    SHM::BUFFERS::uploadSubDataToUBO(m_renderer->ubo_lights, glm::vec3(1.0,-1.0,0.0));
-    SHM::BUFFERS::uploadSubDataToUBO(m_renderer->ubo_lights, glm::vec3(0.9,0.9,0.9), sizeof(glm::vec4));
-    SHM::BUFFERS::uploadSubDataToUBO(m_renderer->ubo_lights, glm::vec3(-1.0,0.0,-2.0), 3*sizeof(glm::vec4));
-
-
-    // loading user configurations
-    outLoop(context_manager->GetWindow());
-
+    SHM::BUFFERS::uploadSubDataToUBO(m_renderer->ubo_lights, glm::vec3(1.0, -1.0, 0.0));
+    SHM::BUFFERS::uploadSubDataToUBO(m_renderer->ubo_lights, glm::vec3(0.9, 0.9, 0.9), sizeof(glm::vec4));
+    SHM::BUFFERS::uploadSubDataToUBO(m_renderer->ubo_lights, glm::vec3(-1.0, 0.0, -2.0), 3 * sizeof(glm::vec4));
 }
 
-Engine::~Engine(){
+Engine::~Engine() {
     delete context_manager;
     delete m_handler;
     delete m_world;
-    std::cout<<"Engine Destructed"<<std::endl;
+    std::cout << "Engine Destructed" << std::endl;
 }
 
-void Engine::setRenderer(API_TYPE api_type){
-    switch (api_type){
-    case OPENGL:
-        m_renderer = std::shared_ptr<openGLRenderer>{new openGLRenderer{m_camera}}; // set OPENGL as graphic api
-        break;
-    case VULKAN:
-        m_renderer = std::shared_ptr<openGLRenderer>{new openGLRenderer{m_camera}}; // set VULKAN as graphic api
-        break;
-    default:
-        m_renderer = std::shared_ptr<openGLRenderer>{new openGLRenderer{m_camera}};
-        break;
+void Engine::setRenderer(API_TYPE api_type) {
+    switch (api_type) {
+        case OPENGL:
+            m_renderer = std::shared_ptr<openGLRenderer>{new openGLRenderer{m_camera}}; // set OPENGL as graphic api
+            break;
+        case VULKAN:
+            m_renderer = std::shared_ptr<openGLRenderer>{new openGLRenderer{m_camera}}; // set VULKAN as graphic api
+            break;
+        default:
+            m_renderer = std::shared_ptr<openGLRenderer>{new openGLRenderer{m_camera}};
+            break;
     }
 }
 
 // return renderer object to user
-std::shared_ptr<BaseRenderer> Engine::getRenderer(){
-    return SHM::Engine::m_renderer;
-}
+std::shared_ptr<BaseRenderer> Engine::getRenderer() { return SHM::Engine::GetEngine()->m_renderer; }
 
-std::shared_ptr<Camera> Engine::getCamera(){
-    return SHM::Engine::m_camera;
-}
+std::shared_ptr<Camera> Engine::getCamera() { return SHM::Engine::GetEngine()->m_camera; }
 
 // Main Render Loop
 // ---------------------------------
 void Engine::MainRenderLoop() {
-    while (!glfwWindowShouldClose(context_manager->GetWindow())){
+
+    // loading user configurations
+    outLoop(context_manager->GetWindow());
+
+    while (!glfwWindowShouldClose(context_manager->GetWindow())) {
 
         glClearColor(0.4f, 0.7f, 0.8f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         context_manager->processInput();
-//        inLoop();
+        //        inLoop();
 
         // calculate Shadows
         glm::mat4 lightProjection, lightView;
@@ -97,14 +99,15 @@ void Engine::MainRenderLoop() {
         //                    "F:/project/SHM/Engine/assets/model_loading.fs"
         //                     );
         //        }
-        if (glfwGetKey(context_manager->GetWindow(), GLFW_KEY_P) == GLFW_PRESS){
+        if (glfwGetKey(context_manager->GetWindow(), GLFW_KEY_P) == GLFW_PRESS) {
 
             saveImage("screenshot.png");
         }
 
         //        m_renderer->shader_program.use();
-        SHM::BUFFERS::uploadSubDataToUBO(Engine::getRenderer()->ubo_vp, Engine::getRenderer()->getViewMatrix(), sizeof(glm::mat4));
-        SHM::BUFFERS::uploadSubDataToUBO(m_renderer->ubo_vp, lightSpaceMatrix, 2*sizeof(glm::mat4));
+        SHM::BUFFERS::uploadSubDataToUBO(Engine::getRenderer()->ubo_vp, Engine::getRenderer()->getViewMatrix(),
+                                         sizeof(glm::mat4));
+        SHM::BUFFERS::uploadSubDataToUBO(m_renderer->ubo_vp, lightSpaceMatrix, 2 * sizeof(glm::mat4));
 
         m_renderer->setViewMatrix(glm::lookAt(m_camera->m_position, m_camera->m_position + m_camera->m_front, m_camera->m_up));
 
@@ -118,7 +121,9 @@ void Engine::MainRenderLoop() {
 
         m_renderer->Draw();
 
-        m_handler->keyboard(context_manager->GetWindow());
+        auto key = m_handler->keyboard(context_manager->GetWindow());
+        if (key != nullptr && mainCharacter != nullptr)
+            key->execute(mainCharacter);
         glfwSwapBuffers(context_manager->GetWindow());
         glfwPollEvents();
         Engine::m_world->updateWorld(0.01f);
@@ -126,23 +131,18 @@ void Engine::MainRenderLoop() {
     }
 }
 
-Handler *Engine::getHandler()
-{
-    return m_handler;
-}
+Handler *Engine::getHandler() { return m_handler; }
 
-std::shared_ptr<shader> Engine::CreateShader(const char *vertex_code, const char *fragment_code)
-{
-    std::string _vertexPath {Engine::cwd + vertex_code};
-    std::string _fragmentPath {Engine::cwd + fragment_code};
-    std::cout << "shader file here: " << Engine::cwd << " - "<<  _vertexPath << " - " << _fragmentPath << std::endl;
+std::shared_ptr<shader> Engine::CreateShader(const char *vertex_code, const char *fragment_code) {
+    std::string _vertexPath{Engine::cwd + vertex_code};
+    std::string _fragmentPath{Engine::cwd + fragment_code};
+    std::cout << "shader file here: " << Engine::cwd << " - " << _vertexPath << " - " << _fragmentPath << std::endl;
     std::shared_ptr<shader> sh{new shader{_vertexPath.c_str(), _fragmentPath.c_str()}};
     return sh;
 }
 
-void Engine::mouse(GLFWwindow* window, double xpos, double ypos){
-    if (firstMouse)
-    {
+void Engine::mouse(GLFWwindow *window, double xpos, double ypos) {
+    if (firstMouse) {
         last_x = xpos;
         last_y = ypos;
         firstMouse = false;
@@ -168,27 +168,25 @@ void Engine::mouse(GLFWwindow* window, double xpos, double ypos){
     m_camera->m_front = glm::normalize(front);
 }
 
-bool Engine::InitWorld() const
-{
+bool Engine::InitWorld() {
     int b{-2};
     // configure GLOBAL variables
-    getRenderer()->ubo_vp = getRenderer()->GetUtility()->createNewGlobalBlock("VPMatrices", 3*sizeof(glm::mat4),&b);
-    getRenderer()->ubo_lights = getRenderer()->GetUtility()->createNewGlobalBlock("Lights", 16*4 + 16*12*5,&b);
-    getRenderer()->ubo_spots = getRenderer()->GetUtility()->createNewGlobalBlock("Spots", 12*(112),&b);
+    std::cout << "what is going on" << m_renderer->getUboIndex("light") << std::endl;
+    m_renderer->ubo_vp = m_renderer->GetUtility()->createNewGlobalBlock("VPMatrices", 3 * sizeof(glm::mat4), &b);
+    m_renderer->ubo_lights = m_renderer->GetUtility()->createNewGlobalBlock("Lights", 16 * 4 + 16 * 12 * 5, &b);
+    m_renderer->ubo_spots = m_renderer->GetUtility()->createNewGlobalBlock("Spots", 12 * (112), &b);
 
     // configure shadow
-    getRenderer()->enableShadows();
+    m_renderer->enableShadows();
 
     return -23;
 }
 
-PHYSICS::World* Engine::getPhysicWorld() {
-    return Engine::m_world;
-}
+PHYSICS::World *Engine::getPhysicWorld() { return Engine::m_world; }
 
-void Engine::saveImage(char *file_path){
+void Engine::saveImage(char *file_path) {
 
-    int width=1024, height;
+    int width = 1024, height;
     glBindBuffer(GL_TEXTURE_2D, getRenderer()->shadow_map_texture);
     glfwGetFramebufferSize(context_manager->GetWindow(), &width, &height);
     GLsizei nrchannel = 3;
@@ -205,11 +203,20 @@ void Engine::saveImage(char *file_path){
     stbi_write_png(file_path, width, height, nrchannel, buffer.data(), stride);
 }
 
-std::shared_ptr<BaseRenderer> Engine::m_renderer = nullptr;
-std::shared_ptr<Camera> Engine::m_camera{ new Camera{}};
-std::string Engine::cwd = ".";
-        // initialize physics
-PHYSICS::World* Engine::m_world = new PHYSICS::World{};
+std::shared_ptr<Engine> Engine::GetEngine() {
+    if (m_engine == nullptr) {
+        // m_engine = startEngine("playground", OPENGL, "/home/ahmad/Documents/projects/cpp/shm/build/bin");
+        std::cout << "ENGINE: "
+                  << "Engine has not been started yet!" << std::endl;
+    }
+    return m_engine;
 }
 
+std::shared_ptr<Engine> Engine::startEngine(const char *project_name, API_TYPE api_type, const char *cwd) {
+    m_engine = std::shared_ptr<Engine>{new Engine(project_name, api_type, cwd)};
+    return m_engine;
+}
 
+void Engine::setMovingCharacter(BaseActor *actor) { this->mainCharacter = actor; }
+
+} // namespace SHM

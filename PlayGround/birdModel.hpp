@@ -5,14 +5,13 @@
 #include "birdPhysic.hpp"
 
 class BirdActor : public SHM::Actor {
-    public:
-        BirdActor();
-        virtual ~BirdActor();
+  public:
+    BirdActor();
+    virtual ~BirdActor();
 
-        void setUpModel() override;
-        void eachFrame() override;
-
+    void setUpModel() override;
+    void eachFrame() override;
+    void jump() override;
 };
 
-
-#endif //PLAYGROUND_BIRD_ACTOR_H
+#endif // PLAYGROUND_BIRD_ACTOR_H

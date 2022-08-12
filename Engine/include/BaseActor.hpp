@@ -15,6 +15,7 @@ namespace SHM {
             virtual void loadModel(const char* file_path)=0;
             std::unique_ptr<Model> model;
             virtual void setUpModel()=0;
+            virtual void jump() =0 ;
             virtual void eachFrame()=0;
 
         protected:
