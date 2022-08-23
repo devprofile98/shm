@@ -7,6 +7,7 @@
 #include "Camera.hpp"
 #include "Handler.hpp"
 #include "openGLRenderer.hpp"
+#include "InputHandler.hpp"
 
 #include <string_view>
 #include <memory>
@@ -45,6 +46,7 @@ class SHM_EXPORT Engine {
     BaseActor *mainCharacter;
     PHYSICS::World *getPhysicWorld();
     void setMovingCharacter(BaseActor *actor);
+    void setActionToKey(KEY key, Command *command);
 
     static std::shared_ptr<Engine> GetEngine();
     static std::shared_ptr<Engine> startEngine(const char *project_name, API_TYPE api_type, const char *cwd = nullptr);

@@ -11,7 +11,6 @@ Handler::Handler(GLFWwindow *window, std::shared_ptr<Camera> camera) {
     Handler::firstMouse = true;
     last_frame_time = glfwGetTime();
     glfwSetCursorPosCallback(window, &Handler::mouse);
-    this->space_btn = new Command{};
 }
 
 Command *Handler::keyboard(GLFWwindow *window) {
@@ -24,7 +23,7 @@ Command *Handler::keyboard(GLFWwindow *window) {
 
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
         // Handler::camera->m_position += cameraSpeed * Handler::camera->m_front;
-        return nullptr;
+        return this->w_btn;
     }
     if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
         // Handler::camera->m_position -= cameraSpeed * Handler::camera->m_front;
@@ -32,13 +31,38 @@ Command *Handler::keyboard(GLFWwindow *window) {
     }
     if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
         return this->space_btn;
-    // if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-    //     Handler::camera->m_position -= glm::normalize(glm::cross(Handler::camera->m_front, Handler::camera->m_up)) *
-    //     cameraSpeed;
-    // if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-    //     Handler::camera->m_position += glm::normalize(glm::cross(Handler::camera->m_front, Handler::camera->m_up)) *
-    //     cameraSpeed;
+
     return nullptr;
+}
+
+void Handler::setKeyToCommand(KEY key, Command *command) {
+    switch (key) {
+        case KEY::KEYBOARD_A:
+
+            break;
+        case KEY::KEYBOARD_S:
+
+            break;
+        case KEY::KEYBOARD_W:
+            std::cout << "SET W KEY -------------------------------\n";
+            this->w_btn = command;
+            break;
+        case KEY::KEYBOARD_D:
+
+            break;
+        case KEY::KEYBOARD_ENTER:
+
+            break;
+        case KEY::KEYBOARD_SPACE:
+            this->space_btn = command;
+            break;
+        case KEY::KEYBOARD_ESCAPE:
+
+            break;
+
+        default:
+            break;
+    }
 }
 
 // TODO fix mouse callback function

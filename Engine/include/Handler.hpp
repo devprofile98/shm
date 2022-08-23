@@ -6,24 +6,9 @@
 #include "Core.hpp"
 #include "Camera.hpp"
 #include "BaseActor.hpp"
+#include "InputHandler.hpp"
 
 namespace SHM {
-
-// void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
-//{
-//     if (key == GLFW_KEY_SPACE && action == GLFW_PRESS)
-//     {
-//         currentXPos--;
-//         if (currentXPos < 0)
-//             currentXPos = 0;
-//     }
-// }
-
-class SHM_EXPORT Command {
-  public:
-    virtual ~Command(){};
-    virtual void execute(BaseActor *actor) { actor->jump(); };
-};
 
 class SHM_EXPORT Handler {
   public:
@@ -42,8 +27,10 @@ class SHM_EXPORT Handler {
     static inline std::shared_ptr<Camera> camera;
     float last_frame_time;
 
+    void setKeyToCommand(KEY key, Command *command);
+
     // buttons
-    Command *space_btn;
+    Command *space_btn, *w_btn;
 };
 
 } // namespace SHM

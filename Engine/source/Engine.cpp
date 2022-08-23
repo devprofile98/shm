@@ -217,6 +217,8 @@ std::shared_ptr<Engine> Engine::startEngine(const char *project_name, API_TYPE a
     return m_engine;
 }
 
+void Engine::setActionToKey(KEY key, Command *command) { this->m_handler->setKeyToCommand(key, command); }
+
 void Engine::setMovingCharacter(BaseActor *actor) { this->mainCharacter = actor; }
 
 } // namespace SHM

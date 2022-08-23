@@ -3,6 +3,7 @@
 
 #include "Actor.hpp"
 #include "birdPhysic.hpp"
+#include "InputHandler.hpp"
 
 class BirdActor : public SHM::Actor {
   public:
@@ -12,6 +13,14 @@ class BirdActor : public SHM::Actor {
     void setUpModel() override;
     void eachFrame() override;
     void jump() override;
+};
+
+class JumpAction : public SHM::Command {
+    void execute(BaseActor *actor) override;
+};
+
+class WAction : public SHM::Command {
+    void execute(BaseActor *actor) override;
 };
 
 #endif // PLAYGROUND_BIRD_ACTOR_H
