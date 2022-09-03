@@ -11,8 +11,6 @@
 
 namespace SHM {
 
-// std::shared_ptr<shader> line_shader = Engine::CreateShader("/assets/vert.vs", "/assets/frag.fs");
-
 float vertices[] = {
     0.0f, 0.0f, 0.0f,  // 0
     0.0f, 0.0f, -1.0f, // 1
@@ -79,23 +77,6 @@ class Pipe : public PhysicObject {
     glm::vec3 halfSize;
 };
 
-// represent common functionality for game
-// ------------------------------------------
-// class GameApplication{
-// public:
-//     // detect collisions
-//     bool detectCollisions(Bird *b, Pipe *p){
-//         // rectangle and circle detection
-//         glm::vec2 diff{b->centerPosition - p->centerPosition};
-//         //        glm::vec2 diff{center - p->center};
-//         glm::vec2 clamped = glm::clamp(diff, glm::vec2(-p->halfSize), glm::vec2(p->halfSize));
-//         glm::vec2 closest = glm::vec2(p->centerPosition) + clamped;
-//         diff= closest - glm::vec2(b->centerPosition);
-//         float result = glm::length(diff);
-//         return result < b->radius;
-//     };
-// };
-
 // GameApplication game;
 Pipe *pipes = new Pipe[128];
 Bird birdi;
@@ -133,9 +114,6 @@ void Engine::outLoop(GLFWwindow *window) {
     glEnableVertexAttribArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, 0);
-    //    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
-
-    // prepare bird
 
     static StaticActor pipe{};
     pipe.setShader("/assets/second/model_loading.vs", "/assets/second/model_loading.fs");
@@ -146,37 +124,12 @@ void Engine::outLoop(GLFWwindow *window) {
     bird_object.setShader(pipe.getShader());
     bird_object.loadModel(std::string{Engine::cwd + "/assets/second/texturedbird.obj"}.c_str());
     bird_object.setUpModel();
-    // GET_MODEL(bird)->setPosition({-3.0f, 5.7f , 0.0f});
     birdi.centerPosition = glm::vec3{-3.0f, 5.7f, 0.0f};
-    // GET_MODEL(bird)->setScale({0.5f, 0.5f, 0.5f});
-    // GET_MODEL(bird)->setRotation({0.0f, 1.0f, 0.0f});
-    // GET_MODEL(bird)->setRotation({0.0f , -1.0f, 0.0f});
-
-    // StaticActor wing_object{};
-    // wing_object.setShader(pipe.getShader());
-    // int wing = wing_object.loadModel(std::string{ Engine::cwd + "/assets/second/texturedwing.obj"}.c_str());
-
-    // GET_MODEL(wing)->setScale({0.75f, 0.75f, 0.75f});
-    // GET_MODEL(wing)->setRotation({0.0, 1.0, 0.0}, 1.0f);
-
-    // building pipes collider
 }
 
 // set in loop config and command
 void Engine::inLoop() {
-    // for pipe in pipes
-    // check collision with the bird
-    // GET_MODEL(0)->DrawInstances(pipes_pos, nullptr);
     Engine::m_camera->m_front = glm::vec3{0.0f, 0.0f, -1.0f};
-    // Engine::m_camera->m_position = glm::vec3{GET_MODEL(1)->getPosition()->x, 4.7f, 11.0f};
-    // //    birdi.centerPosition = glm::vec3{GET_MODEL(1)->getPosition()->x, GET_MODEL(1)->getPosition()->y,
-    // GET_MODEL(1)->getPosition()->z}; GET_MODEL(1)->setPosition({birdi.centerPosition.x, birdi.centerPosition.y,
-    // birdi.centerPosition.z}); GET_MODEL(2)->setPosition({birdi.centerPosition.x, birdi.centerPosition.y, birdi.centerPosition.z
-    // + birdi.radius/2}); GET_MODEL(2)->setRotation({0.0, 1.0, 0.0}, 1.0f); for (int i=0; i<128;i++)
-    //     if (game.detectCollisions(&birdi, &pipes[i])){
-    //         birdi.isAwaik = false;
-    //     }
-
     birdi.updatePhysics(0.009);
 }
 

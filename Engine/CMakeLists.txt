@@ -6,13 +6,6 @@ set (CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
 
 set(shm_src 
-#    F:/project/SHM/PlayGround/world.cpp
-#    F:/project/SHM/PlayGround/gpc.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/../PlayGround/flappybird.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/../PlayGround/staticActor.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/../PlayGround/birdModel.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/../PlayGround/birdPhysic.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/../PlayGround/pipePhysic.cpp
 
     source/glad.c
     source/Engine.cpp

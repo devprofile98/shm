@@ -11,7 +11,16 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
 add_subdirectory(Engine)
-add_executable(playground PlayGround/main.cpp)
+add_executable(
+	playground 
+	PlayGround/main.cpp 
+	PlayGround/flappybird.cpp
+	PlayGround/flappybird.cpp
+	PlayGround/staticActor.cpp
+	PlayGround/birdModel.cpp
+	PlayGround/birdPhysic.cpp
+	PlayGround/pipePhysic.cpp
+	)
 target_include_directories(playground PUBLIC Engine/include/ Engine/openGLRenderer/ shm-physics/include/cyclon/ cyclone-physics/include/cyclone)
 target_compile_options(playground PUBLIC -g)
 

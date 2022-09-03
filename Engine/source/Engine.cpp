@@ -17,8 +17,8 @@ Engine::Engine(const char *project_name, API_TYPE api_type, const char *cwd) {
     std::cout << "START THE ENGINE at : " << this->cwd << std::endl;
     context_manager = new ContextManager{project_name};
     m_handler = new Handler{context_manager->GetWindow(), m_camera};
-    setRenderer(api_type);
     std::cout << "BEFORE" << std::endl;
+    setRenderer(api_type);
     m_renderer->GetUtility()->InitWorld();
     InitWorld();
     std::cout << "AFTER" << std::endl;
@@ -69,7 +69,6 @@ void Engine::MainRenderLoop() {
 
         glClearColor(0.4f, 0.7f, 0.8f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
         context_manager->processInput();
         //        inLoop();
 
@@ -104,14 +103,14 @@ void Engine::MainRenderLoop() {
             saveImage("screenshot.png");
         }
 
-        //        m_renderer->shader_program.use();
+        // m_renderer->shader_program.use();
         SHM::BUFFERS::uploadSubDataToUBO(Engine::getRenderer()->ubo_vp, Engine::getRenderer()->getViewMatrix(),
                                          sizeof(glm::mat4));
         SHM::BUFFERS::uploadSubDataToUBO(m_renderer->ubo_vp, lightSpaceMatrix, 2 * sizeof(glm::mat4));
 
         m_renderer->setViewMatrix(glm::lookAt(m_camera->m_position, m_camera->m_position + m_camera->m_front, m_camera->m_up));
 
-        //        SHM::BUFFERS::uploadSubDataToUBO(m_renderer->ubo_lights, m_camera->m_position, 3*sizeof(glm::vec4));
+        // SHM::BUFFERS::uploadSubDataToUBO(m_renderer->ubo_lights, m_camera->m_position, 3*sizeof(glm::vec4));
 
         // drawing user defined objects
         glViewport(0, 0, 1920, 1080);
@@ -126,7 +125,7 @@ void Engine::MainRenderLoop() {
             key->execute(mainCharacter);
         glfwSwapBuffers(context_manager->GetWindow());
         glfwPollEvents();
-        Engine::m_world->updateWorld(0.01f);
+        // Engine::m_world->updateWorld(0.01f);
         Engine::getCamera()->updateCameraPosition();
     }
 }
@@ -220,5 +219,8 @@ std::shared_ptr<Engine> Engine::startEngine(const char *project_name, API_TYPE a
 void Engine::setActionToKey(KEY key, Command *command) { this->m_handler->setKeyToCommand(key, command); }
 
 void Engine::setMovingCharacter(BaseActor *actor) { this->mainCharacter = actor; }
+
+void Engine::inLoop(){};
+void Engine::outLoop(GLFWwindow *window){};
 
 } // namespace SHM

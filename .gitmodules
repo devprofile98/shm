@@ -1,3 +1,6 @@
 [submodule "shm-physics"]
 	path = shm-physics
 	url = https://github.com/devprofile98/shm-physics.git
+[submodule "shm-cli"]
+	path = shm-cli
+	url = https://github.com/devprofile98/shm-cli.git
