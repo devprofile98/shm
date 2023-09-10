@@ -13,6 +13,7 @@ class BirdPhysic: public PHYSICS::WorldObject{
         ~BirdPhysic();
 
         void checkBoundaries();
+        void updatePhysics(float deltatime=0.016f) override;
 };
 
 #endif //PLAYGROUND_BIRD_PHYSIC_ACTOR_H

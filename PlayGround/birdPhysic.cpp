@@ -13,3 +13,6 @@ void BirdPhysic::checkBoundaries() {
         isAwake = false;
     }
 }
+
+void BirdPhysic::updatePhysics(float deltatime){
+}

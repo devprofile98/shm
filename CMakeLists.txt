@@ -15,7 +15,6 @@ add_executable(
 	playground 
 	PlayGround/main.cpp 
 	PlayGround/flappybird.cpp
-	PlayGround/flappybird.cpp
 	PlayGround/staticActor.cpp
 	PlayGround/birdModel.cpp
 	PlayGround/birdPhysic.cpp
@@ -31,7 +30,7 @@ if (WIN32)
 elseif(UNIX)
 	target_link_libraries(playground ${CMAKE_DL_LIBS})
 	target_link_libraries(playground Threads::Threads)
-	target_link_libraries(playground glfw3)
+	target_link_libraries(playground glfw3 X11)
 	target_link_libraries(playground assimp)
 endif()
 target_link_libraries(playground shm-engine)

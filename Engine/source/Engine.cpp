@@ -125,7 +125,7 @@ void Engine::MainRenderLoop() {
             key->execute(mainCharacter);
         glfwSwapBuffers(context_manager->GetWindow());
         glfwPollEvents();
-        // Engine::m_world->updateWorld(0.01f);
+        Engine::m_world->updateWorld(0.01f);
         Engine::getCamera()->updateCameraPosition();
     }
 }

@@ -32,8 +32,9 @@ namespace SHM::PHYSICS {
                             glm::vec2 closest = glm::vec2(*(this->m_all_objects[sec]->centerPosition)) + clamped;
                             diff = closest - glm::vec2(*(this->m_all_objects[first]->centerPosition));
                             float result = glm::length(diff);
-                            if (result < this->m_all_objects[first]->m_object_radius)
+                            if (result < this->m_all_objects[first]->m_object_radius){
                                 this->m_all_objects[first]->isAwake = false;
+                            }
                         }
                         else if (this->m_all_objects[sec]->shape == PHYSICS::OBJECT_SHAPE::CIRCLE) {
 
@@ -47,11 +48,8 @@ namespace SHM::PHYSICS {
 
                         }
                     }
-
                 }
-
             }
         }
     }
-
 }

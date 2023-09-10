@@ -51,7 +51,7 @@ if (WIN32)
     target_link_libraries(shm-engine "F:/project/SHM/Engine/include/assimp/assimp-vc142-mtd.lib")
     
 elseif(UNIX)
-    target_link_libraries(shm-engine glfw3)
+    target_link_libraries(shm-engine glfw3 X11)
     target_link_libraries(shm-engine assimp)
 endif()
 
