@@ -39,7 +39,7 @@ class SHM_EXPORT Engine {
 
     bool InitWorld();
     void outLoop(GLFWwindow *window = nullptr);
-    void inLoop();
+    void Loop();
     void saveImage(char *file_path);
     //        void setKeyBinding(Application *app);
     ContextManager *context_manager;

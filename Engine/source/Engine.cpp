@@ -116,7 +116,7 @@ void Engine::MainRenderLoop() {
         glViewport(0, 0, 1920, 1080);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glBindTexture(GL_TEXTURE_2D, m_renderer->shadow_map_texture);
-        inLoop();
+        Loop();
 
         m_renderer->Draw();
 
@@ -220,7 +220,7 @@ void Engine::setActionToKey(KEY key, Command *command) { this->m_handler->setKey
 
 void Engine::setMovingCharacter(BaseActor *actor) { this->mainCharacter = actor; }
 
-void Engine::inLoop(){};
+void Engine::Loop(){};
 void Engine::outLoop(GLFWwindow *window){};
 
 } // namespace SHM

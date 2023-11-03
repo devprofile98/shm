@@ -26,12 +26,12 @@ set(opengl_renderer_src
     openGLRenderer/texture.cpp
 )
 
-set(cyclon_src
-    ../shm-physics/src/particle.cpp
-    ../shm-physics/src/pfgen.cpp
-    ../shm-physics/src/plinks.cpp
-    ../shm-physics/src/pcontacts.cpp
-)
+# set(cyclon_src
+#     ../shm-physics/src/particle.cpp
+#     ../shm-physics/src/pfgen.cpp
+#     ../shm-physics/src/plinks.cpp
+#     ../shm-physics/src/pcontacts.cpp
+# )
 
 set(physic_src
     include/physics/BasePhysics.cpp
@@ -40,8 +40,8 @@ set(physic_src
 
 )
 
-# add_subdirectory(include/shys)
-add_library(shm-engine SHARED ${opengl_renderer_src} ${shm_src} ${cyclon_src} ${physic_src} )
+# add_subdirectory(include/shys) /*${cyclon_src}*/
+add_library(shm-engine SHARED ${opengl_renderer_src} ${shm_src} ${physic_src} )
 target_link_libraries(shm-engine ${CMAKE_DL_LIBS})
 target_compile_options(shm-engine PRIVATE -g)
 
@@ -60,7 +60,7 @@ target_include_directories(
     shm-engine PUBLIC 
     
     include/
-    ../shm-physics/include/cyclon/
-    ../cyclone-physics/include/
+    # ../shm-physics/include/cyclon/
+    # ../cyclone-physics/include/
     )
 

@@ -16,7 +16,7 @@ class SHM_EXPORT Handler {
     ~Handler(){};
     /* TODO
         add a keyboard-command mapping function in Engine
-        overrid custom Command with some key-map enum for ex: overridekey(KEY_SPACE, myCustomCommand)
+        override custom Command with some key-map enum for ex: overridekey(KEY_SPACE, myCustomCommand)
     */
 
     Command *keyboard(GLFWwindow *window);
