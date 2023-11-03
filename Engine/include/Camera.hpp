@@ -33,7 +33,7 @@ namespace SHM {
             void updateCameraPosition();
 
         private:
-            const glm::vec3 * m_internal_position;
+            glm::vec3 * m_internal_position;
             uint8_t m_attach_mode = 0;
     };
 

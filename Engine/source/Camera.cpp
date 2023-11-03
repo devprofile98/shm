@@ -10,6 +10,7 @@ namespace SHM{
         m_position = position;
         m_up = up;
         m_fov = 45.0f;
+        m_internal_position = new glm::vec3{0.0, 0.0, 0.0};
     }
 
     Camera::~Camera() {
