@@ -6,7 +6,6 @@ set (CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
 
 set(shm_src 
-
     source/glad.c
     source/Engine.cpp
     source/context_manager.cpp
@@ -14,6 +13,9 @@ set(shm_src
     source/Camera.cpp
     source/Light.cpp
     source/Actor.cpp
+
+    # this files are for the internal use of the engine
+    internal/CameraActor.cpp
 )
 
 set(opengl_renderer_src
@@ -25,22 +27,12 @@ set(opengl_renderer_src
     openGLRenderer/openglutility.cpp
     openGLRenderer/texture.cpp
 )
-
-# set(cyclon_src
-#     ../shm-physics/src/particle.cpp
-#     ../shm-physics/src/pfgen.cpp
-#     ../shm-physics/src/plinks.cpp
-#     ../shm-physics/src/pcontacts.cpp
-# )
-
 set(physic_src
     include/physics/BasePhysics.cpp
     include/physics/WorldObject.cpp
     include/physics/PhysicWorld.cpp
-
 )
 
-# add_subdirectory(include/shys) /*${cyclon_src}*/
 add_library(shm-engine SHARED ${opengl_renderer_src} ${shm_src} ${physic_src} )
 target_link_libraries(shm-engine ${CMAKE_DL_LIBS})
 target_compile_options(shm-engine PRIVATE -g)
@@ -60,7 +52,6 @@ target_include_directories(
     shm-engine PUBLIC 
     
     include/
-    # ../shm-physics/include/cyclon/
-    # ../cyclone-physics/include/
+    internal/
     )
 

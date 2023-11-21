@@ -6,37 +6,42 @@
 
 namespace SHM {
 
-    class Camera{
+enum class Movement {
+  Forward,
+  Backward,
+  Right,
+  Left,
+  Upward,
+  Downward,
+};
 
-        public:
 
-            enum class ATTACH{
-                X=1,
-                Y=2,
-                Z=4,
-                ALL=7
-            };
+class Camera {
 
-            Camera(glm::vec3 position = glm::vec3(0.0f,0.0f,0.0f), glm::vec3 up = glm::vec3(0.0f,1.0f,0.0f));
-            ~Camera();
+  public:
+    enum class ATTACH : uint8_t { None = 0, X = 1, Y = 2, Z = 4, All = 7 };
 
-            glm::vec3 m_position;
-            glm::vec3 m_up;
-            glm::vec3 m_front;
-            glm::vec3 m_right;
-            glm::vec3 m_world_up;
-            float m_fov;
-            float m_yaw;
-            float m_pitch;
+    Camera(glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f));
+    ~Camera();
 
-            void attachTo(BaseActor* actor, uint8_t attach = 0);
-            void updateCameraPosition();
+    glm::vec3 m_position;
+    glm::vec3 m_up;
+    glm::vec3 m_front;
+    glm::vec3 m_right;
+    glm::vec3 m_world_up;
+    float m_fov;
+    float m_yaw;
+    float m_pitch;
 
-        private:
-            glm::vec3 * m_internal_position;
-            uint8_t m_attach_mode = 0;
-    };
+    void attachTo(BaseActor *actor, ATTACH attach = ATTACH::None);
+    void updateCameraPosition();
+    void move(Movement movement);
 
-}
+  private:
+    glm::vec3 *m_internal_position;
+    ATTACH m_attach_mode = ATTACH::None;
+};
 
-#endif //SHM_OPENGL_CAMERA_H
+} // namespace SHM
+
+#endif // SHM_OPENGL_CAMERA_H

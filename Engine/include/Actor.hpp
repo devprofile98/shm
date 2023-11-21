@@ -17,12 +17,13 @@ class Actor : public BaseActor {
     std::shared_ptr<shader> setShader(std::shared_ptr<shader>) override;
     std::shared_ptr<shader> getShader();
     void loadModel(const char *file_path) override;
+    void handleInput(KEY key) override;
     void setUpModel() override;
     void eachFrame() override;
-    void jump() override;
+    // void jump() override;
 
     PHYSICS::PhysicObject *m_physic_component = nullptr;
 };
 } // namespace SHM
 
-#endif SHM_ENGINE_ACTOR_H
+#endif // SHM_ENGINE_ACTOR_H

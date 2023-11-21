@@ -19,7 +19,7 @@ class SHM_EXPORT Handler {
         override custom Command with some key-map enum for ex: overridekey(KEY_SPACE, myCustomCommand)
     */
 
-    Command *keyboard(GLFWwindow *window);
+    void *keyboard(GLFWwindow *window, BaseActor* actor);
     static void mouse(GLFWwindow *window, double x, double y);
     static float last_x;
     static float last_y;
@@ -27,10 +27,10 @@ class SHM_EXPORT Handler {
     static inline std::shared_ptr<Camera> camera;
     float last_frame_time;
 
-    void setKeyToCommand(KEY key, Command *command);
+    // void setKeyToCommand(KEY key, Command *command);
 
     // buttons
-    Command *space_btn, *w_btn;
+    // Command *space_btn, *w_btn;
 };
 
 } // namespace SHM

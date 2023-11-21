@@ -1,4 +1,5 @@
 #include "Engine.hpp"
+#include "CameraActor.hpp"
 
 #define STBI_MSC_SECURE_CRT
 #define STB_IMAGE_WRITE_IMPLEMENTATION
@@ -6,11 +7,14 @@
 
 namespace SHM {
 
-Engine::Engine(const char *project_name, API_TYPE api_type, const char *cwd) {
+Engine::Engine(const char *project_name, API_TYPE api_type, const char *cwd) : mainCharacter(nullptr) {
     // this->cwd = std::string{cwd};
     this->m_renderer = nullptr;
     this->m_camera = std::shared_ptr<Camera>{new Camera{}};
+    this->m_camera_character = true;
     this->cwd = ".";
+    this->cameraCharacter = new CameraActor{};
+
     // initialize physics
     this->m_world = new PHYSICS::World{};
     Engine::cwd = std::string{cwd, std::string_view{cwd}.find_last_of("/")};
@@ -27,7 +31,7 @@ Engine::Engine(const char *project_name, API_TYPE api_type, const char *cwd) {
     SHM::BUFFERS::uploadSubDataToUBO(m_renderer->ubo_vp, m_renderer->getProjectionMatrix());
     SHM::BUFFERS::uploadSubDataToUBO(m_renderer->ubo_vp, m_renderer->getViewMatrix(), sizeof(glm::mat4));
 
-    SHM::BUFFERS::uploadSubDataToUBO(m_renderer->ubo_lights, glm::vec3(1.0, -1.0, 0.0));
+    SHM::BUFFERS::uploadSubDataToUBO(m_renderer->ubo_lights, glm::vec3(-0.5, -0.5, -0.5));
     SHM::BUFFERS::uploadSubDataToUBO(m_renderer->ubo_lights, glm::vec3(0.9, 0.9, 0.9), sizeof(glm::vec4));
     SHM::BUFFERS::uploadSubDataToUBO(m_renderer->ubo_lights, glm::vec3(-1.0, 0.0, -2.0), 3 * sizeof(glm::vec4));
 }
@@ -36,6 +40,7 @@ Engine::~Engine() {
     delete context_manager;
     delete m_handler;
     delete m_world;
+    delete cameraCharacter;
     std::cout << "Engine Destructed" << std::endl;
 }
 
@@ -68,9 +73,8 @@ void Engine::MainRenderLoop() {
     while (!glfwWindowShouldClose(context_manager->GetWindow())) {
 
         glClearColor(0.4f, 0.7f, 0.8f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
         context_manager->processInput();
-        //        inLoop();
 
         // calculate Shadows
         glm::mat4 lightProjection, lightView;
@@ -103,26 +107,21 @@ void Engine::MainRenderLoop() {
             saveImage("screenshot.png");
         }
 
-        // m_renderer->shader_program.use();
         SHM::BUFFERS::uploadSubDataToUBO(Engine::getRenderer()->ubo_vp, Engine::getRenderer()->getViewMatrix(),
                                          sizeof(glm::mat4));
         SHM::BUFFERS::uploadSubDataToUBO(m_renderer->ubo_vp, lightSpaceMatrix, 2 * sizeof(glm::mat4));
 
         m_renderer->setViewMatrix(glm::lookAt(m_camera->m_position, m_camera->m_position + m_camera->m_front, m_camera->m_up));
 
-        // SHM::BUFFERS::uploadSubDataToUBO(m_renderer->ubo_lights, m_camera->m_position, 3*sizeof(glm::vec4));
-
         // drawing user defined objects
         glViewport(0, 0, 1920, 1080);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glBindTexture(GL_TEXTURE_2D, m_renderer->shadow_map_texture);
         Loop();
-
         m_renderer->Draw();
 
-        auto key = m_handler->keyboard(context_manager->GetWindow());
-        if (key != nullptr && mainCharacter != nullptr)
-            key->execute(mainCharacter);
+        auto key =
+            m_handler->keyboard(context_manager->GetWindow(), !this->mainCharacter ? this->cameraCharacter : this->mainCharacter);
         glfwSwapBuffers(context_manager->GetWindow());
         glfwPollEvents();
         Engine::m_world->updateWorld(0.01f);
@@ -216,7 +215,7 @@ std::shared_ptr<Engine> Engine::startEngine(const char *project_name, API_TYPE a
     return m_engine;
 }
 
-void Engine::setActionToKey(KEY key, Command *command) { this->m_handler->setKeyToCommand(key, command); }
+// void Engine::setActionToKey(KEY key, Command *command) { this->m_handler->setKeyToCommand(key, command); }
 
 void Engine::setMovingCharacter(BaseActor *actor) { this->mainCharacter = actor; }
 

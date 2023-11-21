@@ -44,9 +44,10 @@ class SHM_EXPORT Engine {
     //        void setKeyBinding(Application *app);
     ContextManager *context_manager;
     BaseActor *mainCharacter;
+    BaseActor *cameraCharacter;
     PHYSICS::World *getPhysicWorld();
     void setMovingCharacter(BaseActor *actor);
-    void setActionToKey(KEY key, Command *command);
+    // void setActionToKey(KEY key, Command *command);
 
     static std::shared_ptr<Engine> GetEngine();
     static std::shared_ptr<Engine> startEngine(const char *project_name, API_TYPE api_type, const char *cwd = nullptr);
@@ -62,6 +63,7 @@ class SHM_EXPORT Engine {
     std::shared_ptr<Camera> m_camera;
     Handler *m_handler;
     PHYSICS::World *m_world;
+    bool m_camera_character;
 };
 
 } // namespace SHM

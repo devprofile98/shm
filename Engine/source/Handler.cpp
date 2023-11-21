@@ -13,56 +13,29 @@ Handler::Handler(GLFWwindow *window, std::shared_ptr<Camera> camera) {
     glfwSetCursorPosCallback(window, &Handler::mouse);
 }
 
-Command *Handler::keyboard(GLFWwindow *window) {
+void *Handler::keyboard(GLFWwindow *window, BaseActor *actor) {
 
     float now = glfwGetTime();
     float delta_time = now - last_frame_time;
     last_frame_time = now;
-
     float cameraSpeed = 2.5f * delta_time;
+    KEY pressed_key = KEY::KEYBOARD_NONE;
 
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
-        // Handler::camera->m_position += cameraSpeed * Handler::camera->m_front;
-        return this->w_btn;
+        pressed_key = KEY::KEYBOARD_W;
+    } else if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
+        pressed_key = KEY::KEYBOARD_S;
+    } else if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
+        pressed_key = KEY::KEYBOARD_A;
+    } else if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
+        pressed_key = KEY::KEYBOARD_D;
     }
-    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
-        // Handler::camera->m_position -= cameraSpeed * Handler::camera->m_front;
-        return nullptr;
+    if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) {
+        pressed_key = KEY::KEYBOARD_SPACE;
     }
-    if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
-        return this->space_btn;
 
+    actor->handleInput(pressed_key);
     return nullptr;
-}
-
-void Handler::setKeyToCommand(KEY key, Command *command) {
-    switch (key) {
-        case KEY::KEYBOARD_A:
-
-            break;
-        case KEY::KEYBOARD_S:
-
-            break;
-        case KEY::KEYBOARD_W:
-            std::cout << "SET W KEY -------------------------------\n";
-            this->w_btn = command;
-            break;
-        case KEY::KEYBOARD_D:
-
-            break;
-        case KEY::KEYBOARD_ENTER:
-
-            break;
-        case KEY::KEYBOARD_SPACE:
-            this->space_btn = command;
-            break;
-        case KEY::KEYBOARD_ESCAPE:
-
-            break;
-
-        default:
-            break;
-    }
 }
 
 // TODO fix mouse callback function
