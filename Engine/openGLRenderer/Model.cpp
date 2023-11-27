@@ -91,6 +91,7 @@ void Model::Draw(std::shared_ptr<shader> sh) {
             glStencilFunc(GL_ALWAYS, 0, 0xFF);
             // glEnable(GL_DEPTH_TEST);
             glBindVertexArray(0);
+            glClear(GL_STENCIL_BUFFER_BIT);
         }
     }
 }

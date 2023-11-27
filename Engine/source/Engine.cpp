@@ -1,12 +1,16 @@
 #include "Engine.hpp"
 #include "CameraActor.hpp"
 
+#include "stb_image.h"
+
 #define STBI_MSC_SECURE_CRT
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "stbi_image_write.h"
 
-namespace SHM {
+#include "cube.h"
 
+namespace SHM {
+void skybox(unsigned int *textureId);
 Engine::Engine(const char *project_name, API_TYPE api_type, const char *cwd) : mainCharacter(nullptr) {
     // this->cwd = std::string{cwd};
     this->m_renderer = nullptr;
@@ -26,6 +30,8 @@ Engine::Engine(const char *project_name, API_TYPE api_type, const char *cwd) : m
     m_renderer->GetUtility()->InitWorld();
     InitWorld();
     std::cout << "AFTER" << std::endl;
+    skyboxshader = CreateShader("/assets/skybox.vs", "/assets/skybox.fs");
+    skyboxshader->createProgram();
 
     // uploading camera and view matrices to buffers
     SHM::BUFFERS::uploadSubDataToUBO(m_renderer->ubo_vp, m_renderer->getProjectionMatrix());
@@ -68,6 +74,18 @@ std::shared_ptr<Camera> Engine::getCamera() { return SHM::Engine::GetEngine()->m
 void Engine::MainRenderLoop() {
 
     // loading user configurations
+
+    unsigned int skyboxVAO, skyboxVBO;
+    glGenVertexArrays(1, &skyboxVAO);
+    glGenBuffers(1, &skyboxVBO);
+    glBindVertexArray(skyboxVAO);
+    glBindBuffer(GL_ARRAY_BUFFER, skyboxVBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(skyboxVertices), &skyboxVertices, GL_STATIC_DRAW);
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *)0);
+    skybox(&this->skytextureId);
+    skyboxshader->use();
+    skyboxshader->setInt("skybox", 0);
     outLoop(context_manager->GetWindow());
 
     while (!glfwWindowShouldClose(context_manager->GetWindow())) {
@@ -84,16 +102,17 @@ void Engine::MainRenderLoop() {
         lightView = glm::lookAt(glm::vec3(-2.0f, 6.0f, -5.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0, 1.0, 0.0));
         lightSpaceMatrix = lightProjection * lightView;
 
-        m_renderer->m_shadow_map_shader->use();
-        m_renderer->m_shadow_map_shader->setMat4("lightSpaceMatrix", lightSpaceMatrix);
+        // m_renderer->m_shadow_map_shader->use();
+        // m_renderer->m_shadow_map_shader->setMat4("lightSpaceMatrix", lightSpaceMatrix);
 
-        glViewport(0, 0, 1024, 1024);
-        glBindFramebuffer(GL_FRAMEBUFFER, m_renderer->depth_map_fbo);
-        glClear(GL_DEPTH_BUFFER_BIT);
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, m_renderer->shadow_map_texture);
-        m_renderer->Draw(m_renderer->m_shadow_map_shader);
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        // glViewport(0, 0, 1024, 1024);
+        // glBindFramebuffer(GL_FRAMEBUFFER, m_renderer->depth_map_fbo);
+        // glClear(GL_DEPTH_BUFFER_BIT);
+        // glActiveTexture(GL_TEXTURE0);
+        // glBindTexture(GL_TEXTURE_2D, m_renderer->shadow_map_texture);
+        // m_renderer->Draw(false, m_renderer->m_shadow_map_shader);
+
+        // glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
         // TODO fix memory leak here
         //        if (glfwGetKey(context_manager->GetWindow(), GLFW_KEY_P) == GLFW_PRESS){
@@ -115,10 +134,30 @@ void Engine::MainRenderLoop() {
 
         // drawing user defined objects
         glViewport(0, 0, 1920, 1080);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
         glBindTexture(GL_TEXTURE_2D, m_renderer->shadow_map_texture);
         Loop();
+
+        // glDepthFunc(GL_LEQUAL); // change depth function so depth test passes when values are equal to depth buffer's content
+        glDepthMask(GL_FALSE);
+        skyboxshader->use();
+        skyboxshader->setMat4("view", glm::mat4(glm::mat3(m_renderer->getViewMatrix())));
+        // skyboxshader->setMat4("view", m_renderer->getViewMatrix());
+        skyboxshader->setMat4("projection", m_renderer->getProjectionMatrix());
+        // skybox cube
+        glBindVertexArray(skyboxVAO);
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_CUBE_MAP, this->skytextureId);
+        glDrawArrays(GL_TRIANGLES, 0, 36);
+        glBindVertexArray(0);
+        glDepthFunc(GL_LESS); // set depth function back to default
+        glDepthMask(GL_TRUE);
+
         m_renderer->Draw();
+        // a = glGetError();
+        // if (a != GL_NO_ERROR) {
+        //     std::cout << "Error happend after ~~~~ ! " << a << std::endl;
+        // }
 
         auto key =
             m_handler->keyboard(context_manager->GetWindow(), !this->mainCharacter ? this->cameraCharacter : this->mainCharacter);
@@ -175,7 +214,7 @@ bool Engine::InitWorld() {
     m_renderer->ubo_spots = m_renderer->GetUtility()->createNewGlobalBlock("Spots", 12 * (112), &b);
 
     // configure shadow
-    m_renderer->enableShadows();
+    // m_renderer->enableShadows();
 
     return -23;
 }
@@ -203,7 +242,6 @@ void Engine::saveImage(char *file_path) {
 
 std::shared_ptr<Engine> Engine::GetEngine() {
     if (m_engine == nullptr) {
-        // m_engine = startEngine("playground", OPENGL, "/home/ahmad/Documents/projects/cpp/shm/build/bin");
         std::cout << "ENGINE: "
                   << "Engine has not been started yet!" << std::endl;
     }
@@ -221,5 +259,39 @@ void Engine::setMovingCharacter(BaseActor *actor) { this->mainCharacter = actor;
 
 void Engine::Loop(){};
 void Engine::outLoop(GLFWwindow *window){};
+
+void skybox(unsigned int *textureId) {
+    // first create the texture_slot
+    // unsigned int textureId;
+    glGenTextures(1, textureId);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, *textureId);
+    std::vector<std::string> cubeSidePath{
+        // /home/ahmad/Documents/project/cpp/shm/Engine/assets/cubemaps/skybox/back.jpg
+        "/home/ahmad/Documents/project/cpp/shm/Engine/assets/cubemaps/skybox/right.jpg",
+        "/home/ahmad/Documents/project/cpp/shm/Engine/assets/cubemaps/skybox/left.jpg",
+        "/home/ahmad/Documents/project/cpp/shm/Engine/assets/cubemaps/skybox/top.jpg",
+        "/home/ahmad/Documents/project/cpp/shm/Engine/assets/cubemaps/skybox/bottom.jpg",
+        "/home/ahmad/Documents/project/cpp/shm/Engine/assets/cubemaps/skybox/front.jpg",
+        "/home/ahmad/Documents/project/cpp/shm/Engine/assets/cubemaps/skybox/back.jpg",
+    };
+    // load the texture
+    int width, height, nrchannel;
+    // upload texture to the gpu memory
+    for (int i = 0; i < cubeSidePath.size(); i++) {
+        unsigned char *data = stbi_load(cubeSidePath[i].c_str(), &width, &height, &nrchannel, 0);
+        if (data) {
+            glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+            stbi_image_free(data);
+        } else {
+            std::cout << "Failed to load skybox Texture " << stbi_failure_reason() << cubeSidePath[i] << std::endl;
+        }
+    }
+    // setup texture properties
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+}
 
 } // namespace SHM

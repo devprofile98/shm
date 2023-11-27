@@ -64,6 +64,8 @@ class SHM_EXPORT Engine {
     Handler *m_handler;
     PHYSICS::World *m_world;
     bool m_camera_character;
+    unsigned int skytextureId, skyboxVAO, skyboxVBO;
+    std::shared_ptr<shader> skyboxshader;
 };
 
 } // namespace SHM
