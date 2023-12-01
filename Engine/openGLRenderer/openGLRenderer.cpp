@@ -5,7 +5,7 @@ namespace SHM {
 openGLRenderer::openGLRenderer(std::shared_ptr<Camera> camera) {
     m_shadow_map_shader =
         std::shared_ptr<shader>{new shader{"/home/ahmad/Documents/project/cpp/test-app/assets/second/depth_map_shader.vs",
-                                           "/home/ahmad/Documents/project/cpp/test-app/assets/second/depth_map_shader.vs"}};
+                                           "/home/ahmad/Documents/project/cpp/test-app/assets/second/depth_map_shader.fs"}};
     m_shadow_map_shader->createProgram();
     m_utils = std::shared_ptr<openGLUtility>{new openGLUtility{}};
     setModelMatrix(glm::mat4(1.0));
