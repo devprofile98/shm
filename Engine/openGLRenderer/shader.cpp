@@ -1,5 +1,6 @@
 
 #include "shader.hpp"
+#include "Logger.hpp"
 
 shader::shader(const char *vertexPath, const char *fragmentPath) {
 
@@ -25,7 +26,7 @@ shader::shader(const char *vertexPath, const char *fragmentPath) {
         vShaderCode = vertexStream.str();
         fShaderCode = fragmentStream.str();
     } catch (std::ifstream::failure e) {
-        std::cout << "SHADER::FILE::READ_ERROR:: FAILED TO OPEN SHADER FILE!" << std::endl;
+        SHM::Logger::error("SHADER::FILE::READ_ERROR:: FAILED TO OPEN SHADER FILE! \n|->{}\n|->{}", vertexPath, fragmentPath);
     }
 }
 
@@ -46,7 +47,7 @@ bool shader::createProgram() {
         GLint maxLength = 0;
         glGetShaderiv(m_vertex, GL_INFO_LOG_LENGTH, &maxLength);
         glGetShaderInfoLog(m_vertex, 512, &maxLength, infolog.get());
-        std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << infolog << std::endl;
+        SHM::Logger::error("ERROR::SHADER::VERTEX::COMPILATION_FAILED with error:\n\t{}", infolog.get());
         return false;
     }
 
@@ -59,7 +60,7 @@ bool shader::createProgram() {
         GLint maxLength = 0;
         glGetShaderiv(m_vertex, GL_INFO_LOG_LENGTH, &maxLength);
         glGetShaderInfoLog(m_vertex, 512, &maxLength, infolog.get());
-        std::cout << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n" << infolog << std::endl;
+        SHM::Logger::error("ERROR::SHADER::FRAGMENT::COMPILATION_FAILED with error:\n\t{}", infolog.get());
         return false;
     }
 
@@ -71,7 +72,7 @@ bool shader::createProgram() {
     glGetProgramiv(ID, GL_LINK_STATUS, &success);
     if (!success) {
         glGetProgramInfoLog(ID, 512, NULL, infolog.get());
-        std::cout << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n" << infolog << std::endl;
+        SHM::Logger::error("ERROR::SHADER::PROGRAM::LINKING_FAILED with error:\n\t{}", infolog.get());
         return false;
     }
 
@@ -82,6 +83,7 @@ bool shader::createProgram() {
     //    delete[] infolog;
     //    free((char*)vertexCode);
     //    free((char*)fragmentCode);
+    SHM::Logger::info("Shader compiled and linked successfully");
     return true;
 }
 
@@ -91,8 +93,8 @@ void shader::useGlobalVariables() const {
     int ub_index{-1};
     for (auto &pair : m_uniform_blocks) {
         ub_index = glGetUniformBlockIndex(this->ID, pair.first.c_str());
-        std::cout << "|--> SHADER::BINDING_POINT::ERROR:: Try to bind an Empty shader object to a binding point for:"
-                  << pair.first << " " << pair.second << std::endl;
+        SHM::Logger::debug("SHADER::BINDING_POINT::ERROR:: Try to bind an Empty shader object to a binding point for: {} {}",
+                           pair.first, pair.second);
         glUniformBlockBinding(this->ID, ub_index, pair.second - 1);
     }
 }

@@ -1,12 +1,13 @@
 #include "PhysicWorld.hpp"
+#include "Logger.hpp"
 
 namespace SHM::PHYSICS {
 World::World() {
     this->m_all_objects.reserve(200);
-    std::cout << "Physic World Created!" << std::endl;
+    SHM::Logger::debug("Physic World Created!");
 }
 
-World::~World() { std::cout << "Physic World Deconstructed!" << std::endl; }
+World::~World() { SHM::Logger::debug("Physic World Deconstructed!"); }
 
 bool World::registerToPhysics(PhysicObject *object) {
     this->m_all_objects.push_back(object);

@@ -13,7 +13,7 @@ set(shm_src
     source/Camera.cpp
     source/Light.cpp
     source/Actor.cpp
-
+    source/Logger.cpp
     # this files are for the internal use of the engine
     internal/CameraActor.cpp
 )
@@ -45,6 +45,7 @@ if (WIN32)
 elseif(UNIX)
     target_link_libraries(shm-engine glfw3 X11)
     target_link_libraries(shm-engine assimp)
+    target_link_libraries(shm-engine spdlog)
 endif()
 
 target_include_directories(shm-engine PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/openGLRenderer/)

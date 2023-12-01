@@ -7,3 +7,6 @@
 [submodule "shm-cli"]
 	path = shm-cli
 	url = git@github.com:devprofile98/shm-cli.git
+[submodule "Engine/include/spdlog"]
+	path = Engine/include/spdlog
+	url = git@github.com:gabime/spdlog.git

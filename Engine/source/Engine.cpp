@@ -6,13 +6,14 @@
 #define STBI_MSC_SECURE_CRT
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "stbi_image_write.h"
-
+// #include "spdlog/spdlog.h"
+#include "Logger.hpp"
 #include "cube.h"
 
 namespace SHM {
 void skybox(unsigned int *textureId);
 Engine::Engine(const char *project_name, API_TYPE api_type, const char *cwd) : mainCharacter(nullptr) {
-    // this->cwd = std::string{cwd};
+    // initializing the Engine
     this->m_renderer = nullptr;
     this->m_camera = std::shared_ptr<Camera>{new Camera{}};
     this->m_camera_character = true;
@@ -21,15 +22,18 @@ Engine::Engine(const char *project_name, API_TYPE api_type, const char *cwd) : m
 
     // initialize physics
     this->m_world = new PHYSICS::World{};
+
+    // current working directory path, relative to where the Engine starts
     Engine::cwd = std::string{cwd, std::string_view{cwd}.find_last_of("/")};
-    std::cout << "START THE ENGINE at : " << this->cwd << std::endl;
+    Logger::info("Start The Engine At : {}", this->cwd);
+
+    // Setting up the Renderer
     context_manager = new ContextManager{project_name};
     m_handler = new Handler{context_manager->GetWindow(), m_camera};
-    std::cout << "BEFORE" << std::endl;
     setRenderer(api_type);
     m_renderer->GetUtility()->InitWorld();
     InitWorld();
-    std::cout << "AFTER" << std::endl;
+
     skyboxshader = CreateShader("/assets/skybox.vs", "/assets/skybox.fs");
     skyboxshader->createProgram();
 
@@ -37,6 +41,7 @@ Engine::Engine(const char *project_name, API_TYPE api_type, const char *cwd) : m
     SHM::BUFFERS::uploadSubDataToUBO(m_renderer->ubo_vp, m_renderer->getProjectionMatrix());
     SHM::BUFFERS::uploadSubDataToUBO(m_renderer->ubo_vp, m_renderer->getViewMatrix(), sizeof(glm::mat4));
 
+    // Uploading Directional Light Data to GPU buffers
     SHM::BUFFERS::uploadSubDataToUBO(m_renderer->ubo_lights, glm::vec3(-0.5, -0.5, -0.5));
     SHM::BUFFERS::uploadSubDataToUBO(m_renderer->ubo_lights, glm::vec3(0.9, 0.9, 0.9), sizeof(glm::vec4));
     SHM::BUFFERS::uploadSubDataToUBO(m_renderer->ubo_lights, glm::vec3(-1.0, 0.0, -2.0), 3 * sizeof(glm::vec4));
@@ -47,7 +52,7 @@ Engine::~Engine() {
     delete m_handler;
     delete m_world;
     delete cameraCharacter;
-    std::cout << "Engine Destructed" << std::endl;
+    Logger::debug("Engine Destroyed, Good bye!");
 }
 
 void Engine::setRenderer(API_TYPE api_type) {
@@ -208,7 +213,7 @@ void Engine::mouse(GLFWwindow *window, double xpos, double ypos) {
 bool Engine::InitWorld() {
     int b{-2};
     // configure GLOBAL variables
-    std::cout << "what is going on" << m_renderer->getUboIndex("light") << std::endl;
+    m_renderer->getUboIndex("light");
     m_renderer->ubo_vp = m_renderer->GetUtility()->createNewGlobalBlock("VPMatrices", 3 * sizeof(glm::mat4), &b);
     m_renderer->ubo_lights = m_renderer->GetUtility()->createNewGlobalBlock("Lights", 16 * 4 + 16 * 12 * 5, &b);
     m_renderer->ubo_spots = m_renderer->GetUtility()->createNewGlobalBlock("Spots", 12 * (112), &b);
@@ -216,6 +221,7 @@ bool Engine::InitWorld() {
     // configure shadow
     // m_renderer->enableShadows();
 
+    Logger::info("Global block set, World Initilized.");
     return -23;
 }
 
