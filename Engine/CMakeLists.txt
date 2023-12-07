@@ -13,7 +13,7 @@ set(shm_src
     source/Camera.cpp
     source/Light.cpp
     source/Actor.cpp
-    source/Logger.cpp
+    # source/Logger.cpp
     # this files are for the internal use of the engine
     internal/CameraActor.cpp
 )
@@ -26,6 +26,7 @@ set(opengl_renderer_src
     openGLRenderer/buffers.cpp
     openGLRenderer/openglutility.cpp
     openGLRenderer/texture.cpp
+    openGLRenderer/CubeMaps.cpp
 )
 set(physic_src
     include/physics/BasePhysics.cpp

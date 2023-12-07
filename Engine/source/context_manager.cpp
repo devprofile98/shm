@@ -1,5 +1,5 @@
 #include "context_manager.hpp"
-
+#include "Logger.hpp"
 namespace SHM {
 
 ContextManager::ContextManager(const char *window_name) { createWindow(1920, 1080, window_name); }
@@ -24,7 +24,7 @@ void ContextManager::createWindow(uint32_t width, uint32_t height, const char *w
 
     window = glfwCreateWindow(width, height, "SHM", NULL, NULL);
     if (window == nullptr) {
-        std::cout << "Failed to create GLFW window" << std::endl;
+        SHM::Logger::error("Failed to create GLFW window");
         glfwTerminate();
     }
 
@@ -36,7 +36,7 @@ void ContextManager::createWindow(uint32_t width, uint32_t height, const char *w
     // glad: load all OpenGL function pointers
     // ---------------------------------------
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
-        std::cout << "Failed to initialize GLAD" << std::endl;
+        SHM::Logger::error("Failed to initialize GLAD");
     }
 
     // configure global opengl state
@@ -57,9 +57,8 @@ void ContextManager::createWindow(uint32_t width, uint32_t height, const char *w
 
     glGetIntegerv(GL_MAJOR_VERSION, &major);
     glGetIntegerv(GL_MINOR_VERSION, &minor);
-
-    std::cout << "OPENGL context created with information:" << major << " " << minor << "\nVendor: " << glGetString(GL_VENDOR)
-              << std::endl;
+    std::string vendor = (const char *)glGetString(GL_VENDOR);
+    SHM::Logger::info("OpenGL context created v{}.{} on {} platform.", major, minor, vendor);
 
     // glfwSetInputMode(this->window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 }
@@ -70,11 +69,9 @@ void ContextManager::processInput() {
     float cameraSpeed = 2.5f * deltaTime;
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
         cameraPos += cameraSpeed;
-        // std::cout<<"process W"<<std::endl;
     }
     if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
         cameraPos -= cameraSpeed;
-        // std::cout<<"process S"<<std::endl;
     }
     if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
         cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;

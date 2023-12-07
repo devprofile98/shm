@@ -8,6 +8,7 @@
 #include "Handler.hpp"
 #include "openGLRenderer.hpp"
 #include "InputHandler.hpp"
+#include "CubeMaps.hpp"
 
 #include <string_view>
 #include <memory>
@@ -49,6 +50,8 @@ class SHM_EXPORT Engine {
     void setMovingCharacter(BaseActor *actor);
     // void setActionToKey(KEY key, Command *command);
 
+    bool setSkyShader(std::vector<std::string> faces, std::shared_ptr<shader> sh = nullptr);
+
     static std::shared_ptr<Engine> GetEngine();
     static std::shared_ptr<Engine> startEngine(const char *project_name, API_TYPE api_type, const char *cwd = nullptr);
 
@@ -64,8 +67,7 @@ class SHM_EXPORT Engine {
     Handler *m_handler;
     PHYSICS::World *m_world;
     bool m_camera_character;
-    unsigned int skytextureId, skyboxVAO, skyboxVBO;
-    std::shared_ptr<shader> skyboxshader;
+    std::shared_ptr<BaseCubeMap> skybox = nullptr;
 };
 
 } // namespace SHM

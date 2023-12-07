@@ -18,35 +18,35 @@ void openGLRenderer::Draw(bool drawTransparents, std::shared_ptr<shader> sh) {
     auto &cameraPos = Engine::GetEngine()->getCamera()->m_position;
     auto &transparent_actor = Engine::GetEngine()->getRenderer()->m_transparent_actors;
 
-    // if (!drawTransparents) {
-    transparent_actor.clear();
-    for (size_t i = 0; i < m_actors.size(); i++) {
-        if (m_actors[i]->isAlpha) {
-            transparent_actor[glm::distance(cameraPos, *m_actors[i]->model->getPosition())] = m_actors[i];
-            continue;
+    if (!drawTransparents) {
+        transparent_actor.clear();
+        for (size_t i = 0; i < m_actors.size(); i++) {
+            if (m_actors[i]->isAlpha) {
+                transparent_actor[glm::distance(cameraPos, *m_actors[i]->model->getPosition())] = m_actors[i];
+                continue;
+            }
+            m_actors[i]->eachFrame();
+            if (sh) {
+                m_actors[i]->model->Draw(sh);
+            } else {
+                m_actors[i]->model->Draw();
+            }
         }
-        m_actors[i]->eachFrame();
-        if (sh) {
-            m_actors[i]->model->Draw(sh);
-        } else {
-            m_actors[i]->model->Draw();
-        }
-    }
-    // } else {
+    } else {
 
-    // using simple blending technique, we will render transparent object
-    // after rendering all the other opaque objects, from the farthest transparent object
-    // to the nearest object, this way we will hack the z-buffer that prevents us to render
-    // transparent sobject in normal render pass
-    for (auto it = transparent_actor.rbegin(); it != transparent_actor.rend(); ++it) {
-        it->second->eachFrame();
-        if (sh) {
-            it->second->model->Draw(sh);
-        } else {
-            it->second->model->Draw();
+        // using simple blending technique, we will render transparent object
+        // after rendering all the other opaque objects, from the farthest transparent object
+        // to the nearest object, this way we will hack the z-buffer that prevents us to render
+        // transparent sobject in normal render pass
+        for (auto it = transparent_actor.rbegin(); it != transparent_actor.rend(); ++it) {
+            it->second->eachFrame();
+            if (sh) {
+                it->second->model->Draw(sh);
+            } else {
+                it->second->model->Draw();
+            }
         }
     }
-    // }
 }
 
 std::unique_ptr<Model> openGLRenderer::LoadModel(const char *filepath, std::shared_ptr<shader> shader) {

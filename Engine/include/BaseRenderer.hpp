@@ -18,6 +18,7 @@ class SHM_EXPORT BaseRenderer {
     BaseRenderer(){};
     virtual ~BaseRenderer(){};
     virtual void Draw(bool drawTransparents = false, std::shared_ptr<shader> sh = nullptr) = 0;
+    // virtual void DrawTransparent(bool drawTransparents = false, std::shared_ptr<shader> sh = nullptr) = 0;
     // virtual int LoadModel(const char* filepath, std::shared_ptr<shader> shader)=0;
     virtual std::unique_ptr<Model> LoadModel(const char *filepath, std::shared_ptr<shader> shader) = 0;
     virtual void LoadShaders(const char *vs_path, const char *fs_path) = 0;

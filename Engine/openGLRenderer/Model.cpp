@@ -1,5 +1,5 @@
-#include <Model.hpp>
-
+#include "Model.hpp"
+#include "Logger.hpp"
 // #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
@@ -31,13 +31,17 @@ unsigned int TextureFromFile(const char *path, const std::string &directory, boo
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        std::cout << "Engine::TEXTURE::DEBUG::-> loaded succesfully in slot number " << Model::texture_layout_counter
-                  << std::endl;
+        // std::cout << "Engine::TEXTURE::DEBUG::-> loaded succesfully in slot number " << Model::texture_layout_counter
+        //           << std::endl;
+
+        SHM::Logger::debug("Engine::Texture - succesfully load model [{}] texture in slot number {}", path,
+                           Model::texture_layout_counter);
 
         Model::texture_layout_counter++;
         //        glActiveTexture(GL_TEXTURE0);
     } else {
-        std::cout << "Texture failed to load at path: " << path << std::endl;
+        // std::cout << "Texture failed to load at path: " << path << std::endl;
+        SHM::Logger::debug("Engine::Texture - Failed to load model [{}] texture.", path);
     }
 
     stbi_image_free(data);
@@ -49,13 +53,14 @@ Model::Model(const char *path, std::shared_ptr<shader> sh) : shader_program(sh) 
         return;
     }
     this->border_shader =
-        std::shared_ptr<shader>{new shader{"/home/ahmad/Documents/project/cpp/test-app/assets/second/model_loading.vs",
+        std::shared_ptr<shader>{new shader{"/home/ahmad/Documents/project/cpp/test-app/assets/models/model_loading.vs",
                                            "/home/ahmad/Documents/project/cpp/shm/Engine/assets/border.fs"}};
 
     this->border_shader->createProgram();
 
     loadModel(path);
-    std::cout << "LOADING MODEL COMPLETED" << std::endl;
+    // std::cout << "LOADING MODEL COMPLETED" << std::endl;
+    SHM::Logger::debug("model [{}] loaded sucessfully.", path);
     m_position = glm::vec3{0, 0, 0};
     m_scale = glm::vec3{1.0f};
     m_rotation = glm::vec3{0.0f, 1.0f, 0.0f};
@@ -130,7 +135,8 @@ void Model::loadModel(std::string path) {
     Assimp::Importer import;
     const aiScene *scene = import.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs);
     if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
-        std::cout << "ERROR::ASSIMP::" << import.GetErrorString() << std::endl;
+        // std::cout << "ERROR::ASSIMP::" << import.GetErrorString() << std::endl;
+        SHM::Logger::error("Assimp Error - Error happend while loading model {}:\n\t{}", path, import.GetErrorString());
         return;
     }
     directory = path.substr(0, path.find_last_of('/'));
@@ -207,13 +213,10 @@ Mesh Model::processMesh(aiMesh *mesh, const aiScene *scene) {
     // Read mtl file vertex data
     material->Get(AI_MATKEY_COLOR_AMBIENT, color);
     mat.ka = glm::vec4(color.r, color.g, color.b, 1.0);
-    std::cout << color.r << color.g << color.b << std::endl;
     material->Get(AI_MATKEY_COLOR_DIFFUSE, color);
     mat.kd = glm::vec4(color.r, color.g, color.b, 1.0);
     material->Get(AI_MATKEY_COLOR_SPECULAR, color);
     mat.ks = glm::vec4(color.r, color.g, color.b, 1.0);
-
-    std::cout << "\n\n\n\n material colors is " << mat << std::endl;
 
     std::vector<Texture_INT> diffuseMap = loadMaterialTexture(material, aiTextureType_DIFFUSE, "texture_diffuse");
     textures.insert(textures.end(), diffuseMap.begin(), diffuseMap.end());

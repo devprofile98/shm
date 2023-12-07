@@ -6,9 +6,8 @@
 #define STBI_MSC_SECURE_CRT
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "stbi_image_write.h"
-// #include "spdlog/spdlog.h"
+
 #include "Logger.hpp"
-#include "cube.h"
 
 namespace SHM {
 void skybox(unsigned int *textureId);
@@ -33,9 +32,6 @@ Engine::Engine(const char *project_name, API_TYPE api_type, const char *cwd) : m
     setRenderer(api_type);
     m_renderer->GetUtility()->InitWorld();
     InitWorld();
-
-    skyboxshader = CreateShader("/assets/skybox.vs", "/assets/skybox.fs");
-    skyboxshader->createProgram();
 
     // uploading camera and view matrices to buffers
     SHM::BUFFERS::uploadSubDataToUBO(m_renderer->ubo_vp, m_renderer->getProjectionMatrix());
@@ -79,18 +75,6 @@ std::shared_ptr<Camera> Engine::getCamera() { return SHM::Engine::GetEngine()->m
 void Engine::MainRenderLoop() {
 
     // loading user configurations
-
-    unsigned int skyboxVAO, skyboxVBO;
-    glGenVertexArrays(1, &skyboxVAO);
-    glGenBuffers(1, &skyboxVBO);
-    glBindVertexArray(skyboxVAO);
-    glBindBuffer(GL_ARRAY_BUFFER, skyboxVBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(skyboxVertices), &skyboxVertices, GL_STATIC_DRAW);
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *)0);
-    skybox(&this->skytextureId);
-    skyboxshader->use();
-    skyboxshader->setInt("skybox", 0);
     outLoop(context_manager->GetWindow());
 
     while (!glfwWindowShouldClose(context_manager->GetWindow())) {
@@ -143,31 +127,22 @@ void Engine::MainRenderLoop() {
         glBindTexture(GL_TEXTURE_2D, m_renderer->shadow_map_texture);
         Loop();
 
-        // glDepthFunc(GL_LEQUAL); // change depth function so depth test passes when values are equal to depth buffer's content
-        glDepthMask(GL_FALSE);
-        skyboxshader->use();
-        skyboxshader->setMat4("view", glm::mat4(glm::mat3(m_renderer->getViewMatrix())));
-        // skyboxshader->setMat4("view", m_renderer->getViewMatrix());
-        skyboxshader->setMat4("projection", m_renderer->getProjectionMatrix());
-        // skybox cube
-        glBindVertexArray(skyboxVAO);
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_CUBE_MAP, this->skytextureId);
-        glDrawArrays(GL_TRIANGLES, 0, 36);
-        glBindVertexArray(0);
-        glDepthFunc(GL_LESS); // set depth function back to default
-        glDepthMask(GL_TRUE);
-
+        // render opaque objects first, and find transparent in object and sort them
         m_renderer->Draw();
-        // a = glGetError();
-        // if (a != GL_NO_ERROR) {
-        //     std::cout << "Error happend after ~~~~ ! " << a << std::endl;
-        // }
+        // draw skybox only on empty pixels
+        if (skybox != nullptr) {
+            this->skybox->Draw(m_renderer->getViewMatrix(), m_renderer->getProjectionMatrix());
+        }
+        // draw transparent objects in order
+        m_renderer->Draw(true);
 
+        // handle keyboard input
         auto key =
             m_handler->keyboard(context_manager->GetWindow(), !this->mainCharacter ? this->cameraCharacter : this->mainCharacter);
+
         glfwSwapBuffers(context_manager->GetWindow());
         glfwPollEvents();
+        // update physics
         Engine::m_world->updateWorld(0.01f);
         Engine::getCamera()->updateCameraPosition();
     }
@@ -178,7 +153,6 @@ Handler *Engine::getHandler() { return m_handler; }
 std::shared_ptr<shader> Engine::CreateShader(const char *vertex_code, const char *fragment_code) {
     std::string _vertexPath{Engine::cwd + vertex_code};
     std::string _fragmentPath{Engine::cwd + fragment_code};
-    std::cout << "shader file here: " << Engine::cwd << " - " << _vertexPath << " - " << _fragmentPath << std::endl;
     std::shared_ptr<shader> sh{new shader{_vertexPath.c_str(), _fragmentPath.c_str()}};
     return sh;
 }
@@ -248,8 +222,7 @@ void Engine::saveImage(char *file_path) {
 
 std::shared_ptr<Engine> Engine::GetEngine() {
     if (m_engine == nullptr) {
-        std::cout << "ENGINE: "
-                  << "Engine has not been started yet!" << std::endl;
+        SHM::Logger::error("Engine has not been started yet!");
     }
     return m_engine;
 }
@@ -263,41 +236,28 @@ std::shared_ptr<Engine> Engine::startEngine(const char *project_name, API_TYPE a
 
 void Engine::setMovingCharacter(BaseActor *actor) { this->mainCharacter = actor; }
 
+bool Engine::setSkyShader(std::vector<std::string> sides, std::shared_ptr<shader> sh) {
+
+    std::shared_ptr<shader> skyboxshader;
+    if (sh == nullptr) {
+        skyboxshader = CreateShader("/assets/skybox.vs", "/assets/skybox.fs");
+        skyboxshader->createProgram();
+    }
+
+    // const char *faces[] = {
+    //     "/home/ahmad/Documents/project/cpp/shm/Engine/assets/cubemaps/skybox/right.jpg",
+    //     "/home/ahmad/Documents/project/cpp/shm/Engine/assets/cubemaps/skybox/left.jpg",
+    //     "/home/ahmad/Documents/project/cpp/shm/Engine/assets/cubemaps/skybox/top.jpg",
+    //     "/home/ahmad/Documents/project/cpp/shm/Engine/assets/cubemaps/skybox/bottom.jpg",
+    //     "/home/ahmad/Documents/project/cpp/shm/Engine/assets/cubemaps/skybox/front.jpg",
+    //     "/home/ahmad/Documents/project/cpp/shm/Engine/assets/cubemaps/skybox/back.jpg",
+    // };
+
+    this->skybox = std::make_shared<SHM::opengl::CubeMaps>(sides, sh ? sh : skyboxshader);
+    return true;
+}
+
 void Engine::Loop(){};
 void Engine::outLoop(GLFWwindow *window){};
-
-void skybox(unsigned int *textureId) {
-    // first create the texture_slot
-    // unsigned int textureId;
-    glGenTextures(1, textureId);
-    glBindTexture(GL_TEXTURE_CUBE_MAP, *textureId);
-    std::vector<std::string> cubeSidePath{
-        // /home/ahmad/Documents/project/cpp/shm/Engine/assets/cubemaps/skybox/back.jpg
-        "/home/ahmad/Documents/project/cpp/shm/Engine/assets/cubemaps/skybox/right.jpg",
-        "/home/ahmad/Documents/project/cpp/shm/Engine/assets/cubemaps/skybox/left.jpg",
-        "/home/ahmad/Documents/project/cpp/shm/Engine/assets/cubemaps/skybox/top.jpg",
-        "/home/ahmad/Documents/project/cpp/shm/Engine/assets/cubemaps/skybox/bottom.jpg",
-        "/home/ahmad/Documents/project/cpp/shm/Engine/assets/cubemaps/skybox/front.jpg",
-        "/home/ahmad/Documents/project/cpp/shm/Engine/assets/cubemaps/skybox/back.jpg",
-    };
-    // load the texture
-    int width, height, nrchannel;
-    // upload texture to the gpu memory
-    for (int i = 0; i < cubeSidePath.size(); i++) {
-        unsigned char *data = stbi_load(cubeSidePath[i].c_str(), &width, &height, &nrchannel, 0);
-        if (data) {
-            glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-            stbi_image_free(data);
-        } else {
-            std::cout << "Failed to load skybox Texture " << stbi_failure_reason() << cubeSidePath[i] << std::endl;
-        }
-    }
-    // setup texture properties
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-}
 
 } // namespace SHM
