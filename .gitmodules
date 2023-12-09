@@ -1,8 +1,8 @@
 [submodule "shm-physics"]
 	path = shm-physics
 	url = https://github.com/devprofile98/shm-physics.git
-[submodule "Engine/include/assimpp"]
-	path = Engine/include/assimpp
+[submodule "Engine/include/assimp"]
+	path = Engine/include/assimp
 	url = https://github.com/assimp/assimp.git
 [submodule "shm-cli"]
 	path = shm-cli

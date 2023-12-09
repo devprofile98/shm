@@ -5,6 +5,7 @@
 #include "shader.hpp"
 #include "Model.hpp"
 #include "InputHandler.hpp"
+
 namespace SHM {
 class BaseActor {
   public:

@@ -94,6 +94,7 @@ void Engine::MainRenderLoop() {
         // m_renderer->m_shadow_map_shader->use();
         // m_renderer->m_shadow_map_shader->setMat4("lightSpaceMatrix", lightSpaceMatrix);
 
+        ///// drawing shadow
         // glViewport(0, 0, 1024, 1024);
         // glBindFramebuffer(GL_FRAMEBUFFER, m_renderer->depth_map_fbo);
         // glClear(GL_DEPTH_BUFFER_BIT);
@@ -110,6 +111,7 @@ void Engine::MainRenderLoop() {
         //                    "F:/project/SHM/Engine/assets/model_loading.fs"
         //                     );
         //        }
+        
         if (glfwGetKey(context_manager->GetWindow(), GLFW_KEY_P) == GLFW_PRESS) {
 
             saveImage("screenshot.png");

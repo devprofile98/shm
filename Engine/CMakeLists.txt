@@ -36,24 +36,27 @@ set(physic_src
 
 add_library(shm-engine SHARED ${opengl_renderer_src} ${shm_src} ${physic_src} )
 target_link_libraries(shm-engine ${CMAKE_DL_LIBS})
-target_compile_options(shm-engine PRIVATE -g)
+# target_compile_options(shm-engine PRIVATE -g)
+
 
 if (WIN32)
     # make sure that the paths point to the right files
-    target_link_libraries(shm-engine "F:/project/SHM/Engine/include/GLFW/glfw3.lib")
-    target_link_libraries(shm-engine "F:/project/SHM/Engine/include/assimp/assimp-vc142-mtd.lib")
+    target_link_libraries(shm-engine "${CMAKE_CURRENT_SOURCE_DIR}/include/GLFW/glfw3.lib")
+    target_link_libraries(shm-engine "${CMAKE_CURRENT_SOURCE_DIR}/include/assimp-vc142-mt.lib")
     
 elseif(UNIX)
     target_link_libraries(shm-engine glfw3 X11)
     target_link_libraries(shm-engine assimp)
     target_link_libraries(shm-engine spdlog)
 endif()
-
-target_include_directories(shm-engine PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/openGLRenderer/)
-target_include_directories(
-    shm-engine PUBLIC 
     
-    include/
-    internal/
-    )
+target_include_directories(
+        shm-engine PUBLIC 
+        ${CMAKE_CURRENT_SOURCE_DIR}/openGLRenderer/
+        include/assimp/include/
+        include/assimp/build/x64/include
+        include/spdlog/include/
+        include/
+        internal/
+)
 
