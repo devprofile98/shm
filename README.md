@@ -15,3 +15,9 @@ cmake .. && cmake --build . -j
 ```
 
 use the generated library, for an example see [shm-scene1](https://github.com/devprofile98/shm-scene1.git)
+
+![alt text](https://github.com/devprofile98/shm-scene1/blob/main/images/scene3.png?raw=true) 
+![alt text](https://github.com/devprofile98/shm-scene1/blob/main/images/scene4.png?raw=true) 
+![alt text](https://github.com/devprofile98/shm-scene1/blob/main/images/scene1.png?raw=true) 
+
+
