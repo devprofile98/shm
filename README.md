@@ -1,24 +1,17 @@
-# shm
-My 3D Engine
+# SHM: My 3D Engine
 
-# BUILD on debian
-* install assimp 
-> sudo apt install libassimp-dev assimp-utils
-* install glfw3
-> sudo apt install libglfw3 libglfw3-dev
+![alt text](https://github.com/devprofile98/shm-scene1/blob/main/images/scene2.png?raw=true) 
 
-## Build from source
-in source directory run below command
+## Build [ linux ]
+initialize the SHM submodule and build it:
+```bash
 
-> mkdir build && cd build
+git clone https://github.com/devprofile98/shm.git
+cd shm
+git submodule update --init --recursive
+cd Engine/
+mkdir build && cd build
+cmake .. && cmake --build . -j
+```
 
-> cmake ..
-
-use your preferred make tools like below
-> make
-
-or let cmake choose for you:
-> cmake --build .
-
-an executable file "playground" is generated, run it with 
-> ./playground
+use the generated library, for an example see [link text](https://github.com/devprofile98/shm-scene1.git)
