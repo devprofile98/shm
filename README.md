@@ -14,4 +14,4 @@ mkdir build && cd build
 cmake .. && cmake --build . -j
 ```
 
-use the generated library, for an example see [link text](https://github.com/devprofile98/shm-scene1.git)
+use the generated library, for an example see [shm-scene1](https://github.com/devprofile98/shm-scene1.git)
