@@ -16,8 +16,9 @@ bool World::registerToPhysics(PhysicObject *object) {
 
 void World::updateWorld(float duration) {
     // do the calculation here and update physicObjects props
-    for (int first = 0; first <= this->m_all_objects.size() - 1; first++) {
-        for (int sec = 0; sec <= this->m_all_objects.size() - 1; sec++) {
+
+    for (int first = 0; first < this->m_all_objects.size(); first++) {
+        for (int sec = 0; sec < this->m_all_objects.size(); sec++) {
             if (first == sec || !first || !sec) {
                 continue;
             } else if (this->m_all_objects[first]->is_moveable || this->m_all_objects[sec]->is_moveable) [[likely]] {
