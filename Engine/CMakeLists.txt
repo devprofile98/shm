@@ -60,3 +60,24 @@ target_include_directories(
         internal/
 )
 
+install(
+    DIRECTORY
+    openGLRenderer/
+    include/assimp/include/
+    include/assimp/build/x64/include
+    include/spdlog/include/
+    include/
+    internal/
+    glad/
+    DESTINATION
+    /usr/local/include/shm  # Specify the desired installation directory
+    FILES_MATCHING
+    PATTERN "*.h"
+    PATTERN "*.hpp"
+    PATTERN "*.inl"
+)
+
+install(TARGETS shm-engine
+    ARCHIVE DESTINATION /usr/lib
+    LIBRARY DESTINATION /usr/lib
+)

@@ -1,20 +1,19 @@
 #ifndef SHM_OPENGL_CAMERA_H
 #define SHM_OPENGL_CAMERA_H
 
-#include <Core.hpp>
+#include "Core.hpp"
 #include "BaseActor.hpp"
 
 namespace SHM {
 
 enum class Movement {
-  Forward,
-  Backward,
-  Right,
-  Left,
-  Upward,
-  Downward,
+    Forward,
+    Backward,
+    Right,
+    Left,
+    Upward,
+    Downward,
 };
-
 
 class Camera {
 

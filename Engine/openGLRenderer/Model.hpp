@@ -1,13 +1,12 @@
 #ifndef ENGINE_MODEL_H
 #define ENGINE_MODEL_H
-
-#include <glad/glad.h>
+#include "glad/glad.h"
 #include <GLFW/glfw3.h>
 // gl math
-#include <glm/glm.hpp>
-#include <glm/gtx/string_cast.hpp>
-#include <glm/gtc/type_ptr.hpp>
-#include <glm/gtc/matrix_transform.hpp>
+#include "glm/glm.hpp"
+#include "glm/gtx/string_cast.hpp"
+#include "glm/gtc/type_ptr.hpp"
+#include "glm/gtc/matrix_transform.hpp"
 
 #include "assimp/Importer.hpp"
 #include "assimp/scene.h"
@@ -16,7 +15,7 @@
 #include <vector>
 #include <string>
 
-#include <shader.hpp>
+#include "shader.hpp"
 #include "Mesh.hpp"
 #include "Common.hpp"
 
