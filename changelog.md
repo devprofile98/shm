@@ -6,4 +6,5 @@
  - Change the public interface for handling input on `Actor` class
  - Fix `SpotLight` and `PointLight` shaders and C++ API
  - Add `CubeMap` class And `SkyBox`
- - Add basic `Blending` for transparent texture using rendring *`sorted object based on view from camera`*
+ - Add basic `Blending` for transparent texture using rendring *`sorted object based on distance from camera`*
+ - Add spdlog
