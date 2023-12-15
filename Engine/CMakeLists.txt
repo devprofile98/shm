@@ -70,7 +70,7 @@ install(
     internal/
     glad/
     DESTINATION
-    /usr/local/include/shm  # Specify the desired installation directory
+    /usr/local/include/shm
     FILES_MATCHING
     PATTERN "*.h"
     PATTERN "*.hpp"
@@ -81,3 +81,10 @@ install(TARGETS shm-engine
     ARCHIVE DESTINATION /usr/lib
     LIBRARY DESTINATION /usr/lib
 )
+
+# add_custom_target(install_engine 
+#     COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR} --target install
+#     WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+# )
+
+# add_dependencies(shm-engine POST_BUILD install_engine)
