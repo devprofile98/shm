@@ -58,8 +58,9 @@ bool shader::createProgram() {
     glGetShaderiv(m_fragment, GL_COMPILE_STATUS, &success);
     if (success == GL_FALSE) {
         GLint maxLength = 0;
-        glGetShaderiv(m_vertex, GL_INFO_LOG_LENGTH, &maxLength);
-        glGetShaderInfoLog(m_vertex, 512, &maxLength, infolog.get());
+        glGetShaderiv(m_fragment, GL_INFO_LOG_LENGTH, &maxLength);
+        glGetShaderInfoLog(m_fragment, 512, &maxLength, infolog.get());
+        std::cout << infolog.get() << "asdfasdfasdfasdfasdf " << maxLength << std::endl;
         SHM::Logger::error("ERROR::SHADER::FRAGMENT::COMPILATION_FAILED with error:\n\t{}", infolog.get());
         return false;
     }

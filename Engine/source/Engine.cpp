@@ -40,7 +40,7 @@ Engine::Engine(const char *project_name, API_TYPE api_type, const char *cwd) : m
     // Uploading Directional Light Data to GPU buffers
     SHM::BUFFERS::uploadSubDataToUBO(m_renderer->ubo_lights, glm::vec3(-0.5, -0.5, -0.5));
     SHM::BUFFERS::uploadSubDataToUBO(m_renderer->ubo_lights, glm::vec3(0.9, 0.9, 0.9), sizeof(glm::vec4));
-    SHM::BUFFERS::uploadSubDataToUBO(m_renderer->ubo_lights, glm::vec3(-1.0, 0.0, -2.0), 3 * sizeof(glm::vec4));
+    SHM::BUFFERS::uploadSubDataToUBO(m_renderer->ubo_lights, glm::vec3(-1.0, 1.0, -1.0), 3 * sizeof(glm::vec4));
 }
 
 Engine::~Engine() {
@@ -111,7 +111,7 @@ void Engine::MainRenderLoop() {
         //                    "F:/project/SHM/Engine/assets/model_loading.fs"
         //                     );
         //        }
-        
+
         if (glfwGetKey(context_manager->GetWindow(), GLFW_KEY_P) == GLFW_PRESS) {
 
             saveImage("screenshot.png");
@@ -234,27 +234,15 @@ std::shared_ptr<Engine> Engine::startEngine(const char *project_name, API_TYPE a
     return m_engine;
 }
 
-// void Engine::setActionToKey(KEY key, Command *command) { this->m_handler->setKeyToCommand(key, command); }
-
 void Engine::setMovingCharacter(BaseActor *actor) { this->mainCharacter = actor; }
 
 bool Engine::setSkyShader(std::vector<std::string> sides, std::shared_ptr<shader> sh) {
 
     std::shared_ptr<shader> skyboxshader;
     if (sh == nullptr) {
-        skyboxshader = CreateShader("/assets/skybox.vs", "/assets/skybox.fs");
+        skyboxshader = CreateShader("/assets/shaders/skybox.vs", "/assets/shaders/skybox.fs");
         skyboxshader->createProgram();
     }
-
-    // const char *faces[] = {
-    //     "/home/ahmad/Documents/project/cpp/shm/Engine/assets/cubemaps/skybox/right.jpg",
-    //     "/home/ahmad/Documents/project/cpp/shm/Engine/assets/cubemaps/skybox/left.jpg",
-    //     "/home/ahmad/Documents/project/cpp/shm/Engine/assets/cubemaps/skybox/top.jpg",
-    //     "/home/ahmad/Documents/project/cpp/shm/Engine/assets/cubemaps/skybox/bottom.jpg",
-    //     "/home/ahmad/Documents/project/cpp/shm/Engine/assets/cubemaps/skybox/front.jpg",
-    //     "/home/ahmad/Documents/project/cpp/shm/Engine/assets/cubemaps/skybox/back.jpg",
-    // };
-
     this->skybox = std::make_shared<SHM::opengl::CubeMaps>(sides, sh ? sh : skyboxshader);
     return true;
 }

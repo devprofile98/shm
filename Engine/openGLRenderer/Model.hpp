@@ -21,15 +21,23 @@
 
 unsigned int TextureFromFile(const char *path, const std::string &directory, bool gamma = false);
 
+struct Material {
+    float roughness;
+    float metallic;
+};
+
 class Model {
   public:
     Model(const char *path, std::shared_ptr<shader> shader_program);
     ~Model();
-    void Draw(std::shared_ptr<shader> sh = nullptr);
+    void Draw(const glm::vec3 &cameraPos, std::shared_ptr<shader> sh = nullptr);
     void DrawInstances(std::vector<glm::vec3> &positions, std::shared_ptr<shader> shader_program);
     std::vector<Texture_INT> textures_loaded;
     std::vector<Mesh> meshes;
     std::shared_ptr<shader> getShader();
+    Material material = {0.0, 0.0};
+    void setRoughness(float r) { material.roughness = r; }
+    void setMetallic(float m) { material.metallic = m; }
 
     void setPosition(const glm::vec3 &pos);
     void setScale(const glm::vec3 &scale);

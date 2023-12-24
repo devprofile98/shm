@@ -1,4 +1,5 @@
 #include "Mesh.hpp"
+#include "Logger.hpp"
 
 Mesh::Mesh(std::vector<Vertex> vertices1, std::vector<uint32_t> indices1, std::vector<Texture_INT> textures1, Material_INT mat)
     : vertices(vertices1), indices(indices1), textures(textures1), mat(mat) {
@@ -39,7 +40,9 @@ void Mesh::Draw(std::shared_ptr<shader> shader_obj, const glm::vec3 &position, c
     unsigned int normalNr = 1;
     unsigned int heightNr = 1;
     shader_obj->use();
-
+    shader_obj->setInt("skybox", 1);
+    // SHM::Logger::error("this is the location for skybox {} {}", glGetUniformLocation(shader_obj->ID, "skybox"),
+    //                    glGetUniformLocation(shader_obj->ID, "texture_diffuse1"));
     glm::mat4 model{1.0f};
     model = glm::translate(model, position);
     model = glm::scale(model, scale);
@@ -65,6 +68,10 @@ void Mesh::Draw(std::shared_ptr<shader> shader_obj, const glm::vec3 &position, c
         // and finally bind the texture
         glBindTexture(GL_TEXTURE_2D, textures[i].id);
     }
+
+    // binding the skybox texture if the object is reflectable
+    glActiveTexture(GL_TEXTURE0 + 1);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, 1);
 
     shader_obj->setVec4("kd", mat.kd);
     if (mat.should_draw) {

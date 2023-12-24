@@ -1,5 +1,7 @@
 #include "openGLRenderer.hpp"
 #include "Engine.hpp"
+#include "Logger.hpp"
+
 namespace SHM {
 
 openGLRenderer::openGLRenderer(std::shared_ptr<Camera> camera) {
@@ -27,9 +29,9 @@ void openGLRenderer::Draw(bool drawTransparents, std::shared_ptr<shader> sh) {
             }
             m_actors[i]->eachFrame();
             if (sh) {
-                m_actors[i]->model->Draw(sh);
+                m_actors[i]->model->Draw(cameraPos, sh);
             } else {
-                m_actors[i]->model->Draw();
+                m_actors[i]->model->Draw(cameraPos);
             }
         }
     } else {
@@ -41,9 +43,9 @@ void openGLRenderer::Draw(bool drawTransparents, std::shared_ptr<shader> sh) {
         for (auto it = transparent_actor.rbegin(); it != transparent_actor.rend(); ++it) {
             it->second->eachFrame();
             if (sh) {
-                it->second->model->Draw(sh);
+                it->second->model->Draw(cameraPos, sh);
             } else {
-                it->second->model->Draw();
+                it->second->model->Draw(cameraPos);
             }
         }
     }

@@ -68,7 +68,7 @@ Model::Model(const char *path, std::shared_ptr<shader> sh) : shader_program(sh) 
 
 Model::~Model() {}
 
-void Model::Draw(std::shared_ptr<shader> sh) {
+void Model::Draw(const glm::vec3 &cameraPos, std::shared_ptr<shader> sh) {
 
     auto temp_sh = shader_program;
     if (sh) {
@@ -76,6 +76,10 @@ void Model::Draw(std::shared_ptr<shader> sh) {
     }
 
     temp_sh->use();
+    // SHM::Logger::info("Camera position is: {} {} {}", cameraPos.x, cameraPos.y, cameraPos.z);
+    temp_sh->setVec3("cameraPos", cameraPos);
+    temp_sh->setFloat("material.roughness", material.roughness);
+    temp_sh->setFloat("material.metallic", material.metallic);
 
     for (auto &mesh : meshes) {
         glStencilMask(0x00);
@@ -104,7 +108,7 @@ void Model::Draw(std::shared_ptr<shader> sh) {
 void Model::DrawInstances(std::vector<glm::vec3> &positions, std::shared_ptr<shader> sh) {
     for (glm::vec3 &pos : positions) {
         m_position = pos;
-        this->Draw(sh);
+        this->Draw(glm::vec3{0}, sh);
     }
 }
 
