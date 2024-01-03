@@ -5,6 +5,8 @@ out vec4 FragColor;
 in vec2 TexCoords;
 in vec3 Normal;
 in vec3 FragPos;
+in vec3 testTan;
+in mat3 TBN;
 in vec4 FragPosLightSpace;
 
 struct DirectionalLight {
@@ -68,6 +70,11 @@ uniform sampler2D texture_diffuse3;
 uniform sampler2D texture_specular1;
 uniform sampler2D texture_specular2;
 uniform sampler2D texture_specular3;
+
+uniform bool hasBump;
+uniform bool hasSpecular;
+uniform sampler2D texture_normal1;
+
 uniform sampler2D shadowMap;
 uniform vec3 uColor;
 uniform vec3 ambientColor;
@@ -93,6 +100,7 @@ float ShadowCalculation(vec4 fragPosLightSpace) {
     //    float shadow = currentDepth > closestDepth  ? 1.0 : 0.0;
 
     return shadow;
+    // return 0.0;
 }
 
 vec3 CalculateDirectionalLight(DirectionalLight light, vec3 normal, vec3 view_dir) {
@@ -171,7 +179,11 @@ vec3 CalculateSpotLight(SpotLight light, vec3 normal, vec3 fragPos, vec3 view_di
 void main() {
 
     vec3 norm = normalize(Normal);
-
+    if (hasBump) {
+        norm = texture(texture_normal1, TexCoords).rgb;
+        norm = clamp(normalize(norm * 2.0 - 1.0) * 2, -1, 1);
+        norm = normalize(TBN * norm);
+    }
     vec3 viewDir = normalize(light.viewPos.xyz - FragPos);
     vec3 result = vec3(0);
     result += CalculateDirectionalLight(light, norm, viewDir);
@@ -180,16 +192,17 @@ void main() {
         result += CalculateSpotLight(spots[i], norm, FragPos, viewDir);
     }
 
-    for (int j = 0; j < 4; j++) {
+    for (int j = 0; j < 3; j++) {
         result += CalculatePointLight(point[j], norm, FragPos, viewDir);
     }
 
-    float shadow = ShadowCalculation(FragPosLightSpace);
+    // float shadow = ShadowCalculation(FragPosLightSpace);
 
     vec3 I = normalize(FragPos - cameraPos);
     vec3 R = reflect(I, norm);
     vec4 FragColor2 = vec4(texture(skybox, R).rgb, 1.0);
 
     FragColor = vec4(mix(result, FragColor2.rgb, material.roughness), texture(texture_diffuse1, TexCoords).a);
-    // FragColor = vec4(R, 1.0);
+    // FragColor = vec4(mix(result, FragColor2.rgb, 0.5), texture(texture_diffuse1, TexCoords).a);
+    // FragColor = vec4(cronormalize(Normal), norm), 1.0);
 }

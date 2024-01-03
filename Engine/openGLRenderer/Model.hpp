@@ -24,6 +24,8 @@ unsigned int TextureFromFile(const char *path, const std::string &directory, boo
 struct Material {
     float roughness;
     float metallic;
+    bool hasBumpMap = false;
+    bool hasSpecular = false;
 };
 
 class Model {

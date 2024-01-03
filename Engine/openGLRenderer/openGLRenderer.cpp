@@ -5,9 +5,9 @@
 namespace SHM {
 
 openGLRenderer::openGLRenderer(std::shared_ptr<Camera> camera) {
-    m_shadow_map_shader =
-        std::shared_ptr<shader>{new shader{"/home/ahmad/Documents/project/cpp/test-app/assets/second/depth_map_shader.vs",
-                                           "/home/ahmad/Documents/project/cpp/test-app/assets/second/depth_map_shader.fs"}};
+    m_shadow_map_shader = std::shared_ptr<shader>{
+        new shader{"/home/ahmad/Documents/project/cpp/shm/examples/basic-scene/assets/shaders/depth_map_shader.vs",
+                   "/home/ahmad/Documents/project/cpp/shm/examples/basic-scene/assets/shaders/depth_map_shader.fs"}};
     m_shadow_map_shader->createProgram();
     m_utils = std::shared_ptr<openGLUtility>{new openGLUtility{}};
     setModelMatrix(glm::mat4(1.0));
@@ -100,12 +100,22 @@ void openGLRenderer::setModelMatrix(const glm::mat4 &matrix) { m_model = matrix;
 
 void openGLRenderer::enableShadows() {
     glGenFramebuffers(1, &depth_map_fbo);
-    shadow_map_texture = Texture::createTexture2D(GL_DEPTH_COMPONENT, 1024, 1024);
+    // shadow_map_texture = Texture::createTexture2D(GL_DEPTH_COMPONENT, 1024, 1024);
+    // unsigned int shadow_map_texture;
+    glGenTextures(1, &shadow_map_texture);
+    glActiveTexture(GL_TEXTURE0 + 0);
+    glBindTexture(GL_TEXTURE_2D, shadow_map_texture);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, 1024, 1024, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
     glBindFramebuffer(GL_FRAMEBUFFER, depth_map_fbo);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, shadow_map_texture, 0);
     glDrawBuffer(GL_NONE);
     glReadBuffer(GL_NONE);
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    glActiveTexture(GL_TEXTURE0 + 0);
 }
 
 std::shared_ptr<Utility> openGLRenderer::GetUtility() const { return m_utils; }

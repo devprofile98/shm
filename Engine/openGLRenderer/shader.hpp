@@ -40,6 +40,7 @@ class shader {
 
     void setFloat(const char *uniform_name, float value) const;
     void setInt(const char *uniform_name, int value) const;
+    void setBool(const char *uniform_name, bool value) const;
     void setMat4(const std::string &name, const glm::mat4 &mat) const;
     static std::unordered_map<std::string, int> m_uniform_blocks; // key value pair
 

@@ -35,9 +35,8 @@ unsigned int TextureFromFile(const char *path, const std::string &directory, boo
         //           << std::endl;
 
         SHM::Logger::debug("Engine::Texture - succesfully load model [{}] texture in slot number {}", path,
-                           Model::texture_layout_counter);
+                           Model::texture_layout_counter++);
 
-        Model::texture_layout_counter++;
         //        glActiveTexture(GL_TEXTURE0);
     } else {
         // std::cout << "Texture failed to load at path: " << path << std::endl;
@@ -80,6 +79,15 @@ void Model::Draw(const glm::vec3 &cameraPos, std::shared_ptr<shader> sh) {
     temp_sh->setVec3("cameraPos", cameraPos);
     temp_sh->setFloat("material.roughness", material.roughness);
     temp_sh->setFloat("material.metallic", material.metallic);
+    // glBindTexture(GL_TEXTURE_2D, 1);
+    // temp_sh->setInt("shadowMap", 1);
+
+    if (this->material.hasBumpMap) {
+        temp_sh->setBool("hasBump", this->material.hasBumpMap);
+    };
+    if (this->material.hasSpecular) {
+        temp_sh->setBool("hasSpecular", this->material.hasSpecular);
+    }
 
     for (auto &mesh : meshes) {
         glStencilMask(0x00);
@@ -137,7 +145,7 @@ bool Model::getSelected() const { return this->m_selected; }
 
 void Model::loadModel(std::string path) {
     Assimp::Importer import;
-    const aiScene *scene = import.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs);
+    const aiScene *scene = import.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
     if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
         // std::cout << "ERROR::ASSIMP::" << import.GetErrorString() << std::endl;
         SHM::Logger::error("Assimp Error - Error happend while loading model {}:\n\t{}", path, import.GetErrorString());
@@ -186,16 +194,19 @@ Mesh Model::processMesh(aiMesh *mesh, const aiScene *scene) {
             vec.x = mesh->mTextureCoords[0][i].x;
             vec.y = mesh->mTextureCoords[0][i].y;
             vertex.TexCoords = vec;
-            // // tangent
-            // vector.x = mesh->mTangents[i].x;
-            // vector.y = mesh->mTangents[i].y;
-            // vector.z = mesh->mTangents[i].z;
-            // vertex.Tangent = vector;
-            // // bitangent
-            // vector.x = mesh->mBitangents[i].x;
-            // vector.y = mesh->mBitangents[i].y;
-            // vector.z = mesh->mBitangents[i].z;
-            // vertex.Bitangent = vector;
+            if (mesh->mTangents && mesh->mBitangents) {
+                // // tangent
+                vector.x = mesh->mTangents[i].x;
+                vector.y = mesh->mTangents[i].y;
+                vector.z = mesh->mTangents[i].z;
+                vertex.Tangent = vector;
+
+                // // bitangent
+                vector.x = mesh->mBitangents[i].x;
+                vector.y = mesh->mBitangents[i].y;
+                vector.z = mesh->mBitangents[i].z;
+                vertex.Bitangent = vector;
+            }
         } else {
             vertex.TexCoords = glm::vec2{0.0f, 0.0f};
         }
@@ -227,17 +238,22 @@ Mesh Model::processMesh(aiMesh *mesh, const aiScene *scene) {
 
     std::vector<Texture_INT> specularMap = loadMaterialTexture(material, aiTextureType_SPECULAR, "texture_specular");
     textures.insert(textures.end(), specularMap.begin(), specularMap.end());
-
+    if (!specularMap.empty()) {
+        this->material.hasSpecular = true;
+    }
     // 3. normal maps
     std::vector<Texture_INT> normalMaps = loadMaterialTexture(material, aiTextureType_HEIGHT, "texture_normal");
     textures.insert(textures.end(), normalMaps.begin(), normalMaps.end());
-
+    if (!normalMaps.empty()) {
+        this->material.hasBumpMap = true;
+    }
     // 4. height maps
     std::vector<Texture_INT> heightMaps = loadMaterialTexture(material, aiTextureType_AMBIENT, "texture_height");
     textures.insert(textures.end(), heightMaps.begin(), heightMaps.end());
 
-    if (textures.size() <= 0)
+    if (textures.size() <= 0) {
         mat.should_draw = true;
+    }
 
     // return a mesh object created from the extracted mesh data
     return Mesh(vertices, indices, textures, mat);
@@ -273,4 +289,4 @@ std::vector<Texture_INT> Model::loadMaterialTexture(aiMaterial *material, aiText
     return textures;
 }
 
-uint32_t Model::texture_layout_counter = 0;
+uint32_t Model::texture_layout_counter = 2;

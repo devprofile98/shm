@@ -88,21 +88,22 @@ void Engine::MainRenderLoop() {
         glm::mat4 lightSpaceMatrix;
         float near_plane = 1.0f, far_plane = 40.5f;
         lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, near_plane, far_plane);
-        lightView = glm::lookAt(glm::vec3(-2.0f, 6.0f, -5.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0, 1.0, 0.0));
+        lightView = glm::lookAt(glm::vec3(5.0f, 5.0f, -1.0f), glm::vec3(1.0, 0.0, -1.0), glm::vec3(0.0, 1.0, 0.0));
         lightSpaceMatrix = lightProjection * lightView;
 
-        // m_renderer->m_shadow_map_shader->use();
-        // m_renderer->m_shadow_map_shader->setMat4("lightSpaceMatrix", lightSpaceMatrix);
+        m_renderer->m_shadow_map_shader->use();
+        m_renderer->m_shadow_map_shader->setMat4("lightSpaceMatrix", lightSpaceMatrix);
 
         ///// drawing shadow
-        // glViewport(0, 0, 1024, 1024);
-        // glBindFramebuffer(GL_FRAMEBUFFER, m_renderer->depth_map_fbo);
-        // glClear(GL_DEPTH_BUFFER_BIT);
-        // glActiveTexture(GL_TEXTURE0);
-        // glBindTexture(GL_TEXTURE_2D, m_renderer->shadow_map_texture);
-        // m_renderer->Draw(false, m_renderer->m_shadow_map_shader);
+        glViewport(0, 0, 1024, 1024);
+        glBindFramebuffer(GL_FRAMEBUFFER, m_renderer->depth_map_fbo);
+        glClear(GL_DEPTH_BUFFER_BIT);
+        glActiveTexture(GL_TEXTURE0 + m_renderer->shadow_map_texture);
+        glBindTexture(GL_TEXTURE_2D, m_renderer->shadow_map_texture);
+        // m_renderer->m_shadow_map_shader->setInt("shadowMap", 2);
+        m_renderer->Draw(false, m_renderer->m_shadow_map_shader);
 
-        // glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
         // TODO fix memory leak here
         //        if (glfwGetKey(context_manager->GetWindow(), GLFW_KEY_P) == GLFW_PRESS){
@@ -126,7 +127,6 @@ void Engine::MainRenderLoop() {
         // drawing user defined objects
         glViewport(0, 0, 1920, 1080);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-        glBindTexture(GL_TEXTURE_2D, m_renderer->shadow_map_texture);
         Loop();
 
         // render opaque objects first, and find transparent in object and sort them
@@ -195,7 +195,7 @@ bool Engine::InitWorld() {
     m_renderer->ubo_spots = m_renderer->GetUtility()->createNewGlobalBlock("Spots", 12 * (112), &b);
 
     // configure shadow
-    // m_renderer->enableShadows();
+    m_renderer->enableShadows();
 
     Logger::info("Global block set, World Initilized.");
     return -23;
