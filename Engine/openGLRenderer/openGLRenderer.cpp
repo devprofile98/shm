@@ -36,10 +36,10 @@ void openGLRenderer::Draw(bool drawTransparents, std::shared_ptr<shader> sh) {
         }
     } else {
 
-        // using simple blending technique, we will render transparent object
+        // using simple blending technique, we will render transparent objects
         // after rendering all the other opaque objects, from the farthest transparent object
-        // to the nearest object, this way we will hack the z-buffer that prevents us to render
-        // transparent sobject in normal render pass
+        // to the nearest one, this way we will hack the z-buffer that prevents us to render
+        // transparent objects in normal render pass
         for (auto it = transparent_actor.rbegin(); it != transparent_actor.rend(); ++it) {
             it->second->eachFrame();
             if (sh) {
@@ -108,8 +108,10 @@ void openGLRenderer::enableShadows() {
     glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, 1024, 1024, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+    float borderColor[] = {1.0f, 1.0f, 1.0f, 1.0f};
+    glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
     glBindFramebuffer(GL_FRAMEBUFFER, depth_map_fbo);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, shadow_map_texture, 0);
     glDrawBuffer(GL_NONE);

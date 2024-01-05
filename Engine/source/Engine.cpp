@@ -86,7 +86,7 @@ void Engine::MainRenderLoop() {
         // calculate Shadows
         glm::mat4 lightProjection, lightView;
         glm::mat4 lightSpaceMatrix;
-        float near_plane = 1.0f, far_plane = 40.5f;
+        float near_plane = 1.0f, far_plane = 60.5f;
         lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, near_plane, far_plane);
         lightView = glm::lookAt(glm::vec3(5.0f, 5.0f, -1.0f), glm::vec3(1.0, 0.0, -1.0), glm::vec3(0.0, 1.0, 0.0));
         lightSpaceMatrix = lightProjection * lightView;
@@ -101,10 +101,12 @@ void Engine::MainRenderLoop() {
         glActiveTexture(GL_TEXTURE0 + m_renderer->shadow_map_texture);
         glBindTexture(GL_TEXTURE_2D, m_renderer->shadow_map_texture);
         // m_renderer->m_shadow_map_shader->setInt("shadowMap", 2);
+        glEnable(GL_CULL_FACE);
+        glCullFace(GL_FRONT);
         m_renderer->Draw(false, m_renderer->m_shadow_map_shader);
-
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
+        glCullFace(GL_BACK);
+        glDisable(GL_CULL_FACE);
         // TODO fix memory leak here
         //        if (glfwGetKey(context_manager->GetWindow(), GLFW_KEY_P) == GLFW_PRESS){
         //            m_renderer->LoadShaders(
@@ -198,7 +200,7 @@ bool Engine::InitWorld() {
     m_renderer->enableShadows();
 
     Logger::info("Global block set, World Initilized.");
-    return -23;
+    return true;
 }
 
 PHYSICS::World *Engine::getPhysicWorld() { return Engine::m_world; }
@@ -212,8 +214,7 @@ void Engine::saveImage(char *file_path) {
     GLsizei stride = width * nrchannel;
     stride += (stride % 4) ? (4 - stride % 4) : 0;
 
-    GLsizei bufferSize = stride * height;
-    std::vector<char> buffer(bufferSize);
+    std::vector<char> buffer(stride * height);
 
     glPixelStorei(GL_PACK_ALIGNMENT, 4);
     glReadBuffer(GL_FRONT);

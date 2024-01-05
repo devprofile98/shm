@@ -14,10 +14,6 @@ CubeMaps::CubeMaps(std::vector<std::string> faces, std::shared_ptr<shader> sh) {
 }
 
 bool CubeMaps::load(std::vector<std::string> faces) {
-    // first create the texture_slot
-    // unsigned int textureId;
-    SHM::Logger::error("Failed to load skybox Texture");
-
     glGenTextures(1, &this->m_cube_texture_id);
     glActiveTexture(GL_TEXTURE0 + 1);
     glBindTexture(GL_TEXTURE_CUBE_MAP, this->m_cube_texture_id);

@@ -3,6 +3,7 @@
 #define SHM_ENGINE_ACTOR_H
 
 #include <iostream>
+#include <string>
 #include "Engine.hpp"
 #include "BaseActor.hpp"
 #include "physics/BasePhysics.hpp"
@@ -10,7 +11,7 @@
 namespace SHM {
 class Actor : public BaseActor {
   public:
-    Actor();
+    Actor(const std::string &name = "Unknown");
     virtual ~Actor();
     virtual void Load();
     std::shared_ptr<shader> setShader(const char *v_shader, const char *f_shader) override;
@@ -20,9 +21,11 @@ class Actor : public BaseActor {
     void handleInput(KEY key) override;
     void setUpModel() override;
     void eachFrame() override;
-    // void jump() override;
-
+    std::string getName() const;
     PHYSICS::PhysicObject *m_physic_component = nullptr;
+
+  private:
+    std::string mObjectName = "Unknown";
 };
 } // namespace SHM
 

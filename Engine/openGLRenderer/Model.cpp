@@ -63,16 +63,14 @@ Model::Model(const char *path, std::shared_ptr<shader> sh) : shader_program(sh) 
     m_position = glm::vec3{0, 0, 0};
     m_scale = glm::vec3{1.0f};
     m_rotation = glm::vec3{0.0f, 1.0f, 0.0f};
+    m_rotation_degrees = 0.0f;
 }
 
 Model::~Model() {}
 
 void Model::Draw(const glm::vec3 &cameraPos, std::shared_ptr<shader> sh) {
 
-    auto temp_sh = shader_program;
-    if (sh) {
-        temp_sh = sh;
-    }
+    auto temp_sh = sh ? sh : shader_program;
 
     temp_sh->use();
     // SHM::Logger::info("Camera position is: {} {} {}", cameraPos.x, cameraPos.y, cameraPos.z);

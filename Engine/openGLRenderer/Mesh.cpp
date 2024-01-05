@@ -51,7 +51,7 @@ void Mesh::Draw(std::shared_ptr<shader> shader_obj, const glm::vec3 &position, c
     glm::mat4 model{1.0f};
     model = glm::translate(model, position);
     model = glm::scale(model, scale);
-    model = glm::rotate(model, glm::radians(rotaion_degree), rotation);
+    model = glm::rotate(model, glm::radians(rotaion_degree), glm::normalize(rotation));
     shader_obj->setMat4("model", model);
 
     for (unsigned int i = 0; i < textures.size(); i++) {

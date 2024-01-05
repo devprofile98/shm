@@ -63,8 +63,9 @@ class Mesh {
     Material_INT mat;
 
     Mesh(std::vector<Vertex> vertices, std::vector<uint32_t> indices, std::vector<Texture_INT> textures, Material_INT mat);
-    void Draw(std::shared_ptr<shader> shadr, const glm::vec3 &position, const glm::vec3 &scale, const glm::vec3 &rotation,
-              float rotaion_degree, bool selected = false, shader *border_shader = nullptr);
+    void Draw(std::shared_ptr<shader> shadr, const glm::vec3 &position, const glm::vec3 &scale,
+              const glm::vec3 &rotation = glm::vec3{0.0, 0.0, 0.0}, float rotaion_degree = 0, bool selected = false,
+              shader *border_shader = nullptr);
 
   private:
     //  render data
