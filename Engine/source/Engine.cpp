@@ -1,3 +1,5 @@
+#include <thread>
+#include <memory>
 #include "Engine.hpp"
 #include "CameraActor.hpp"
 
@@ -214,13 +216,17 @@ void Engine::saveImage(char *file_path) {
     GLsizei stride = width * nrchannel;
     stride += (stride % 4) ? (4 - stride % 4) : 0;
 
-    std::vector<char> buffer(stride * height);
+    std::vector<char> *buffer = new std::vector<char>(stride * height);
 
     glPixelStorei(GL_PACK_ALIGNMENT, 4);
     glReadBuffer(GL_FRONT);
-    glReadPixels(0, 0, width, height, GL_RGB, GL_UNSIGNED_BYTE, buffer.data());
+    glReadPixels(0, 0, width, height, GL_RGB, GL_UNSIGNED_BYTE, buffer->data());
     stbi_flip_vertically_on_write(true);
-    stbi_write_png(file_path, width, height, nrchannel, buffer.data(), stride);
+    std::thread t{[file_path, width, height, nrchannel, buffer, stride] {
+        stbi_write_png(file_path, width, height, nrchannel, buffer->data(), stride);
+        delete buffer;
+    }};
+    t.detach();
 }
 
 std::shared_ptr<Engine> Engine::GetEngine() {
